@@ -76,7 +76,7 @@ const MainLayout = () => {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 rounded-tl-2xl p-4 pt-0 h-[calc(100vh-4rem)] overflow-auto bg-gradient-to-br from-blue-50 to-indigo-100 ">
+        <div className="flex flex-1 flex-col gap-4 rounded-tl-2xl p-4 pt-0 h-[calc(100vh-4rem)] overflow-auto bg-gradient-to-br from-blue-50 to-indigo-50">
           <Outlet />
         </div>
       </SidebarInset>

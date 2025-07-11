@@ -1,46 +1,45 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
-import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import { app, shell, BrowserWindow, ipcMain } from "electron"
+import { join } from "path"
+import { electronApp, optimizer, is } from "@electron-toolkit/utils"
+import icon from "../../resources/icon.png?asset"
 import {
   getStudents,
   getStudentByCI,
   addStudent,
   updateStudent,
-  deleteStudent,
-  seedStudents
-} from './queries/student'
+  deleteStudent
+} from "./queries/student"
 import {
   getAssignments,
   addAssignment,
   updateAssignment,
   deleteAssignment
-} from './queries/assignment'
+} from "./queries/assignment"
 import {
   getCareers,
   addCareer,
   getCareerByName,
   updateCareer,
   deleteCareer
-} from './queries/career'
-import { getSpots, addSpot, updateSpot, deleteSpot } from './queries/spot'
-import { getRequests, addRequest, updateRequest, deleteRequest } from './queries/request'
+} from "./queries/career"
+import { getSpots, addSpot, updateSpot, deleteSpot } from "./queries/spot"
+import { getRequests, addRequest, updateRequest, deleteRequest } from "./queries/request"
 import {
   getLocations,
   addLocation,
   getLocationByName,
   updateLocation,
   deleteLocation
-} from './queries/location'
-import { getPhases } from './queries/phase'
+} from "./queries/location"
+import { getPhases } from "./queries/phase"
 import {
-  getUsers,
-  getUserByUsername,
   addUser,
+  getUsers,
+  getUserById,
   updateUser,
-  changeUserPassword,
-  deleteUser
-} from './queries/user'
+  deleteUser,
+  changeUserPassword
+} from "./queries/user"
 
 function createWindow(): void {
   // Create the browser window.
@@ -49,28 +48,28 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: join(__dirname, "../preload/index.js"),
       sandbox: false
     }
   })
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.on("ready-to-show", () => {
     mainWindow.show()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
-    return { action: 'deny' }
+    return { action: "deny" }
   })
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+  if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
+    mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"])
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(join(__dirname, "../renderer/index.html"))
   }
 }
 
@@ -79,27 +78,21 @@ function createWindow(): void {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
-
-  const count = getStudents().length
-  if (count === 0) {
-    seedStudents()
-    console.log('Students seeded in DB')
-  }
+  electronApp.setAppUserModelId("com.electron")
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
-  app.on('browser-window-created', (_, window) => {
+  app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
 
   // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.on("ping", () => console.log("pong"))
 
   createWindow()
 
-  app.on('activate', function () {
+  app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -107,154 +100,154 @@ app.whenReady().then(() => {
 })
 
 // IPC handlers for student CRUD
-ipcMain.handle('student:add', (_event, student) => {
-  addStudent(student)
+ipcMain.handle("student:add", (_event, student) => {
+  return addStudent(student)
 })
 
-ipcMain.handle('student:getAll', () => {
+ipcMain.handle("student:getAll", () => {
   return getStudents()
 })
 
-ipcMain.handle('student:getByCI', (_event, ci) => {
+ipcMain.handle("student:getByCI", (_event, ci) => {
   return getStudentByCI(ci)
 })
 
-ipcMain.handle('student:update', (_event, student) => {
-  updateStudent(student)
+ipcMain.handle("student:update", (_event, student) => {
+  return updateStudent(student)
 })
 
-ipcMain.handle('student:delete', (_event, ci) => {
-  deleteStudent(ci)
+ipcMain.handle("student:delete", (_event, ci) => {
+  return deleteStudent(ci)
 })
 
 // IPC handlers for assignment CRUD
-ipcMain.handle('assignment:add', (_event, assignment) => {
-  addAssignment(assignment)
+ipcMain.handle("assignment:add", (_event, assignment) => {
+  return addAssignment(assignment)
 })
 
-ipcMain.handle('assignment:getAll', () => {
+ipcMain.handle("assignment:getAll", () => {
   return getAssignments()
 })
 
-ipcMain.handle('assignment:update', (_event, assignment) => {
-  updateAssignment(assignment)
+ipcMain.handle("assignment:update", (_event, assignment) => {
+  return updateAssignment(assignment)
 })
 
-ipcMain.handle('assignment:delete', (_event, id) => {
-  deleteAssignment(id)
+ipcMain.handle("assignment:delete", (_event, id) => {
+  return deleteAssignment(id)
 })
 
 // IPC handlers for career CRUD
-ipcMain.handle('career:add', (_event, career) => {
-  addCareer(career)
+ipcMain.handle("career:add", (_event, career) => {
+  return addCareer(career)
 })
 
-ipcMain.handle('career:getAll', () => {
+ipcMain.handle("career:getAll", () => {
   return getCareers()
 })
 
-ipcMain.handle('career:getByName', (_event, name) => {
+ipcMain.handle("career:getByName", (_event, name) => {
   return getCareerByName(name)
 })
 
-ipcMain.handle('career:update', (_event, career) => {
-  updateCareer(career)
+ipcMain.handle("career:update", (_event, career) => {
+  return updateCareer(career)
 })
 
-ipcMain.handle('career:delete', (_event, id) => {
-  deleteCareer(id)
+ipcMain.handle("career:delete", (_event, id) => {
+  return deleteCareer(id)
 })
 
 // IPC handlers for spot CRUD
-ipcMain.handle('spot:add', (_event, spot) => {
-  addSpot(spot)
+ipcMain.handle("spot:add", (_event, spot) => {
+  return addSpot(spot)
 })
 
-ipcMain.handle('spot:getAll', () => {
+ipcMain.handle("spot:getAll", () => {
   return getSpots()
 })
 
-ipcMain.handle('spot:update', (_event, spot) => {
-  updateSpot(spot)
+ipcMain.handle("spot:update", (_event, spot) => {
+  return updateSpot(spot)
 })
 
-ipcMain.handle('spot:delete', (_event, id) => {
-  deleteSpot(id)
+ipcMain.handle("spot:delete", (_event, id) => {
+  return deleteSpot(id)
 })
 
 // IPC handlers for request CRUD
-ipcMain.handle('request:add', (_event, request) => {
-  addRequest(request)
+ipcMain.handle("request:add", (_event, request) => {
+  return addRequest(request)
 })
 
-ipcMain.handle('request:getAll', () => {
+ipcMain.handle("request:getAll", () => {
   return getRequests()
 })
 
-ipcMain.handle('request:update', (_event, request) => {
-  updateRequest(request)
+ipcMain.handle("request:update", (_event, request) => {
+  return updateRequest(request)
 })
 
-ipcMain.handle('request:delete', (_event, id) => {
-  deleteRequest(id)
+ipcMain.handle("request:delete", (_event, id) => {
+  return deleteRequest(id)
 })
 
 // IPC handlers for location CRUD
-ipcMain.handle('location:add', (_event, location) => {
-  addLocation(location)
+ipcMain.handle("location:add", (_event, location) => {
+  return addLocation(location)
 })
 
-ipcMain.handle('location:getAll', () => {
+ipcMain.handle("location:getAll", () => {
   return getLocations()
 })
 
-ipcMain.handle('location:getByName', (_event, name) => {
+ipcMain.handle("location:getByName", (_event, name) => {
   return getLocationByName(name)
 })
 
-ipcMain.handle('location:update', (_event, location) => {
-  updateLocation(location)
+ipcMain.handle("location:update", (_event, location) => {
+  return updateLocation(location)
 })
 
-ipcMain.handle('location:delete', (_event, id) => {
-  deleteLocation(id)
+ipcMain.handle("location:delete", (_event, id) => {
+  return deleteLocation(id)
 })
 
 // IPC handlers for phase
-ipcMain.handle('phase:getAll', () => {
+ipcMain.handle("phase:getAll", () => {
   return getPhases()
 })
 
 // IPC handlers for user CRUD
-ipcMain.handle('user:add', (_event, user) => {
-  addUser(user)
+ipcMain.handle("user:addUser", (_event, user) => {
+  return addUser(user)
 })
 
-ipcMain.handle('user:getAll', () => {
+ipcMain.handle("user:getAll", () => {
   return getUsers()
 })
 
-ipcMain.handle('user:getByUsername', (_event, username) => {
-  return getUserByUsername(username)
+ipcMain.handle("user:getById", (_event, id) => {
+  return getUserById(id)
 })
 
-ipcMain.handle('user:update', (_event, user) => {
-  updateUser(user)
+ipcMain.handle("user:update", (_event, user) => {
+  return updateUser(user)
 })
 
-ipcMain.handle('user:delete', (_event, id) => {
-  deleteUser(id)
+ipcMain.handle("user:delete", (_event, id) => {
+  return deleteUser(id)
 })
 
-ipcMain.handle('user:changePassword', (_event, { id, newPassword }) => {
-  changeUserPassword(id, newPassword)
+ipcMain.handle("user:changePassword", (_event, data) => {
+  return changeUserPassword(data.id, data.newPassword)
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit()
   }
 })

@@ -1,11 +1,11 @@
-import { db } from '../database'
-import { Student } from '../../shared/types'
+import { db } from "../database"
+import { Student } from "../../shared/types"
 
 // Create
-export function addStudent(student: Student) {
+export function addStudent(student: Student): void {
   const stmt = db.prepare(`
-    INSERT INTO student (ci, first_name, last_name_1, last_name_2, grade, age, gender, municipality)
-    VALUES (@ci, @firstName, @firstLastName, @secondLastName, @grade, @age, @gender, @municipality)
+    INSERT INTO student (ci, name, last_name, grade, age, gender, municipality)
+    VALUES (@ci, @name, @lastName, @grade, @age, @gender, @municipality)
   `)
   stmt.run(student)
 }
@@ -17,9 +17,8 @@ export function getStudents(): Student[] {
       `
     SELECT
       ci,
-      first_name AS firstName,
-      last_name_1 AS firstLastName,
-      last_name_2 AS secondLastName,
+      name,
+      last_name AS lastName,
       grade,
       age,
       gender,
@@ -37,9 +36,8 @@ export function getStudentByCI(ci: string): Student | undefined {
       `
     SELECT
       ci,
-      first_name AS firstName,
-      last_name_1 AS firstLastName,
-      last_name_2 AS secondLastName,
+      name,
+      last_name AS lastName,
       grade,
       age,
       gender,
@@ -52,42 +50,22 @@ export function getStudentByCI(ci: string): Student | undefined {
 }
 
 // Update
-export function updateStudent(student: Student) {
+export function updateStudent(student: Student): void {
   const stmt = db.prepare(`
     UPDATE student
-    SET first_name = @firstName,
-        last_name_1 = @firstLastName,
-        last_name_2 = @secondLastName,
-        grade = @grade,
-        age = @age,
-        gender = @gender,
-        municipality = @municipality
+    SET 
+      name = @name,
+      last_name = @lastName,
+      grade = @grade,
+      age = @age,
+      gender = @gender,
+      municipality = @municipality
     WHERE ci = @ci
   `)
   stmt.run(student)
 }
 
 // Delete
-export function deleteStudent(ci: string) {
-  db.prepare('DELETE FROM student WHERE ci = ?').run(ci)
-}
-
-// Seed
-export function seedStudents() {
-  const insert = db.prepare(`
-    INSERT INTO student (ci, first_name, last_name_1, last_name_2, grade, age, gender, municipality)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `)
-
-  const students = [
-    ['12345678', 'Juan', 'Perez', 'Lopez', 8.5, 20, 'M', 'Madrid'],
-    ['87654321', 'Maria', 'Garcia', '', 9.2, 21, 'F', 'Barcelona'],
-    ['11223344', 'Carlos', 'Rodriguez', 'Sanchez', 7.8, 22, 'M', 'Valencia']
-  ]
-
-  const insertMany = db.transaction((students: any[]) => {
-    for (const s of students) insert.run(...s)
-  })
-
-  insertMany(students)
+export function deleteStudent(ci: string): void {
+  db.prepare("DELETE FROM student WHERE ci = ?").run(ci)
 }

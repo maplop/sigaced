@@ -1,13 +1,16 @@
-import { db } from '../database'
-import { User } from '../../shared/types'
+import { db } from "../database"
+import { User } from "../../shared/types"
 
 // Create
-export function addUser(user: User) {
+export function addUser(user: Omit<User, "id">) {
   const stmt = db.prepare(`
-    INSERT INTO user (username, password, role)
-    VALUES (@username, @password, @role)
+    INSERT INTO user (name, last_name, username, password, role)
+    VALUES (@name, @last_name, @username, @password, @role)
   `)
-  stmt.run(user)
+  stmt.run({
+    ...user,
+    last_name: user.lastName
+  })
 }
 
 // Read all
@@ -15,36 +18,40 @@ export function getUsers(): User[] {
   return db
     .prepare(
       `
-    SELECT
-      id,
-      username,
-      password,
-      role
-    FROM user
-  `
+      SELECT 
+        id,
+        name,
+        last_name AS lastName,  
+        username,
+        password,
+        role
+      FROM user
+    `
     )
     .all()
 }
 
-// Read one by username
-export function getUserByUsername(username: string): User | undefined {
+// Read one by ID
+export function getUserById(id: string): User | undefined {
   return db
     .prepare(
       `
-    SELECT
-      id,
-      username,
-      password,
-      role
-    FROM user
-    WHERE username = ?
-  `
+      SELECT 
+        id,
+        name,
+        last_name AS lastName,
+        username,
+        password,
+        role
+      FROM user
+      WHERE id = ?
+    `
     )
-    .get(username)
+    .get(id)
 }
 
 // Change Password
-export function changeUserPassword(id: number, newPassword: string) {
+export function changeUserPassword(id: string, newPassword: string) {
   const stmt = db.prepare(`
     UPDATE user
     SET password = ?
@@ -57,34 +64,21 @@ export function changeUserPassword(id: number, newPassword: string) {
 export function updateUser(user: User) {
   const stmt = db.prepare(`
     UPDATE user
-    SET username = @username,
-        password = @password,
-        role = @role
+    SET 
+      name = @name,
+      last_name = @last_name,
+      username = @username,
+      password = @password,
+      role = @role
     WHERE id = @id
   `)
-  stmt.run(user)
+  stmt.run({
+    ...user,
+    last_name: user.lastName
+  })
 }
 
 // Delete
-export function deleteUser(id: number) {
-  db.prepare('DELETE FROM user WHERE id = ?').run(id)
-}
-
-// Seed (optional)
-export function seedUsers() {
-  const insert = db.prepare(`
-    INSERT INTO user (username, password, role)
-    VALUES (?, ?, ?)
-  `)
-
-  const users = [
-    ['admin', 'admin', 'admin'],
-    ['viewer', '1234', 'viewer']
-  ]
-
-  const insertMany = db.transaction((users: any[]) => {
-    for (const u of users) insert.run(...u)
-  })
-
-  insertMany(users)
+export function deleteUser(id: string) {
+  db.prepare("DELETE FROM user WHERE id = ?").run(id)
 }

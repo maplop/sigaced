@@ -1,17 +1,17 @@
 /* eslint-disable prettier/prettier */
 // src/main/database.ts
 
-import Database from 'better-sqlite3'
-import path from 'path'
-import { app } from 'electron'
+import Database from "better-sqlite3"
+import path from "path"
+import { app } from "electron"
 
 // Database path
-const dbPath = path.join(app.getPath('userData'), 'app.sqlite')
+const dbPath = path.join(app.getPath("userData"), "app.sqlite")
 const db = new Database(dbPath)
 
 // Enable WAL and foreign keys
-db.pragma('journal_mode = WAL')
-db.pragma('foreign_keys = ON')
+db.pragma("journal_mode = WAL")
+db.pragma("foreign_keys = ON")
 
 // Create tables and insert initial data
 db.exec(`
@@ -21,14 +21,17 @@ db.exec(`
     name TEXT NOT NULL UNIQUE
   );
 
-  INSERT OR IGNORE INTO phase (name) VALUES ('First'), ('Second'), ('Third');
+  INSERT OR IGNORE INTO phase (id, name) VALUES
+    (1, 'First'),
+    (2, 'Second'),
+    (3, 'Third');
 
   -- Student table
   CREATE TABLE IF NOT EXISTS student (
-    ci TEXT PRIMARY KEY,
-    first_name TEXT NOT NULL,
-    last_name_1 TEXT NOT NULL,
-    last_name_2 TEXT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ci TEXT UNIQUE,
+    name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
     grade REAL CHECK (grade BETWEEN 0 AND 100),
     age INTEGER CHECK (age > 0),
     gender TEXT CHECK (gender IN ('M', 'F')),
@@ -49,20 +52,20 @@ db.exec(`
     name TEXT UNIQUE NOT NULL
   );
 
-INSERT OR IGNORE INTO location (name) VALUES
-  ('Santa Clara'),
-  ('Placetas'),
-  ('Manicaragua'),
-  ('Camajuaní'),
-  ('Ranchuelo'),
-  ('Sagua la Grande'),
-  ('Santo Domingo'),
-  ('Remedios'),
-  ('Caibarién'),
-  ('Encrucijada'),
-  ('Cifuentes'),
-  ('Corralillo'),
-  ('Quemado de Güines');
+  INSERT OR IGNORE INTO location (name) VALUES
+    ('Santa Clara'),
+    ('Placetas'),
+    ('Manicaragua'),
+    ('Camajuaní'),
+    ('Ranchuelo'),
+    ('Sagua la Grande'),
+    ('Santo Domingo'),
+    ('Remedios'),
+    ('Caibarién'),
+    ('Encrucijada'),
+    ('Cifuentes'),
+    ('Corralillo'),
+    ('Quemado de Güines');
 
   -- Spot table (career + location combination)
   CREATE TABLE IF NOT EXISTS spot (
@@ -101,18 +104,15 @@ INSERT OR IGNORE INTO location (name) VALUES
     UNIQUE (student_ci)
   );
 
-    -- User table
+  -- User table
   CREATE TABLE IF NOT EXISTS user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    last_name TEXT,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     role TEXT DEFAULT 'admin' CHECK (role IN ('admin', 'viewer'))
   );
-
-  -- Default admin user (username: admin, password: admin)
-  INSERT OR IGNORE INTO user (username, password, role)
-  VALUES ('admin', 'admin', 'admin');
-
 `)
 
 export { db }

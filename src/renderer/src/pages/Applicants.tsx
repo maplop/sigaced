@@ -1,6 +1,9 @@
+
+import ApplicantsView from "@renderer/components/Applicants/ApplicantView"
+
 const Applicants = () => {
   return (
-    <div className="p-4">Applicants</div>
+    <ApplicantsView />
   )
 }
 export default Applicants

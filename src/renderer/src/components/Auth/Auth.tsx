@@ -1,9 +1,21 @@
-import { Login } from './Login'
-import Register from './Register'
+import Login from './Login/Login'
+import Register from './Register/Register'
 import { GraduationCap, User, UserPlus } from 'lucide-react'
 import { Tabs, TabsList, TabsContent, TabsTrigger } from '../ui/tabs'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const Auth = () => {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const currentTab = location.pathname === '/register' ? 'register' : 'login'
+
+  const handleTabChange = (value: string) => {
+    if (value !== currentTab) {
+      navigate(`/${value}`)
+    }
+  }
+
   return (
     <div className='flex flex-col w-96'>
       <div className="flex gap-4 mb-8">
@@ -15,7 +27,7 @@ const Auth = () => {
           <div className="text-sm leading-4 text-gray-600">Gestión de Asignación de Plazas del Curso por Encuentro y a Distancia</div>
         </div>
       </div>
-      <Tabs defaultValue="login" className="w-full">
+      <Tabs defaultValue="login" value={currentTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="login" className="flex items-center gap-2">
             <User className="w-4 h-4" />

@@ -1,5 +1,5 @@
-import { ElectronAPI } from '@electron-toolkit/preload'
-import { Student, Assignment, Career, Spot, Request, Location, Phase } from 'src/shared/types'
+import { ElectronAPI } from "@electron-toolkit/preload"
+import { Student, Assignment, Career, Spot, Request, Location, Phase, User } from "src/shared/types"
 
 declare global {
   interface Window {
@@ -16,44 +16,44 @@ declare global {
       addAssignment: (assignment: Assignment) => Promise<void>
       getAssignments: () => Promise<Assignment[]>
       updateAssignment: (assignment: Assignment) => Promise<void>
-      deleteAssignment: (id: number) => Promise<void>
+      deleteAssignment: (id: string) => Promise<void>
 
       // Careers
       addCareer: (career: Career) => Promise<void>
       getCareers: () => Promise<Career[]>
       getCareerByName: (name: string) => Promise<Career | undefined>
       updateCareer: (career: Career) => Promise<void>
-      deleteCareer: (id: number) => Promise<void>
+      deleteCareer: (id: string) => Promise<void>
 
       // Spots
       addSpot: (spot: Spot) => Promise<void>
       getSpots: () => Promise<Spot[]>
       updateSpot: (spot: Spot) => Promise<void>
-      deleteSpot: (id: number) => Promise<void>
+      deleteSpot: (id: string) => Promise<void>
 
       // Requests
       addRequest: (request: Request) => Promise<void>
       getRequests: () => Promise<Request[]>
       updateRequest: (request: Request) => Promise<void>
-      deleteRequest: (id: number) => Promise<void>
+      deleteRequest: (id: string) => Promise<void>
 
-      // Loacation
+      // Location
       addLocation: (location: Location) => Promise<void>
       getLocations: () => Promise<Location[]>
       getLocationByName: (name: string) => Promise<Location | undefined>
       updateLocation: (location: Location) => Promise<void>
-      deleteLocation: (id: number) => Promise<void>
+      deleteLocation: (id: string) => Promise<void>
 
       // Phase
       getPhases: () => Promise<Phase[]>
 
       // Users
-      addUser: (user: User) => Promise<void>
+      addUser: (user: Omit<User, "id">) => Promise<void>
       getUsers: () => Promise<User[]>
-      getUserByUsername: (username: string) => Promise<User | undefined>
+      getUserById: (id: string) => Promise<User | undefined>
       updateUser: (user: User) => Promise<void>
-      deleteUser: (id: number) => Promise<void>
-      changeUserPassword: (data: { id: number; newPassword: string }) => Promise<void>
+      deleteUser: (id: string) => Promise<void>
+      changeUserPassword: (data: { id: string; newPassword: string }) => Promise<void>
     }
   }
 }

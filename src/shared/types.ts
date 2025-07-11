@@ -5,14 +5,14 @@ export interface Phase {
 }
 
 export interface Student {
+  id: number
   ci: string
-  firstName: string
-  firstLastName: string
-  secondLastName?: string
+  name: string
+  lastName: string
   grade: number
   age: number
-  gender: 'M' | 'F'
-  municipality?: string
+  gender: "M" | "F"
+  municipality: string
 }
 
 export interface Career {
@@ -28,14 +28,14 @@ export interface Location {
 }
 
 export interface Spot {
-  id?: number
+  id: number
   careerId: number
   locationId: number
   availableQuantity: number
 }
 
 export interface Request {
-  id?: number
+  id: number
   studentCi: string
   spotId: number
   order: number // 1 to 3
@@ -43,7 +43,7 @@ export interface Request {
 }
 
 export interface Assignment {
-  id?: number
+  id: number
   studentCi: string
   spotId: number
   phaseId: number
@@ -51,8 +51,10 @@ export interface Assignment {
 }
 
 export interface User {
-  id?: number
+  id: string
+  name: string
+  lastName: string
   username: string
   password: string
-  role: 'admin' | 'viewer'
+  role: "admin" | "viewer"
 }

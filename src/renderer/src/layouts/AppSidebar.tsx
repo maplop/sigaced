@@ -11,57 +11,24 @@ import {
   SidebarHeader,
 } from "@renderer/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@renderer/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@renderer/components/ui/avatar"
-import { ChartNoAxesCombinedIcon, Users, MapPin, Landmark, ChevronDown, GraduationCap, LogOut, Settings, User, BarChart3 } from "lucide-react"
+import { Avatar, AvatarFallback } from "@renderer/components/ui/avatar"
+import { ChevronDown, GraduationCap, LogOut, Settings, User } from "lucide-react"
 import { useLocation } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
+import { useAuthContext } from "@renderer/context/AuthContext"
+import { menuItems } from "@renderer/utils/menuItems"
 
-
-// Datos del menú
-const menuItems = [
-  {
-    title: " Estadísiticas",
-    url: ROUTES.STATISTICS,
-    icon: ChartNoAxesCombinedIcon,
-  },
-  {
-    title: "Aspirantes",
-    url: ROUTES.APPLICANTS,
-    icon: Users,
-  },
-  {
-    title: "Carreras",
-    url: ROUTES.CAREERS,
-    icon: GraduationCap,
-  },
-  {
-    title: "Plazas",
-    url: ROUTES.PLACES,
-    icon: Landmark,
-  },
-  {
-    title: "Localización",
-    url: ROUTES.LOCATION,
-    icon: MapPin,
-  },
-]
-
-// Datos del usuario (esto vendría de tu estado/contexto)
-const userData = {
-  name: "Juan Pérez",
-  email: "juan@lagunis.com",
-  avatar: "/placeholder.svg?height=32&width=32",
-}
 
 export function AppSidebar() {
   const location = useLocation()
+  const { logout, user } = useAuthContext()
   return (
     <Sidebar className="border-none">
       <SidebarHeader className="bg-white dark:bg-gray-950 border-none">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="/statistics" className="flex items-center gap-3">
+              <a href={ROUTES.STATISTICS} className="flex items-center gap-3">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900">
                   <GraduationCap className="size-4" />
                 </div>
@@ -112,17 +79,17 @@ export function AppSidebar() {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={userData.avatar || "/placeholder.svg"} alt={userData.name} />
+                    {/*<AvatarImage src={userData.avatar || "/placeholder.svg"} alt={userData.name} />*/}
                     <AvatarFallback className="rounded-lg">
-                      {userData.name
+                      {user?.name
                         .split(" ")
                         .map((n) => n[0])
                         .join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{userData.name}</span>
-                    <span className="truncate text-xs">{userData.email}</span>
+                    <span className="truncate font-semibold">{user?.name}</span>
+                    <span className="truncate text-xs">{user?.username}</span>
                   </div>
                   <ChevronDown className="ml-auto size-4" />
                 </SidebarMenuButton>
@@ -142,7 +109,7 @@ export function AppSidebar() {
                   <span>Configuración</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600">
+                <DropdownMenuItem className="text-red-600" onClick={logout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Cerrar Sesión</span>
                 </DropdownMenuItem>
