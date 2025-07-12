@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@renderer/components/ui/avatar"
-import { Card, CardTitle, CardHeader, CardContent } from "@renderer/components/ui/card"
+import { Card, CardHeader, CardContent } from "@renderer/components/ui/card"
 import { Label } from "@renderer/components/ui/label"
 import { Badge } from "@renderer/components/ui/badge"
 import { useAuthContext } from "@renderer/context/AuthContext"
@@ -7,9 +7,9 @@ import { useAuthContext } from "@renderer/context/AuthContext"
 const Details = () => {
   const { user } = useAuthContext()
   return (
-    <Card className="w-full">
+    <Card className="w-full relative overflow-hidden">
+      <div className="absolute top-0 w-full h-[100px] bg-[var(--primary)]" />
       <CardHeader>
-        <CardTitle>Detalles</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center">
         <Avatar className="w-20 h-20">
