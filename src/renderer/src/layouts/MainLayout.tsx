@@ -28,6 +28,8 @@ const generateBreadcrumbs = (pathname: string): BreadcrumbData[] => {
     careers: "Carreras",
     places: "Plazas",
     location: "Localización",
+    profile: "Perfil",
+    "manage-users": 'Gestionar usuarios'
   }
 
   const breadcrumbs: BreadcrumbData[] = [{ name: "Inicio", path: ROUTES.STATISTICS }]
@@ -49,6 +51,7 @@ const generateBreadcrumbs = (pathname: string): BreadcrumbData[] => {
 const MainLayout = () => {
   const location = useLocation()
   const breadcrumbs = generateBreadcrumbs(location.pathname)
+  console.log("bradcrubns -- ", breadcrumbs)
 
   return (
     <SidebarProvider>
@@ -61,7 +64,7 @@ const MainLayout = () => {
             <Breadcrumb>
               <BreadcrumbList>
                 {breadcrumbs.map((crumb, index) => (
-                  <div key={crumb.path} className="flex items-center">
+                  <div key={index} className="flex items-center">
                     {index > 0 && <BreadcrumbSeparator className="hidden md:block" />}
                     <BreadcrumbItem className="hidden md:block">
                       {crumb.isLast ? (

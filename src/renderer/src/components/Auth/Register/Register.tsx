@@ -86,36 +86,26 @@ const Register = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nombre</Label>
-            <div className="relative">
-              <UserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input id="name" name="name" type="text" placeholder="Escribe tu nombre" className="pl-10" />
-            </div>
+            <Input id="name" name="name" type="text" placeholder="Escribe tu nombre" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="lastName">Apellidos</Label>
-            <div className="relative">
-              <UserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input id="lastName" name="lastName" type="text" placeholder="Escribe tus apellidos" className="pl-10" />
-            </div>
+            <Input id="lastName" name="lastName" type="text" placeholder="Escribe tus apellidos" />
           </div>
           <div className="flex space-x-2">
             <div className="space-y-2">
               <Label htmlFor="username">Usuario</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input id="username" name="username" type="text" placeholder="Escribe tu usuario" className="pl-10" />
-              </div>
+              <Input id="username" name="username" type="text" placeholder="Escribe tu usuario" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Contraseña</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Escribe tu contraseña"
-                  className="pl-10 pr-10"
+                  className="pr-10"
                 />
                 <Button
                   type="button"
@@ -135,8 +125,8 @@ const Register = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="role">Rol</Label>
-            <Select name="role">
-              <SelectTrigger>
+            <Select name="role" defaultValue='admin'>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Selecciona tu rol" />
               </SelectTrigger>
               <SelectContent>

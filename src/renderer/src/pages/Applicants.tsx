@@ -1,9 +1,9 @@
 
 import ApplicantsView from "@renderer/components/Applicants/ApplicantView"
 
-const Applicants = () => {
+const ApplicantsPage = () => {
   return (
     <ApplicantsView />
   )
 }
-export default Applicants
+export default ApplicantsPage

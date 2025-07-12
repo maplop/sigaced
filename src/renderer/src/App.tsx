@@ -3,10 +3,12 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Auth from './components/Auth/Auth'
 import MainLayout from './layouts/MainLayout'
 import Statistics from './pages/Statistics'
-import Applicants from './pages/Applicants'
+import ApplicantsPage from './pages/Applicants'
 import Careers from './pages/Careers'
 import Location from './pages/Location'
 import Places from './pages/Places'
+import ManageUsersPage from './pages/User/ManageUsers'
+import ProfilePage from './pages/User/Profile'
 import { ROUTES } from './routes/routes'
 import { Toaster } from './components/ui/sonner'
 
@@ -20,10 +22,12 @@ function App(): React.JSX.Element {
         <Route path={ROUTES.REGISTER} element={<Auth />} />
         <Route element={<MainLayout />}>
           <Route index path={ROUTES.STATISTICS} element={<Statistics />} />
-          <Route path={ROUTES.APPLICANTS} element={<Applicants />} />
+          <Route path={ROUTES.APPLICANTS} element={<ApplicantsPage />} />
           <Route path={ROUTES.CAREERS} element={<Careers />} />
           <Route path={ROUTES.PLACES} element={<Places />} />
           <Route path={ROUTES.LOCATION} element={<Location />} />
+          <Route path={ROUTES.MANAGE_USERS} element={<ManageUsersPage />} />
+          <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
         </Route>
       </Routes>
       <Toaster position="bottom-right" />

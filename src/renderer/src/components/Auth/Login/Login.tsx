@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
 import { useAuthContext } from "@renderer/context/AuthContext"
 import LoginButton from "./LoginButton"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 import { Checkbox } from "@renderer/components/ui/checkbox"
 

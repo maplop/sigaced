@@ -12,7 +12,7 @@ import {
 } from "@renderer/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@renderer/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@renderer/components/ui/avatar"
-import { ChevronDown, GraduationCap, LogOut, Settings, User } from "lucide-react"
+import { ChevronDown, GraduationCap, LogOut, User, Users } from "lucide-react"
 import { useLocation } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
 import { useAuthContext } from "@renderer/context/AuthContext"
@@ -101,12 +101,16 @@ export function AppSidebar() {
                 sideOffset={4}
               >
                 <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Mi Perfil</span>
+                  <a href={ROUTES.PROFILE} className="flex items-center gap-2">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Mi Perfil</span>
+                  </a>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Configuración</span>
+                  <a href={ROUTES.MANAGE_USERS} className="flex items-center gap-2">
+                    <Users className="mr-2 h-4 w-4" />
+                    <span>Gestionar usuarios</span>
+                  </a>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-red-600" onClick={logout}>

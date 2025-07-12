@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { User } from "src/shared/types";
 import { login as loginUser } from "@renderer/api/user";
 import { useNavigate } from "react-router-dom";
@@ -15,15 +15,10 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthContextProvider = ({ children }) => {
   const navigate = useNavigate()
-  const [user, setUser] = useState<User | null>(null)
-
-  useEffect(() => {
+  const [user, setUser] = useState<User | null>(() => {
     const storedUser = localStorage.getItem("storedUser");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      navigate(ROUTES.STATISTICS)
-    }
-  }, []);
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const login = async (username: string, password: string, rememberMe: boolean = false): Promise<User | null> => {
     try {
@@ -41,7 +36,6 @@ export const AuthContextProvider = ({ children }) => {
       return null
     }
   }
-
 
   const logout = () => {
     navigate(ROUTES.LOGIN)
