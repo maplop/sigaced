@@ -14,7 +14,7 @@ const Details = () => {
       <CardContent className="flex flex-col items-center">
         <Avatar className="w-20 h-20">
           <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback className="border-4 border-white">{user?.name.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         <Label className="text-[18px] my-2">{user?.name} {user?.lastName}</Label>
         <Badge>{user?.role === 'admin' ? 'Administrador' : 'Supervisor'}</Badge>

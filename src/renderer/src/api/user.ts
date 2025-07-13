@@ -16,6 +16,11 @@ export const register = async (user: Omit<User, "id">): Promise<User | null> => 
   return user as User
 }
 
+export const getAllUsers = async (): Promise<User[]> => {
+  const users = (await window.api.getUsers()) ?? []
+  return users
+}
+
 export const changePassword = async (id: string, newPassword: string): Promise<boolean> => {
   const allUsers = await window.api.getUsers()
   const user = allUsers.find((u) => u.id === id)

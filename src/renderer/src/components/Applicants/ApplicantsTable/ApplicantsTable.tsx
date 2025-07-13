@@ -5,7 +5,6 @@ import { Button } from "@renderer/components/ui/button"
 import { Edit, Trash2 } from "lucide-react"
 import { Aspirante } from "../useApplicantsView"
 import { Badge } from "@renderer/components/ui/badge"
-import AverageBadge from "./AverageBadge"
 import { Label } from "@renderer/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
 
@@ -95,7 +94,7 @@ const ApplicantsTable = ({
                       <Edit className="h-4 w-4" />
                     </Button>
                     <Button variant="outline" size="sm" onClick={() => handleDelete(aspirante.id)}>
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>
                   </div>
                 </TableCell>
