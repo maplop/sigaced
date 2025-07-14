@@ -15,7 +15,7 @@ import {
   SelectContent,
   SelectValue,
 } from '@renderer/components/ui/select'
-import { UserCheck, User, UserPlus, Eye, EyeOff, Lock } from 'lucide-react'
+import { UserPlus, Eye, EyeOff } from 'lucide-react'
 import RegisterButton from './RegisterButton'
 import { register } from '@renderer/api/user'
 import { toast } from 'sonner'

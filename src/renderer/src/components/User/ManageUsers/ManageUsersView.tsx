@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@rend
 import { Search } from "lucide-react"
 import { Input } from "@renderer/components/ui/input"
 import { ScrollArea } from "@renderer/components/ui/scroll-area"
+import UsersStatistics from "./UsersStatistics"
 
 const ManageUsersView = () => {
   const {
@@ -48,46 +49,51 @@ const ManageUsersView = () => {
         />
       </div>
       <ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">
-        <Card>
-          <CardHeader>
-            <CardTitle>Lista de Usuarios</CardTitle>
-            <CardDescription>Busca y gestiona todos los usuarios registrados</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="relative flex items-center space-x-2 mb-4">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por nombre..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 max-w-sm"
-              />
-            </div>
-
-            {/* Tabla */}
-            <UsersTable
-              loadingUsers={loadingUsers}
-              paginatedUsers={paginatedUsers}
-              totalPages={totalPages}
-              setCurrentPage={setCurrentPage}
-              currentPage={currentPage}
-              itemsPerPage={itemsPerPage}
-              setItemsPerPage={setItemsPerPage}
-              sortField={sortField}
-              sortDirection={sortDirection}
-              handleSort={handleSort}
-              handleDelete={handleDelete}
-              handleEdit={handleEdit}
-              filteredAndSortedUsers={filteredAndSortedUsers}
-            />
-
-            {filteredAndSortedUsers.length === 0 && (
-              <div className="text-center py-8 text-muted-foreground">
-                No se encontraron usuarios que coincidan con la búsqueda.
+        <div className="flex flex-col gap-6">
+          <UsersStatistics
+            users={paginatedUsers}
+          />
+          <Card>
+            <CardHeader>
+              <CardTitle>Lista de Usuarios</CardTitle>
+              <CardDescription>Busca y gestiona todos los usuarios registrados</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="relative flex items-center space-x-2 mb-4">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar por nombre..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 max-w-sm"
+                />
               </div>
-            )}
-          </CardContent>
-        </Card>
+
+              {/* Tabla */}
+              <UsersTable
+                loadingUsers={loadingUsers}
+                paginatedUsers={paginatedUsers}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
+                itemsPerPage={itemsPerPage}
+                setItemsPerPage={setItemsPerPage}
+                sortField={sortField}
+                sortDirection={sortDirection}
+                handleSort={handleSort}
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
+                filteredAndSortedUsers={filteredAndSortedUsers}
+              />
+
+              {filteredAndSortedUsers.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  No se encontraron usuarios que coincidan con la búsqueda.
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </ScrollArea>
     </PageContainer>
   )

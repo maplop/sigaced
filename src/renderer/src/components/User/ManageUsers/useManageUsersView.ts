@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react"
-import { getAllUsers } from "@renderer/api/user"
+import { getAllUsers, register, updateUser } from "@renderer/api/user"
 import { User } from "src/shared/types"
 import { rqKeys } from "@renderer/utils/rqKeys"
-import { useQuery } from "@tanstack/react-query"
-
-export type Estado = "Pendiente" | "Aprobado" | "Rechazado"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 export interface UserFormData {
   name: string
@@ -15,10 +14,7 @@ export interface UserFormData {
 }
 
 export const useManageUsersView = () => {
-  const { data, isLoading: loadingUsers } = useQuery({
-    queryKey: [rqKeys.USERS],
-    queryFn: getAllUsers
-  })
+  const queryClient = useQueryClient()
 
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(10)
@@ -35,6 +31,50 @@ export const useManageUsersView = () => {
     password: "",
     role: "admin"
   })
+
+  const { data, isLoading: loadingUsers } = useQuery({
+    queryKey: [rqKeys.USERS],
+    queryFn: getAllUsers
+  })
+
+  const handleUserSubmit = async (user: UserFormData) => {
+    if (editingUser) {
+      return await updateUser({ ...user, id: editingUser.id })
+    } else {
+      return await register(user)
+    }
+  }
+
+  const mutation = useMutation({
+    mutationFn: handleUserSubmit,
+    onSuccess: (data) => {
+      if (data === null || data === false) {
+        toast.error("El nombre de usuario ya está en uso. Intenta con otro.", {
+          style: { color: "var(--errorMessage)" }
+        })
+        return
+      }
+
+      queryClient.invalidateQueries({ queryKey: [rqKeys.USERS] })
+      resetForm()
+      toast.success(
+        editingUser ? "Usuario actualizado correctamente." : "Usuario creado correctamente."
+      )
+    },
+    onError: (error) => {
+      console.error("Error procesando usuario:", error)
+      toast.error("Ocurrió un error al procesar el usuario. Intenta nuevamente.", {
+        style: {
+          color: "var(--errorMessage)"
+        }
+      })
+    }
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    mutation.mutate(formData)
+  }
 
   // Filtrado y ordenamiento
   const filteredAndSortedUsers = useMemo(() => {
@@ -78,26 +118,6 @@ export const useManageUsersView = () => {
       setSortField(field)
       setSortDirection("asc")
     }
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const userData: Omit<User, "id"> = {
-      name: formData.name,
-      lastName: formData.lastName,
-      username: formData.username,
-      password: formData.password,
-      role: formData.role
-    }
-
-    if (editingUser) {
-      //setUsers((prev) => prev.map((a) => (a.id === editingUser.id ? userData : a)))
-    } else {
-      //setUsers((prev) => [...prev, userData])
-    }
-
-    resetForm()
   }
 
   const handleEdit = (user: User) => {

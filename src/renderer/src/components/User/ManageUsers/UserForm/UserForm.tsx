@@ -8,6 +8,7 @@ import { UserFormData } from "../useManageUsersView"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
 import { useState } from "react"
 
+
 interface UserFormProps {
   isDialogOpen: boolean,
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -77,8 +78,8 @@ const UserForm = ({ isDialogOpen, setIsDialogOpen, resetForm, editingUser, handl
                     id="password"
                     name="password"
                     value={formData.password}
+                    onChange={(e) => setUserFormData((prev) => ({ ...prev, password: e.target.value }))}
                     type={showPassword ? "text" : "password"}
-                    placeholder="Escribe tu contraseña"
                     className="pr-10"
                   />
                   <Button
@@ -99,7 +100,11 @@ const UserForm = ({ isDialogOpen, setIsDialogOpen, resetForm, editingUser, handl
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">Rol</Label>
-              <Select name="role" value={formData.role}>
+              <Select
+                name="role"
+                value={formData.role}
+                onValueChange={(value: 'admin' | 'viewer') => setUserFormData((prev) => ({ ...prev, role: value }))}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Selecciona tu rol" />
                 </SelectTrigger>

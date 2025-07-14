@@ -8,6 +8,7 @@ import { Label } from "@renderer/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
 import { User } from "src/shared/types"
 import SkeletonTable from "./SkeletonTable"
+import { useAuthContext } from "@renderer/context/AuthContext"
 
 
 export interface UsersTableProps {
@@ -40,6 +41,7 @@ const UsersTable = ({
   handleDelete,
   handleEdit,
 }: UsersTableProps) => {
+  const { user: loggedUser } = useAuthContext()
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
@@ -95,9 +97,11 @@ const UsersTable = ({
                         <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleDelete(user.id)}>
-                          <Trash2 className="h-4 w-4 text-red-500" />
-                        </Button>
+                        {loggedUser?.id !== user.id && (
+                          <Button variant="outline" size="sm" onClick={() => handleDelete(user.id)}>
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

@@ -32,9 +32,12 @@ export const changePassword = async (id: string, newPassword: string): Promise<b
 }
 
 export const updateUser = async (user: User): Promise<boolean> => {
-  if (!user.id) {
-    return false
-  }
+  if (!user.id) return false
+
+  const allUsers = await window.api.getUsers()
+
+  const userFound = allUsers.find((u) => u.username === user.username && u.id !== user.id)
+  if (userFound) return false
 
   await window.api.updateUser(user)
   return true
