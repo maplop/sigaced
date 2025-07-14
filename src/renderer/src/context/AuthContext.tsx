@@ -1,7 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "src/shared/types";
 import { login as loginUser } from "@renderer/api/user";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "@renderer/routes/routes";
 
 export interface AuthContextType {
@@ -16,9 +16,17 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthContextProvider = ({ children }) => {
   const navigate = useNavigate()
   const [user, setUser] = useState<User | null>(() => {
-    const storedUser = localStorage.getItem("storedUser");
+    const storedUser = localStorage.getItem("storedUser") || sessionStorage.getItem('storedUser');
     return storedUser ? JSON.parse(storedUser) : null;
   });
+
+  const location = useLocation()
+
+  useEffect(() => {
+    if (user && location.pathname === ROUTES.LOGIN) {
+      navigate(ROUTES.STATISTICS);
+    }
+  }, [user, location.pathname]);
 
   const login = async (username: string, password: string, rememberMe: boolean = false): Promise<User | null> => {
     try {
@@ -26,9 +34,8 @@ export const AuthContextProvider = ({ children }) => {
       if (!foundUser) return null
 
       setUser(foundUser)
-      if (rememberMe) {
-        localStorage.setItem('storedUser', JSON.stringify(foundUser))
-      }
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("storedUser", JSON.stringify(foundUser));
 
       return foundUser
     } catch (error) {
@@ -40,7 +47,8 @@ export const AuthContextProvider = ({ children }) => {
   const logout = () => {
     navigate(ROUTES.LOGIN)
     setUser(null)
-    localStorage.removeItem('storedUser')
+    localStorage.removeItem("storedUser");
+    sessionStorage.removeItem("storedUser");
   }
 
   const isAuthenticated = !!user
