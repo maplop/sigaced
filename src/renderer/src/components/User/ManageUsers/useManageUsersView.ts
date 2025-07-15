@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { getAllUsers, register, updateUser } from "@renderer/api/user"
+import { deleteUser, getAllUsers, register, updateUser } from "@renderer/api/user"
 import { User } from "src/shared/types"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -132,8 +132,25 @@ export const useManageUsersView = () => {
     setIsDialogOpen(true)
   }
 
+  const deleteMutation = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: (_, id) => {
+      toast.success("Usuario eliminado correctamente.")
+      queryClient.invalidateQueries({ queryKey: [rqKeys.USERS] })
+      if (editingUser?.id === id) resetForm()
+    },
+    onError: (error: unknown) => {
+      console.error(error)
+      const errorMessage =
+        error instanceof Error ? error.message : "Ocurrió un error al eliminar el usuario."
+      toast.error(errorMessage, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  })
+
   const handleDelete = (id: string) => {
-    //setUsers((prev) => prev.filter((a) => a.id !== id))
+    deleteMutation.mutate(id)
   }
 
   const resetForm = () => {

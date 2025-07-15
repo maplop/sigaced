@@ -15,16 +15,19 @@ const UsersStatistics = ({ users }: UsersStatisticsProps) => {
     },
     {
       title: "Administradores",
-      stat: 12,
+      stat: users.reduce((totalAdmin, user) => {
+        return user.role === 'admin' ? totalAdmin + 1 : totalAdmin
+      }, 0),
       icon: ShieldCheck,
     },
     {
       title: "Supervisores",
-      stat: 24,
+      stat: users.reduce((totalViewer, user) => {
+        return user.role === 'viewer' ? totalViewer + 1 : totalViewer
+      }, 0),
       icon: Eye,
     },
   ]
-
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

@@ -52,7 +52,7 @@ declare global {
       getUsers: () => Promise<User[]>
       getUserById: (id: string) => Promise<User | undefined>
       updateUser: (user: User) => Promise<void>
-      deleteUser: (id: string) => Promise<void>
+      deleteUser: (id: string) => Promise<boolean>
       changeUserPassword: (data: { id: string; newPassword: string }) => Promise<void>
     }
   }

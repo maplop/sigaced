@@ -79,6 +79,8 @@ export function updateUser(user: User) {
 }
 
 // Delete
-export function deleteUser(id: string) {
-  db.prepare("DELETE FROM user WHERE id = ?").run(id)
+export function deleteUser(id: string): boolean {
+  const stmt = db.prepare("DELETE FROM user WHERE id = ?")
+  const result = stmt.run(id)
+  return result.changes > 0
 }

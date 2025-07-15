@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { User } from "src/shared/types"
 import SkeletonTable from "./SkeletonTable"
 import { useAuthContext } from "@renderer/context/AuthContext"
+import ConfirmDeleteDialog from "@renderer/components/common/ConfirmDeleteDialog"
 
 
 export interface UsersTableProps {
@@ -98,9 +99,16 @@ const UsersTable = ({
                           <Edit className="h-4 w-4" />
                         </Button>
                         {loggedUser?.id !== user.id && (
-                          <Button variant="outline" size="sm" onClick={() => handleDelete(user.id)}>
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
+                          <ConfirmDeleteDialog
+                            onConfirm={() => handleDelete(user.id)}
+                            title="Eliminar usuario"
+                            description={`¿Deseas eliminar al usuario "${user.username}"? Esta acción no se puede deshacer.`}
+                            trigger={
+                              <Button variant="outline" size="sm">
+                                <Trash2 className="h-4 w-4 text-red-500" />
+                              </Button>
+                            }
+                          />
                         )}
                       </div>
                     </TableCell>

@@ -17,7 +17,7 @@ const Details = () => {
           <AvatarFallback className="border-4 border-white">{user?.name.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         <Label className="text-[18px] my-2">{user?.name} {user?.lastName}</Label>
-        <Badge>{user?.role === 'admin' ? 'Administrador' : 'Supervisor'}</Badge>
+        <Badge variant={user?.role === 'admin' ? 'default' : 'secondary'}>{user?.role === 'admin' ? 'Administrador' : 'Supervisor'}</Badge>
         <div className="flex justify-between w-full mt-3">
           <div className="flex-grow">
             <Label className="text-sm text-gray-500">Usuario</Label>

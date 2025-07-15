@@ -43,12 +43,14 @@ export const updateUser = async (user: User): Promise<boolean> => {
   return true
 }
 
-export const deleteUser = async (id: string): Promise<boolean> => {
+export const deleteUser = async (id: string) => {
   const allUsers = await window.api.getUsers()
   const user = allUsers.find((u) => u.id === id)
 
-  if (!user) return false
+  if (!user) throw new Error("Usuario no encontrado")
+  const res = await window.api.deleteUser(id)
 
-  await window.api.deleteUser(id)
-  return true
+  if (!res) throw new Error("Error al eliminar el usuario")
+
+  return res
 }

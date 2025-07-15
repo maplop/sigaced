@@ -51,7 +51,6 @@ const generateBreadcrumbs = (pathname: string): BreadcrumbData[] => {
 const MainLayout = () => {
   const location = useLocation()
   const breadcrumbs = generateBreadcrumbs(location.pathname)
-  console.log("bradcrubns -- ", breadcrumbs)
 
   return (
     <SidebarProvider>
