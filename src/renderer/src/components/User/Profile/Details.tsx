@@ -25,7 +25,7 @@ const Details = () => {
           </div>
           <div className="text-end">
             <Label className="text-sm text-gray-500">Fecha de creación</Label>
-            <Label className="text-sm block">11/07/2025</Label>
+            <Label className="text-sm block">{user?.createdAt}</Label>
           </div>
         </div>
       </CardContent>

@@ -92,7 +92,7 @@ const UsersTable = ({
                         {user.role === 'admin' ? 'Adminsitrador' : 'Supervisor'}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-center">13/7/2025</TableCell>
+                    <TableCell className="text-center">{user.createdAt}</TableCell>
                     <TableCell>
                       <div className="flex justify-center space-x-2">
                         <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>

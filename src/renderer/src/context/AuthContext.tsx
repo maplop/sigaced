@@ -44,6 +44,8 @@ export const AuthContextProvider = ({ children }) => {
     }
   }
 
+  console.log("Usuario --- ", user)
+
   const logout = () => {
     navigate(ROUTES.LOGIN)
     setUser(null)

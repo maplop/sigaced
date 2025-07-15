@@ -24,7 +24,8 @@ export function getUsers(): User[] {
         last_name AS lastName,  
         username,
         password,
-        role
+        role,
+        created_at AS createdAt
       FROM user
     `
     )
@@ -42,7 +43,8 @@ export function getUserById(id: string): User | undefined {
         last_name AS lastName,
         username,
         password,
-        role
+        role,
+        created_at AS createdAt
       FROM user
       WHERE id = ?
     `
