@@ -22,6 +22,7 @@ import { toast } from 'sonner'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from "@renderer/routes/routes"
+import { hashPassword } from '@renderer/utils/encryption'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -36,7 +37,7 @@ const Register = () => {
       name: formData.get('name') as string,
       lastName: formData.get('lastName') as string,
       username: formData.get('username') as string,
-      password: formData.get('password') as string,
+      password: hashPassword(formData.get('password') as string),
       role: formData.get('role') as "admin" | "viewer"
     }
 

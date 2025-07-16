@@ -48,10 +48,10 @@ declare global {
       getPhases: () => Promise<Phase[]>
 
       // Users
-      addUser: (user: Omit<User, "id">) => Promise<void>
+      addUser: (user: Omit<User, "id" | "createdAt">) => Promise<void>
       getUsers: () => Promise<User[]>
       getUserById: (id: string) => Promise<User | undefined>
-      updateUser: (user: User) => Promise<void>
+      updateUser: (user: Omit<User, "createdAt">) => Promise<void>
       deleteUser: (id: string) => Promise<boolean>
       changeUserPassword: (data: { id: string; newPassword: string }) => Promise<void>
     }

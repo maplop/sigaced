@@ -79,7 +79,6 @@ export function AppSidebar() {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
-                    {/*<AvatarImage src={userData.avatar || "/placeholder.svg"} alt={userData.name} />*/}
                     <AvatarFallback className="rounded-lg">
                       {user?.name
                         .split(" ")
@@ -101,13 +100,13 @@ export function AppSidebar() {
                 sideOffset={4}
               >
                 <DropdownMenuItem>
-                  <a href={ROUTES.PROFILE} className="flex items-center gap-2">
+                  <a href={ROUTES.PROFILE} className="flex items-center gap-2 w-full">
                     <User className="mr-2 h-4 w-4" />
                     <span>Mi Perfil</span>
                   </a>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <a href={ROUTES.MANAGE_USERS} className="flex items-center gap-2">
+                  <a href={ROUTES.MANAGE_USERS} className="flex items-center gap-2 w-full">
                     <Users className="mr-2 h-4 w-4" />
                     <span>Gestionar usuarios</span>
                   </a>

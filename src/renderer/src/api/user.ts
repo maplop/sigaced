@@ -6,7 +6,7 @@ export const login = async (username: string, password: string): Promise<User | 
   return user ?? null
 }
 
-export const register = async (user: Omit<User, "id">): Promise<User | null> => {
+export const register = async (user: Omit<User, "id" | "createdAt">): Promise<User | null> => {
   const allUsers = await window.api.getUsers()
   const usernameTaken = allUsers.some((u) => u.username === user.username)
 
@@ -31,7 +31,8 @@ export const changePassword = async (id: string, newPassword: string): Promise<b
   return true
 }
 
-export const updateUser = async (user: User): Promise<boolean> => {
+export const updateUser = async (user: Omit<User, "createdAt">): Promise<boolean> => {
+  console.log("el usuarioa a editar --- ", user)
   if (!user.id) return false
 
   const allUsers = await window.api.getUsers()

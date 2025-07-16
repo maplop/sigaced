@@ -10,6 +10,7 @@ import LoginButton from "./LoginButton"
 import { useState } from "react"
 import { toast } from "sonner"
 import { Checkbox } from "@renderer/components/ui/checkbox"
+import { hashPassword } from "@renderer/utils/encryption"
 
 const Login = () => {
   const navigate = useNavigate()
@@ -22,7 +23,16 @@ const Login = () => {
     const form = event.currentTarget
     const formData = new FormData(form)
     const username = formData.get('username')?.toString().trim()
-    const password = formData.get('password')?.toString()
+    const rawPassword = formData.get('password')?.toString()
+    if (!rawPassword) {
+      toast.error("Por favor escribe la contraseña.", {
+        style: {
+          color: 'var(--errorMessage)'
+        }
+      })
+      return
+    }
+    const password = hashPassword(rawPassword)
 
     // Validaciones básicas
     if (!username || !password) {
