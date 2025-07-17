@@ -7,9 +7,12 @@ import { User } from "src/shared/types"
 import { UserFormData } from "../useManageUsersView"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
 import { useState } from "react"
+import { Checkbox } from "@renderer/components/ui/checkbox"
 
 
 interface UserFormProps {
+  changePassword: boolean
+  setChangePassword: React.Dispatch<React.SetStateAction<boolean>>
   isDialogOpen: boolean,
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>,
   resetForm: () => void,
@@ -19,7 +22,7 @@ interface UserFormProps {
   setUserFormData: React.Dispatch<React.SetStateAction<UserFormData>>;
 }
 
-const UserForm = ({ isDialogOpen, setIsDialogOpen, resetForm, editingUser, handleSubmit, formData, setUserFormData }: UserFormProps) => {
+const UserForm = ({ changePassword, setChangePassword, isDialogOpen, setIsDialogOpen, resetForm, editingUser, handleSubmit, formData, setUserFormData }: UserFormProps) => {
 
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
@@ -72,15 +75,47 @@ const UserForm = ({ isDialogOpen, setIsDialogOpen, resetForm, editingUser, handl
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="role">Rol</Label>
+                <Select
+                  name="role"
+                  value={formData.role}
+                  onValueChange={(value: 'admin' | 'viewer') => setUserFormData((prev) => ({ ...prev, role: value }))}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecciona tu rol" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Administrador</SelectItem>
+                    <SelectItem value="viewer">Supervisor</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            {editingUser && (
+              <div className="flex items-center gap-3">
+                <Checkbox
+                  id="changePassword"
+                  checked={changePassword}
+                  onCheckedChange={() => setChangePassword(!changePassword)}
+                />
+                <Label htmlFor="changePassword">Cambiar Contraseña</Label>
+              </div>
+            )}
+
+            {(!editingUser || changePassword) && (
+              <div className="space-y-2">
                 <Label htmlFor="password">Contraseña</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     name="password"
                     value={formData.password}
-                    onChange={(e) => setUserFormData((prev) => ({ ...prev, password: e.target.value }))}
+                    onChange={(e) =>
+                      setUserFormData((prev) => ({ ...prev, password: e.target.value }))
+                    }
                     type={showPassword ? "text" : "password"}
                     className="pr-10"
+                    required
                   />
                   <Button
                     type="button"
@@ -97,23 +132,8 @@ const UserForm = ({ isDialogOpen, setIsDialogOpen, resetForm, editingUser, handl
                   </Button>
                 </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="role">Rol</Label>
-              <Select
-                name="role"
-                value={formData.role}
-                onValueChange={(value: 'admin' | 'viewer') => setUserFormData((prev) => ({ ...prev, role: value }))}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selecciona tu rol" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">Administrador</SelectItem>
-                  <SelectItem value="viewer">Supervisor</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            )}
+
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={resetForm}>

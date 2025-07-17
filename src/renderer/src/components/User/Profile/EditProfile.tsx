@@ -111,22 +111,24 @@ const EditProfile = () => {
               placeholder="Escribe tu usuario"
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="role">Rol</Label>
-            <Select
-              name="role"
-              value={formData.role}
-              onValueChange={(value: 'admin' | 'viewer') => setFormData((prev) => ({ ...prev, role: value }))}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selecciona tu rol" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="admin">Administrador</SelectItem>
-                <SelectItem value="viewer">Supervisor</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {user?.role === 'admin' && (
+            <div className="space-y-2">
+              <Label htmlFor="role">Rol</Label>
+              <Select
+                name="role"
+                value={formData.role}
+                onValueChange={(value: 'admin' | 'viewer') => setFormData((prev) => ({ ...prev, role: value }))}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecciona tu rol" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Administrador</SelectItem>
+                  <SelectItem value="viewer">Supervisor</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div className="absolute bottom-6 right-6">
             <Button type="submit" disabled={!isFormValid} className="w-full sm:w-auto">
               Editar

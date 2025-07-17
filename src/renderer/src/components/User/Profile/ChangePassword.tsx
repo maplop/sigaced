@@ -1,11 +1,17 @@
+import { changePassword } from "@renderer/api/user"
 import { Button } from "@renderer/components/ui/button"
 import { Card, CardTitle, CardHeader, CardContent } from "@renderer/components/ui/card"
 import { Input } from "@renderer/components/ui/input"
 import { Label } from "@renderer/components/ui/label"
+import { useAuthContext } from "@renderer/context/AuthContext"
+import { useMutation } from "@tanstack/react-query"
 import { Eye, EyeOff } from "lucide-react"
 import { useState, useEffect } from "react"
+import { toast } from "sonner"
+import { hashPassword } from "@renderer/utils/encryption"
 
 const ChangePassword = () => {
+  const { user, logout } = useAuthContext()
   const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false)
   const [showNewPassword, setShowNewPassword] = useState<boolean>(false)
   const [formData, setFormData] = useState({
@@ -15,6 +21,7 @@ const ChangePassword = () => {
   })
   const [isValid, setIsValid] = useState(false)
   const [errors, setErrors] = useState({
+    currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   })
@@ -29,46 +36,71 @@ const ChangePassword = () => {
 
   const validateForm = () => {
     const newErrors = {
+      currentPassword: '',
       newPassword: '',
       confirmPassword: ''
     }
 
-    // Validar que la nueva contraseña no sea igual a la actual
-    if (formData.newPassword && formData.newPassword === formData.currentPassword) {
+    if (hashPassword(formData.currentPassword) !== user?.password) {
+      newErrors.currentPassword = 'La contraseña actual es incorrecta'
+    }
+
+    if (formData.newPassword === formData.currentPassword) {
       newErrors.newPassword = 'La nueva contraseña no puede ser igual a la actual'
     }
 
-    // Validar que las contraseñas coincidan
-    if (formData.newPassword && formData.confirmPassword && formData.newPassword !== formData.confirmPassword) {
+    if (formData.newPassword !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Las contraseñas no coinciden'
     }
 
     setErrors(newErrors)
 
-    // Verificar si el formulario es válido
-    const allFieldsFilled = Object.values(formData).every(field => field.trim() !== '')
-    const noErrors = Object.values(newErrors).every(error => error === '')
+    const allFilled = Object.values(formData).every(v => v.trim() !== '')
+    const noErrors = Object.values(newErrors).every(e => e === '')
 
-    setIsValid(allFieldsFilled && noErrors)
+    setIsValid(allFilled && noErrors)
   }
+
 
   useEffect(() => {
     validateForm()
   }, [formData])
 
+  const mutation = useMutation({
+    mutationFn: (newPassword: string) => changePassword(user?.id ?? '', hashPassword(newPassword)),
+    onSuccess: (success) => {
+      if (success) {
+        toast.success('Contraseña actualizada correctamente.')
+        setFormData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        })
+        logout()
+      } else {
+        toast.error('No se pudo actualizar la contraseña. Usuario no encontrado.', {
+          style: {
+            color: 'var(--errorMessage)'
+          }
+        })
+      }
+    },
+    onError: (error) => {
+      console.log(error)
+      toast.error('Ocurrió un error al cambiar la contraseña.', {
+        style: {
+          color: 'var(--errorMessage)'
+        }
+      })
+    }
+  })
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!isValid) return
-
-    // Aquí iría la lógica para enviar los datos al servidor
-    console.log('Contraseña cambiada:', formData)
-    // Resetear el formulario después del envío
-    setFormData({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    })
+    if (!isValid || !user) return
+    mutation.mutate(formData.newPassword)
   }
+
 
   return (
     <Card className="w-full relative">
@@ -103,6 +135,9 @@ const ChangePassword = () => {
                 )}
               </Button>
             </div>
+            {formData.currentPassword && errors.currentPassword && (
+              <p className="text-sm text-[var(--errorMessage)]">{errors.currentPassword}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -131,7 +166,7 @@ const ChangePassword = () => {
                 )}
               </Button>
             </div>
-            {errors.newPassword && (
+            {formData.newPassword && errors.newPassword && (
               <p className="text-sm text-red-500">{errors.newPassword}</p>
             )}
           </div>
@@ -162,7 +197,7 @@ const ChangePassword = () => {
                 )}
               </Button>
             </div>
-            {errors.confirmPassword && (
+            {formData.confirmPassword && errors.confirmPassword && (
               <p className="text-sm text-[var(--errorMessage)]">{errors.confirmPassword}</p>
             )}
           </div>

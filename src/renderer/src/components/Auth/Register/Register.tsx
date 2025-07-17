@@ -65,7 +65,7 @@ const Register = () => {
         })
         return
       }
-      toast.success('Usuario registrado satisfactoriamente.',)
+      toast.success('Usuario registrado correctamente.',)
       form.reset()
       navigate(ROUTES.LOGIN)
     } catch (error) {

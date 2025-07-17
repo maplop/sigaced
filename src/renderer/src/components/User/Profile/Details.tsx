@@ -3,9 +3,38 @@ import { Card, CardHeader, CardContent } from "@renderer/components/ui/card"
 import { Label } from "@renderer/components/ui/label"
 import { Badge } from "@renderer/components/ui/badge"
 import { useAuthContext } from "@renderer/context/AuthContext"
+import { Button } from "@renderer/components/ui/button"
+import { Trash2 } from "lucide-react"
+import { deleteUser } from "@renderer/api/user"
+import { toast } from "sonner"
+import ConfirmDeleteDialog from "@renderer/components/common/ConfirmDeleteDialog"
 
 const Details = () => {
-  const { user } = useAuthContext()
+  const { user, logout } = useAuthContext()
+
+  const handleDeleteUser = async () => {
+    try {
+      const userId = user?.id
+      if (userId) {
+        await deleteUser(userId)
+        toast.success("Su cuenta ha sido eliminada correctamente.")
+        logout()
+      } else {
+        toast.error("Ha ocurrido un error, no se encuentra el usuario a eliminar.", {
+          style: {
+            color: 'var(--errorMessage)'
+          }
+        })
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error("Ha ocurrido un error al intentar eliminar el usuario.", {
+        style: {
+          color: 'var(--errorMessage)'
+        }
+      })
+    }
+  }
 
   return (
     <Card className="w-full relative overflow-hidden">
@@ -31,6 +60,19 @@ const Details = () => {
           </div>
         </div>
       </CardContent>
+      <div className="absolute bottom-5 flex justify-center items-center w-full ">
+        <ConfirmDeleteDialog
+          onConfirm={handleDeleteUser}
+          title="Eliminar cuenta"
+          description={`¿Deseas eliminar su cuenta? Esta acción no se puede deshacer.`}
+          trigger={
+            <Button className="bg-red-100 text-[var(--errorMessage)] hover:bg-red-200">
+              <Trash2 className="w-4 h-4" />
+              Eliminar cuenta
+            </Button>
+          }
+        />
+      </div>
     </Card >
   )
 }

@@ -11,6 +11,8 @@ import UsersStatistics from "./UsersStatistics"
 
 const ManageUsersView = () => {
   const {
+    changePassword,
+    setChangePassword,
     loadingUsers,
     paginatedUsers,
     currentPage,
@@ -39,6 +41,8 @@ const ManageUsersView = () => {
       <div className="flex justify-between items-center">
         <PageTitle title="Gestionar usuarios" subtitle="Panel de control para la administración de usuarios." />
         <UserForm
+          changePassword={changePassword}
+          setChangePassword={setChangePassword}
           isDialogOpen={isDialogOpen}
           setIsDialogOpen={setIsDialogOpen}
           resetForm={resetForm}

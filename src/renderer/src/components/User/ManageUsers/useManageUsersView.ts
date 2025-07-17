@@ -4,6 +4,7 @@ import { User } from "src/shared/types"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { hashPassword } from "@renderer/utils/encryption"
 
 export interface UserFormData {
   name: string
@@ -18,6 +19,8 @@ export const useManageUsersView = () => {
 
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(10)
+
+  const [changePassword, setChangePassword] = useState<boolean>(false)
 
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [sortField, setSortField] = useState<keyof User | null>(null)
@@ -38,11 +41,24 @@ export const useManageUsersView = () => {
   })
 
   const handleUserSubmit = async (user: UserFormData) => {
-    if (editingUser) {
-      return await updateUser({ ...user, id: editingUser.id })
-    } else {
-      return await register(user)
+    if (!editingUser) {
+      // Nuevo usuario
+      return await register({
+        ...user,
+        password: hashPassword(user.password)
+      })
     }
+
+    const payload: Omit<User, "createdAt"> = {
+      id: editingUser.id,
+      name: user.name,
+      lastName: user.lastName,
+      username: user.username,
+      role: user.role,
+      password: changePassword ? hashPassword(user.password) : editingUser.password
+    }
+
+    return await updateUser(payload)
   }
 
   const mutation = useMutation({
@@ -126,10 +142,11 @@ export const useManageUsersView = () => {
       name: user.name,
       lastName: user.lastName,
       username: user.username,
-      password: user.password,
+      password: "",
       role: user.role
     })
     setIsDialogOpen(true)
+    setChangePassword(false)
   }
 
   const deleteMutation = useMutation({
@@ -163,9 +180,12 @@ export const useManageUsersView = () => {
     })
     setEditingUser(null)
     setIsDialogOpen(false)
+    setChangePassword(false)
   }
 
   return {
+    changePassword,
+    setChangePassword,
     loadingUsers,
     paginatedUsers,
     currentPage,

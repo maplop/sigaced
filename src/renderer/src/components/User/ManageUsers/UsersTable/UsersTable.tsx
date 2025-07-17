@@ -47,6 +47,8 @@ const UsersTable = ({
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
 
+  const isRowDisabled = (rowUser: User) => rowUser.id === loggedUser?.id
+
   return (
     <>
       {!loadingUsers ? (
@@ -75,30 +77,31 @@ const UsersTable = ({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedUsers.map((user, index) => (
-                  <TableRow key={user.id}>
-                    <TableCell className="text-center">
-                      {(currentPage - 1) * itemsPerPage + index + 1}
-                    </TableCell>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>
-                      {user.lastName}
-                    </TableCell>
-                    <TableCell className="text-center font-medium">
-                      {user.username}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
-                        {user.role === 'admin' ? 'Adminsitrador' : 'Supervisor'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-center">{user.createdAt}</TableCell>
-                    <TableCell>
-                      <div className="flex justify-center space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        {loggedUser?.id !== user.id && (
+                {paginatedUsers.map((user, index) => {
+                  const disabled = isRowDisabled(user)
+                  return (
+                    <TableRow key={user.id} className={disabled ? "opacity-50 pointer-events-none" : ""}>
+                      <TableCell className="text-center">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </TableCell>
+                      <TableCell>{user.name}</TableCell>
+                      <TableCell>
+                        {user.lastName}
+                      </TableCell>
+                      <TableCell className="text-center font-medium">
+                        {user.username}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
+                          {user.role === 'admin' ? 'Adminsitrador' : 'Supervisor'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-center">{user.createdAt}</TableCell>
+                      <TableCell >
+                        <div className="flex justify-center space-x-2">
+                          <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
                           <ConfirmDeleteDialog
                             onConfirm={() => handleDelete(user.id)}
                             title="Eliminar usuario"
@@ -109,11 +112,11 @@ const UsersTable = ({
                               </Button>
                             }
                           />
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
               </TableBody>
             </Table>
           </div>
@@ -149,7 +152,7 @@ const UsersTable = ({
               <Label className="text-sm">por página</Label>
             </div>
           </div>
-        </div>
+        </div >
       ) : (
         <SkeletonTable />
       )}

@@ -105,12 +105,14 @@ export function AppSidebar() {
                     <span>Mi Perfil</span>
                   </a>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <a href={ROUTES.MANAGE_USERS} className="flex items-center gap-2 w-full">
-                    <Users className="mr-2 h-4 w-4" />
-                    <span>Gestionar usuarios</span>
-                  </a>
-                </DropdownMenuItem>
+                {user?.role === 'admin' && (
+                  <DropdownMenuItem>
+                    <a href={ROUTES.MANAGE_USERS} className="flex items-center gap-2 w-full">
+                      <Users className="mr-2 h-4 w-4" />
+                      <span>Gestionar usuarios</span>
+                    </a>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-red-600" onClick={logout}>
                   <LogOut className="mr-2 h-4 w-4" />
