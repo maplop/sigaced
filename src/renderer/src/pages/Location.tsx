@@ -1,6 +1,8 @@
+import LocationView from "@renderer/components/Location/LocationView"
+
 const Location = () => {
   return (
-    <div className="p-4">Location</div>
+    <LocationView />
   )
 }
 export default Location

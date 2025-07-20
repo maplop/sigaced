@@ -1,3 +1,4 @@
 export const rqKeys = {
-  USERS: "users"
+  USERS: "users",
+  LOCATIONS: "locations"
 }
