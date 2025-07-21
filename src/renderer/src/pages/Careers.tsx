@@ -1,6 +1,8 @@
+import CareerView from "@renderer/components/Career/CareerView"
+
 const Careers = () => {
   return (
-    <div className="p-4">Careers</div>
+    <CareerView />
   )
 }
 export default Careers

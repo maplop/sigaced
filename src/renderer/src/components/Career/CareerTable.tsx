@@ -5,29 +5,29 @@ import { Button } from "@renderer/components/ui/button"
 import { Edit, Trash2 } from "lucide-react"
 import { Label } from "@renderer/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
-import { Location } from "src/shared/types"
+import { Career } from "src/shared/types"
 import SkeletonTable from "./SkeletonTable"
 import ConfirmDeleteDialog from "@renderer/components/common/ConfirmDeleteDialog"
 
 
-export interface LocationsTableProps {
-  loadingLocations: boolean
-  paginatedLocations: Location[]
+export interface CareerTableProps {
+  loadingCareers: boolean
+  paginatedCareers: Career[]
   currentPage: number
   totalPages: number
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>
   itemsPerPage: number,
   setItemsPerPage: React.Dispatch<React.SetStateAction<number>>
-  sortField: keyof Location | null
+  sortField: keyof Career | null
   sortDirection: "asc" | "desc"
-  handleSort: (field: keyof Location) => void
-  handleEdit: (location: Location) => void
+  handleSort: (field: keyof Career) => void
+  handleEdit: (career: Career) => void
   handleDelete: (id: string) => void
 }
 
-const LocationsTable = ({
-  loadingLocations,
-  paginatedLocations,
+const CareerTable = ({
+  loadingCareers,
+  paginatedCareers,
   currentPage,
   totalPages,
   setCurrentPage,
@@ -38,43 +38,51 @@ const LocationsTable = ({
   handleSort,
   handleDelete,
   handleEdit,
-}: LocationsTableProps) => {
+}: CareerTableProps) => {
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
 
   return (
     <>
-      {!loadingLocations ? (
+      {!loadingCareers ? (
         <div className="space-y-4">
           <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50">#</TableHead>
-                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("name")}>
-                    Localización {sortField === "name" && (sortDirection === "asc" ? "↑" : "↓")}
+                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("fullName")}>
+                    Carrera {sortField === "fullName" && (sortDirection === "asc" ? "↑" : "↓")}
+                  </TableHead>
+                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("abbreviation")}>
+                    Abreviatura {sortField === "abbreviation" && (sortDirection === "asc" ? "↑" : "↓")}
+                  </TableHead>
+                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("faculty")}>
+                    Facultad {sortField === "faculty" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="flex justify-end items-center mr-12">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedLocations.map((location, index) => {
+                {paginatedCareers.map((career, index) => {
                   return (
-                    <TableRow key={location.id}>
+                    <TableRow key={career.id}>
                       <TableCell className="text-center">
                         {(currentPage - 1) * itemsPerPage + index + 1}
                       </TableCell>
-                      <TableCell>{location.name}</TableCell>
+                      <TableCell>{career.fullName}</TableCell>
+                      <TableCell>{career.abbreviation}</TableCell>
+                      <TableCell>{career.faculty}</TableCell>
                       <TableCell >
                         <div className="flex justify-end items-center mr-8 space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => handleEdit(location)}>
+                          <Button variant="outline" size="sm" onClick={() => handleEdit(career)}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <ConfirmDeleteDialog
-                            onConfirm={() => handleDelete(location.id)}
-                            title="Eliminar localización"
-                            description={`¿Deseas eliminar la localización "${location.name}"? Esta acción no se puede deshacer.`}
+                            onConfirm={() => handleDelete(career.id)}
+                            title="Eliminar carrera"
+                            description={`¿Deseas eliminar la carrera "${career.abbreviation}"? Esta acción no se puede deshacer.`}
                             trigger={
                               <Button variant="outline" size="sm">
                                 <Trash2 className="h-4 w-4 text-red-500" />
@@ -130,4 +138,4 @@ const LocationsTable = ({
   )
 }
 
-export default LocationsTable
+export default CareerTable

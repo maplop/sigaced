@@ -1,11 +1,11 @@
-import { db } from '../database'
-import { Career } from '../../shared/types'
+import { db } from "../database"
+import { Career } from "../../shared/types"
 
 // Create
 export function addCareer(career: Career) {
   const stmt = db.prepare(`
-    INSERT INTO career (id, full_name, abbreviation, faculty)
-    VALUES (@id, @fullName, @abbreviation, @faculty)
+    INSERT INTO career (full_name, abbreviation, faculty)
+    VALUES (@fullName, @abbreviation, @faculty)
   `)
   stmt.run(career)
 }
@@ -58,5 +58,5 @@ export function updateCareer(career: Career) {
 
 // Delete
 export function deleteCareer(id: number) {
-  db.prepare('DELETE FROM career WHERE id = ?').run(id)
+  db.prepare("DELETE FROM career WHERE id = ?").run(id)
 }

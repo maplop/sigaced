@@ -19,7 +19,7 @@ declare global {
       deleteAssignment: (id: string) => Promise<void>
 
       // Careers
-      addCareer: (career: Career) => Promise<void>
+      addCareer: (career: Omit<Career, "id">) => Promise<void>
       getCareers: () => Promise<Career[]>
       getCareerByName: (name: string) => Promise<Career | undefined>
       updateCareer: (career: Career) => Promise<void>

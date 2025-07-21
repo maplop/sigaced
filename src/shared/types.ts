@@ -16,7 +16,7 @@ export interface Student {
 }
 
 export interface Career {
-  id: number
+  id: string
   fullName: string
   abbreviation: string
   faculty: string

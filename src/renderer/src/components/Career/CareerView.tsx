@@ -1,17 +1,17 @@
 import PageContainer from "../common/PageContainer"
 import PageTitle from "../common/PageTitle"
-import { useLocationView } from "./useLocationView"
-import LocationsTable from "./LocationTable"
+import { useCareerView } from "./useCareerView"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "../ui/card"
 import { MapPin, Search } from "lucide-react"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll-area"
-import LocationForm from "./LocationForm"
+import CareerTable from "./CareerTable"
+import CareerForm from "./CareerForm"
 
-const LocationView = () => {
+const CareerView = () => {
   const {
-    paginatedLocations,
-    loadingLocations,
+    paginatedCareers,
+    loadingCareers,
     currentPage,
     setCurrentPage,
     totalPages,
@@ -21,29 +21,30 @@ const LocationView = () => {
     setSearchTerm,
     sortField,
     sortDirection,
-    filteredAndSortedLocations,
+    filteredAndSortedCareers,
     handleSort,
     isDialogOpen,
     setIsDialogOpen,
-    editingLocation,
+    editingCareer,
     formData,
     setFormData,
     resetForm,
+    handleSubmit,
     handleEdit,
-    handleDelete,
-    handleSubmit
-  } = useLocationView()
+    handleDelete
+  } = useCareerView()
+
   return (
     <PageContainer>
       <div className="flex justify-between items-center">
-        <PageTitle title="Gestionar localizaciones" subtitle="Agrega, edita y organiza tus localizaciones  de forma rápida." />
-        <LocationForm
+        <PageTitle title="Gestionar carreras" subtitle="Agrega, edita y organiza tus carreras  de forma rápida." />
+        <CareerForm
           isDialogOpen={isDialogOpen}
           setIsDialogOpen={setIsDialogOpen}
           resetForm={resetForm}
-          editingLocation={editingLocation}
+          editingCareer={editingCareer}
           formData={formData}
-          setLocationFormData={setFormData}
+          setCareerFormData={setFormData}
           handleSubmit={handleSubmit}
         />
       </div>
@@ -51,14 +52,14 @@ const LocationView = () => {
         <Card>
           <CardHeader className="flex justify-between">
             <div>
-              <CardTitle>Lista de Localizaciones</CardTitle>
-              <CardDescription>Busca y gestiona todos las localizaciones registradas</CardDescription>
+              <CardTitle>Lista de Carreras</CardTitle>
+              <CardDescription>Busca y gestiona todos las carreras registradas</CardDescription>
             </div>
             <Card className="w-fit p-3 bg-transparent shadow-none">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium text-foreground">
-                  Total de localizaciones: {paginatedLocations.length}
+                  Total de carreras:
                 </span>
               </div>
             </Card>
@@ -67,15 +68,15 @@ const LocationView = () => {
             <div className="relative flex items-center space-x-2 mb-4">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar por nombre..."
+                placeholder="Buscar por carrera..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 max-w-sm"
               />
             </div>
-            <LocationsTable
-              paginatedLocations={paginatedLocations}
-              loadingLocations={loadingLocations}
+            <CareerTable
+              paginatedCareers={paginatedCareers}
+              loadingCareers={loadingCareers}
               currentPage={currentPage}
               totalPages={totalPages}
               itemsPerPage={itemsPerPage}
@@ -87,9 +88,9 @@ const LocationView = () => {
               handleEdit={handleEdit}
               handleDelete={handleDelete}
             />
-            {filteredAndSortedLocations.length === 0 && (
+            {filteredAndSortedCareers.length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
-                No se encontraron localizaciones.
+                No se encontraron carreras.
               </div>
             )}
           </CardContent>
@@ -98,4 +99,4 @@ const LocationView = () => {
     </PageContainer>
   )
 }
-export default LocationView
+export default CareerView
