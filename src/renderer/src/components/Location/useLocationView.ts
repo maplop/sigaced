@@ -1,10 +1,17 @@
-import { getAllLocations } from "@renderer/api/location"
+import {
+  createLocation,
+  deleteLocation,
+  editLocation,
+  getAllLocations
+} from "@renderer/api/location"
 import { rqKeys } from "@renderer/utils/rqKeys"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
+import { toast } from "sonner"
 import { Location } from "src/shared/types"
 
 export const useLocationView = () => {
+  const queryClient = useQueryClient()
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(10)
 
@@ -12,8 +19,8 @@ export const useLocationView = () => {
   const [sortField, setSortField] = useState<keyof Location | null>(null)
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editinglocation, setEditinglocation] = useState<Location | null>(null)
-  const [formData, setlocationFormData] = useState<Omit<Location, "id">>({
+  const [editingLocation, setEditingLocation] = useState<Location | null>(null)
+  const [formData, setFormData] = useState<Omit<Location, "id">>({
     name: ""
   })
 
@@ -66,6 +73,88 @@ export const useLocationView = () => {
     }
   }
 
+  const handleLocationSubmit = async (location: Omit<Location, "id">) => {
+    if (!editingLocation) {
+      return await createLocation(location)
+    }
+    return await editLocation({ ...location, id: editingLocation.id })
+  }
+
+  const mutation = useMutation({
+    mutationFn: handleLocationSubmit,
+    onSuccess: (data) => {
+      if (data === null || data === false) {
+        toast.error("Ocurrió un error al procesar el usuario. Intenta nuevamente.", {
+          style: {
+            color: "var(--errorMessage)"
+          }
+        })
+        return
+      }
+      queryClient.invalidateQueries({ queryKey: [rqKeys.LOCATIONS] })
+      resetForm()
+      toast.success(
+        editingLocation
+          ? "Localización actualizada correctamente."
+          : "Localización creada correctamente."
+      )
+    },
+    onError: (error) => {
+      console.error("Error procesando localización:", error)
+      toast.error("Ocurrió un error al procesar la localización. Intenta nuevamente.", {
+        style: {
+          color: "var(--errorMessage)"
+        }
+      })
+    }
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    mutation.mutate(formData)
+  }
+
+  const handleEdit = (location: Location) => {
+    setEditingLocation(location)
+    setFormData({
+      name: location.name
+    })
+    setIsDialogOpen(true)
+  }
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteLocation,
+    onSuccess: (_, id) => {
+      if (!id) {
+        toast.error("Ha ocurrido un error. No se encuentra la localización.", {
+          style: { color: "var(--errorMessage)" }
+        })
+        return
+      }
+      toast.success("Localización eliminada correctamente.")
+      queryClient.invalidateQueries({ queryKey: [rqKeys.LOCATIONS] })
+      resetForm()
+    },
+    onError: (error: unknown) => {
+      console.error(error)
+      const errorMessage =
+        error instanceof Error ? error.message : "Ocurrió un error al eliminar la localización."
+      toast.error(errorMessage, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  })
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id)
+  }
+
+  const resetForm = () => {
+    setFormData({ name: "" })
+    setEditingLocation(null)
+    setIsDialogOpen(false)
+  }
+
   return {
     paginatedLocations,
     loadingLocations,
@@ -79,6 +168,15 @@ export const useLocationView = () => {
     sortField,
     sortDirection,
     filteredAndSortedLocations,
-    handleSort
+    handleSort,
+    isDialogOpen,
+    setIsDialogOpen,
+    editingLocation,
+    formData,
+    setFormData,
+    resetForm,
+    handleSubmit,
+    handleEdit,
+    handleDelete
   }
 }

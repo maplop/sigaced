@@ -52,21 +52,6 @@ db.exec(`
     name TEXT UNIQUE NOT NULL
   );
 
-  INSERT OR IGNORE INTO location (name) VALUES
-    ('Santa Clara'),
-    ('Placetas'),
-    ('Manicaragua'),
-    ('Camajuaní'),
-    ('Ranchuelo'),
-    ('Sagua la Grande'),
-    ('Santo Domingo'),
-    ('Remedios'),
-    ('Caibarién'),
-    ('Encrucijada'),
-    ('Cifuentes'),
-    ('Corralillo'),
-    ('Quemado de Güines');
-
   -- Spot table (career + location combination)
   CREATE TABLE IF NOT EXISTS spot (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

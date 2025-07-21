@@ -6,8 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "../u
 import { MapPin, Search } from "lucide-react"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll-area"
-import { Label } from "../ui/label"
-import { Button } from "../ui/button"
+import LocationForm from "./LocationForm"
 
 const LocationView = () => {
   const {
@@ -23,12 +22,30 @@ const LocationView = () => {
     sortField,
     sortDirection,
     filteredAndSortedLocations,
-    handleSort
+    handleSort,
+    isDialogOpen,
+    setIsDialogOpen,
+    editingLocation,
+    formData,
+    setFormData,
+    resetForm,
+    handleEdit,
+    handleDelete,
+    handleSubmit
   } = useLocationView()
   return (
     <PageContainer>
       <div className="flex justify-between items-center">
-        <PageTitle title="Gestionar localizaciones" subtitle="Agrega, edita y organiza tus lugares de forma rápida." />
+        <PageTitle title="Gestionar localizaciones" subtitle="Agrega, edita y organiza tus localizaciones  de forma rápida." />
+        <LocationForm
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
+          resetForm={resetForm}
+          editingLocation={editingLocation}
+          formData={formData}
+          setLocationFormData={setFormData}
+          handleSubmit={handleSubmit}
+        />
       </div>
       <ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">
         <Card>
@@ -41,7 +58,7 @@ const LocationView = () => {
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium text-foreground">
-                  Total de Ubicaciones {paginatedLocations.length}
+                  Total de localizaciones: {paginatedLocations.length}
                 </span>
               </div>
             </Card>
@@ -68,10 +85,12 @@ const LocationView = () => {
               sortDirection={sortDirection}
               filteredAndSortedLocations={filteredAndSortedLocations}
               handleSort={handleSort}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
             />
             {filteredAndSortedLocations.length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
-                No se encontraron localizaciones que coincidan con la búsqueda.
+                No se encontraron localizaciones.
               </div>
             )}
           </CardContent>

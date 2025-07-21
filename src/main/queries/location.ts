@@ -2,10 +2,10 @@ import { db } from "../database"
 import { Location } from "../../shared/types"
 
 // Create
-export function addLocation(location: Location): void {
+export function addLocation(location: Omit<Location, "id">): void {
   const stmt = db.prepare(`
-    INSERT INTO location (id, name)
-    VALUES (@id, @name)
+    INSERT INTO location (name)
+    VALUES (@name)
   `)
   stmt.run(location)
 }

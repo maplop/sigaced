@@ -21,8 +21,8 @@ export interface LocationsTableProps {
   sortField: keyof Location | null
   sortDirection: "asc" | "desc"
   handleSort: (field: keyof Location) => void
-  //handleEdit: (location: Location) => void
-  //handleDelete: (id: string) => void
+  handleEdit: (location: Location) => void
+  handleDelete: (id: string) => void
   filteredAndSortedLocations: Location[]
 }
 
@@ -37,8 +37,8 @@ const LocationsTable = ({
   sortField,
   sortDirection,
   handleSort,
-  //handleDelete,
-  //handleEdit,
+  handleDelete,
+  handleEdit,
 }: LocationsTableProps) => {
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
@@ -69,11 +69,11 @@ const LocationsTable = ({
                       <TableCell>{location.name}</TableCell>
                       <TableCell >
                         <div className="flex justify-end items-center mr-8 space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => null}>
+                          <Button variant="outline" size="sm" onClick={() => handleEdit(location)}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <ConfirmDeleteDialog
-                            onConfirm={() => null}
+                            onConfirm={() => handleDelete(location.id)}
                             title="Eliminar localización"
                             description={`¿Deseas eliminar la localización "${location.name}"? Esta acción no se puede deshacer.`}
                             trigger={

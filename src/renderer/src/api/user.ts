@@ -32,7 +32,6 @@ export const changePassword = async (id: string, newPassword: string): Promise<b
 }
 
 export const updateUser = async (user: Omit<User, "createdAt">): Promise<boolean> => {
-  console.log("el usuarioa a editar --- ", user)
   if (!user.id) return false
 
   const allUsers = await window.api.getUsers()

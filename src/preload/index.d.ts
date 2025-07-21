@@ -38,7 +38,7 @@ declare global {
       deleteRequest: (id: string) => Promise<void>
 
       // Location
-      addLocation: (location: Location) => Promise<void>
+      addLocation: (location: Omit<Location, "id">) => Promise<void>
       getLocations: () => Promise<Location[]>
       getLocationByName: (name: string) => Promise<Location | undefined>
       updateLocation: (location: Location) => Promise<void>
