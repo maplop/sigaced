@@ -6,7 +6,7 @@ import { Edit, Trash2 } from "lucide-react"
 import { Label } from "@renderer/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
 import { Location } from "src/shared/types"
-//import SkeletonTable from "./SkeletonTable"
+import SkeletonTable from "./SkeletonTable"
 import ConfirmDeleteDialog from "@renderer/components/common/ConfirmDeleteDialog"
 
 
@@ -54,7 +54,7 @@ const LocationsTable = ({
                 <TableRow>
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50">#</TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("name")}>
-                    Lugar {sortField === "name" && (sortDirection === "asc" ? "↑" : "↓")}
+                    Localización {sortField === "name" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="flex justify-end items-center mr-12">Acciones</TableHead>
                 </TableRow>
@@ -124,7 +124,7 @@ const LocationsTable = ({
           </div>
         </div >
       ) : (
-        <div>Cargando...</div>
+        <SkeletonTable />
       )}
     </>
 
