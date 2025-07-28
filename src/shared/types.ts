@@ -13,6 +13,14 @@ export interface Student {
   age: number
   gender: "M" | "F"
   municipality: string
+  participatedPhases?: number
+  assignedPhaseId?: number | null
+}
+
+export interface StudentPhase {
+  id: number
+  studentId: number
+  phaseId: number
 }
 
 export interface Career {
@@ -31,22 +39,25 @@ export interface Spot {
   id: number
   careerId: number
   locationId: number
+}
+
+export interface SpotPhase {
+  spotId: number
+  phaseId: number
   availableQuantity: number
 }
 
 export interface Request {
   id: number
   studentCi: string
-  spotId: number
-  order: number // 1 to 3
-  phaseId: number
+  spotPhaseId: number
+  preferenceOrder: number // 1 to 3
 }
 
 export interface Assignment {
-  id: number
+  id: string
   studentCi: string
-  spotId: number
-  phaseId: number
+  spotPhaseId: number
   assignmentDate?: string // timestamp, optional if just reading
 }
 
@@ -58,4 +69,34 @@ export interface User {
   password: string
   role: "admin" | "viewer"
   createdAt: string
+}
+
+// Nuevo: tipo para insertar estudiante con solicitudes
+export interface StudentWithRequests {
+  ci: string
+  name: string
+  lastName: string
+  grade: number
+  age: number
+  gender: "M" | "F"
+  municipality: string
+  currentPhaseId: number
+  requests: {
+    spotId: number
+    phaseId: number
+    preferenceOrder: number
+  }[]
+}
+
+// Nuevo: tipo para insertar una plaza con su cantidad por fase
+export interface SpotWithQuantity {
+  careerId: number
+  locationId: number
+  phaseId: number
+  availableQuantity: number
+}
+
+export interface OperationResult {
+  success: boolean
+  error?: string
 }

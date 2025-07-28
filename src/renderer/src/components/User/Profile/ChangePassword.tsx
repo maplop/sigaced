@@ -68,28 +68,21 @@ const ChangePassword = () => {
 
   const mutation = useMutation({
     mutationFn: (newPassword: string) => changePassword(user?.id ?? '', hashPassword(newPassword)),
-    onSuccess: (success) => {
-      if (success) {
-        toast.success('Contraseña actualizada correctamente.')
-        setFormData({
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        })
-        logout()
-      } else {
-        toast.error('No se pudo actualizar la contraseña. Usuario no encontrado.', {
-          style: {
-            color: 'var(--errorMessage)'
-          }
-        })
-      }
+    onSuccess: () => {
+      toast.success('Contraseña actualizada correctamente.')
+      setFormData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      })
+      logout()
     },
     onError: (error) => {
-      console.log(error)
-      toast.error('Ocurrió un error al cambiar la contraseña.', {
+      console.error("Change password error:", error)
+      const errorMessage = error instanceof Error ? error.message : "Error al intentar cambiar la contraseña."
+      toast.error(errorMessage, {
         style: {
-          color: 'var(--errorMessage)'
+          color: "var(--errorMessage)"
         }
       })
     }

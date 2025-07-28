@@ -26,17 +26,11 @@ const EditProfile = () => {
 
   const mutation = useMutation({
     mutationFn: (data: Omit<User, 'createdAt'>) => updateUser(data),
-    onSuccess: (success, updatedUser) => {
-      if (!success) {
-        toast.error("El nombre de usuario ya está en uso.", {
-          style: { color: "var(--errorMessage)" }
-        })
-        return
-      }
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [rqKeys.USERS] })
       resetForm()
-      setUser({ ...updatedUser, createdAt: user?.createdAt as string })
-      updatedLocalStorageUser({ ...updatedUser, createdAt: user?.createdAt as string })
+      setUser({ ...user!, ...formData })
+      updatedLocalStorageUser({ ...user!, ...formData })
       toast.success("Usuario actualizado correctamente.")
     },
     onError: (error) => {

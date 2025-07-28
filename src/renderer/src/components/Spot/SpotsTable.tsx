@@ -5,30 +5,34 @@ import { Button } from "@renderer/components/ui/button"
 import { Edit, Trash2 } from "lucide-react"
 import { Label } from "@renderer/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
-import { Career } from "src/shared/types"
-import SkeletonTable from "./SkeletonTable"
+import { Spot } from "src/shared/types"
+//import SkeletonTable from "./SkeletonTable"
 import ConfirmDeleteDialog from "@renderer/components/common/ConfirmDeleteDialog"
 import { Badge } from "../ui/badge"
 
 
-export interface CareerTableProps {
-  loadingCareers: boolean
-  paginatedCareers: Career[]
+export interface SpotsTableProps {
+  careerMap: Map<string, string>
+  locationMap: Map<string, string>
+  loadingSpots: boolean
+  paginatedSpots: Spot[]
   currentPage: number
   totalPages: number
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>
   itemsPerPage: number,
   setItemsPerPage: React.Dispatch<React.SetStateAction<number>>
-  sortField: keyof Career | null
+  sortField: keyof Spot | null
   sortDirection: "asc" | "desc"
-  handleSort: (field: keyof Career) => void
-  handleEdit: (career: Career) => void
+  handleSort: (field: keyof Spot) => void
+  handleEdit: (spot: Spot) => void
   handleDelete: (id: string) => void
 }
 
-const CareerTable = ({
-  loadingCareers,
-  paginatedCareers,
+const SpotsTable = ({
+  careerMap,
+  locationMap,
+  loadingSpots,
+  paginatedSpots,
   currentPage,
   totalPages,
   setCurrentPage,
@@ -39,51 +43,51 @@ const CareerTable = ({
   handleSort,
   handleDelete,
   handleEdit,
-}: CareerTableProps) => {
+}: SpotsTableProps) => {
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
 
   return (
     <>
-      {!loadingCareers ? (
+      {!loadingSpots ? (
         <div className="space-y-4">
           <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50">#</TableHead>
-                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("fullName")}>
-                    Carrera {sortField === "fullName" && (sortDirection === "asc" ? "↑" : "↓")}
+                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("careerId")}>
+                    Carrera {sortField === "careerId" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
-                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("abbreviation")}>
-                    Abreviatura {sortField === "abbreviation" && (sortDirection === "asc" ? "↑" : "↓")}
+                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("locationId")}>
+                    Localización {sortField === "locationId" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
-                  <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("faculty")}>
-                    Facultad {sortField === "faculty" && (sortDirection === "asc" ? "↑" : "↓")}
+                  <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("availableQuantity")}>
+                    Plazas Disponibles {sortField === "availableQuantity" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="flex justify-end items-center mr-12">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedCareers.map((career, index) => {
+                {paginatedSpots.map((spot, index) => {
                   return (
-                    <TableRow key={career.id}>
+                    <TableRow key={spot.id}>
                       <TableCell className="text-center">
                         {(currentPage - 1) * itemsPerPage + index + 1}
                       </TableCell>
-                      <TableCell className="font-medium">{career.fullName}</TableCell>
-                      <TableCell>{career.abbreviation}</TableCell>
-                      <TableCell className="text-center"><Badge>{career.faculty}</Badge></TableCell>
+                      <TableCell>{careerMap.get(spot.careerId.toString()) || "–"}</TableCell>
+                      <TableCell>{locationMap.get(spot.locationId.toString()) || "–"}</TableCell>
+                      <TableCell className="text-center"><Badge>{spot.availableQuantity}</Badge></TableCell>
                       <TableCell >
                         <div className="flex justify-end items-center mr-8 space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => handleEdit(career)}>
+                          <Button variant="outline" size="sm" onClick={() => handleEdit(spot)}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <ConfirmDeleteDialog
-                            onConfirm={() => handleDelete(career.id)}
-                            title="Eliminar carrera"
-                            description={`¿Deseas eliminar la carrera "${career.abbreviation}"? Esta acción no se puede deshacer.`}
+                            onConfirm={() => handleDelete(spot.id)}
+                            title="Eliminar plaza"
+                            description={`¿Deseas eliminar la plaza "${spot.id}"? Esta acción no se puede deshacer.`}
                             trigger={
                               <Button variant="outline" size="sm">
                                 <Trash2 className="h-4 w-4 text-red-500" />
@@ -132,11 +136,12 @@ const CareerTable = ({
           </div>
         </div >
       ) : (
-        <SkeletonTable />
+        //<SkeletonTable />
+        <div>Cargando...</div>
       )}
     </>
 
   )
 }
 
-export default CareerTable
+export default SpotsTable

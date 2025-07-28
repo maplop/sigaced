@@ -33,12 +33,26 @@ const Register = () => {
     const form = event.currentTarget
     const formData = new FormData(form)
 
+    const rawPassword = formData.get('password')?.toString() || ''
+    if (!rawPassword) {
+      toast.error('Por favor escribe una contraseña válida.')
+      return
+    }
+    const password = hashPassword(rawPassword)
+
+    const roleValue = formData.get('role')
+    if (roleValue !== 'admin' && roleValue !== 'viewer') {
+      toast.error('Selecciona un rol válido.')
+      return
+    }
+    const role = roleValue as 'admin' | 'viewer'
+
     const userData = {
       name: formData.get('name') as string,
       lastName: formData.get('lastName') as string,
       username: formData.get('username') as string,
-      password: hashPassword(formData.get('password') as string),
-      role: formData.get('role') as "admin" | "viewer"
+      password: password,
+      role: role
     }
 
     if (
@@ -56,21 +70,18 @@ const Register = () => {
       return
     }
     try {
-      const res = await register(userData)
-      if (!res) {
-        toast.error('El nombre de usuario ya está en uso.', {
-          style: {
-            color: 'var(--errorMessage)'
-          }
-        })
-        return
-      }
+      await register(userData)
       toast.success('Usuario registrado correctamente.',)
       form.reset()
       navigate(ROUTES.LOGIN)
     } catch (error) {
       console.error('Registration error:', error)
-      toast.error('Error al crear el usuario.')
+      const errorMessage = error instanceof Error ? error.message : 'Error al registrar el usuario.'
+      toast.error(errorMessage, {
+        style: {
+          color: 'var(--errorMessage)'
+        }
+      })
     }
   }
 

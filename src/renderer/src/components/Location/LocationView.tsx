@@ -52,7 +52,7 @@ const LocationView = () => {
           <CardHeader className="flex justify-between">
             <div>
               <CardTitle>Lista de Localizaciones</CardTitle>
-              <CardDescription>Busca y gestiona todos las localizaciones registradas</CardDescription>
+              <CardDescription>Busca y gestiona todas las localizaciones registradas</CardDescription>
             </div>
             <Card className="w-fit p-3 bg-transparent shadow-none">
               <div className="flex items-center gap-2">

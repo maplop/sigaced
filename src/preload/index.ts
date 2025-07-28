@@ -10,6 +10,8 @@ const api = {
   getStudentByCI: (ci: string) => ipcRenderer.invoke("student:getByCI", ci),
   updateStudent: (student) => ipcRenderer.invoke("student:update", student),
   deleteStudent: (ci: string) => ipcRenderer.invoke("student:delete", ci),
+  addStudentWithRequests: (studentData) =>
+    ipcRenderer.invoke("student:addWithRequests", studentData),
 
   // Assignment
   addAssignment: (assignment) => ipcRenderer.invoke("assignment:add", assignment),
@@ -29,12 +31,20 @@ const api = {
   getSpots: () => ipcRenderer.invoke("spot:getAll"),
   updateSpot: (spot) => ipcRenderer.invoke("spot:update", spot),
   deleteSpot: (id: string) => ipcRenderer.invoke("spot:delete", id),
+  addSpotWithQuantity: (spotData) => ipcRenderer.invoke("spot:addWithQuantity", spotData),
+
+  // SpotPhase
+  addSpotPhase: (spotPhase) => ipcRenderer.invoke("spotPhase:add", spotPhase),
+  getSpotPhases: () => ipcRenderer.invoke("spotPhase:getAll"),
+  getSpotPhase: (spotId, phaseId) => ipcRenderer.invoke("spotPhase:getOne", spotId, phaseId),
+  updateSpotPhase: (spotPhase) => ipcRenderer.invoke("spotPhase:update", spotPhase),
+  deleteSpotPhase: (spotId, phaseId) => ipcRenderer.invoke("spotPhase:delete", spotId, phaseId),
 
   // Request
   addRequest: (request) => ipcRenderer.invoke("request:add", request),
   getRequests: () => ipcRenderer.invoke("request:getAll"),
   updateRequest: (request) => ipcRenderer.invoke("request:update", request),
-  deleteRequest: (id: string) => ipcRenderer.invoke("request:delete", id),
+  deleteRequest: (id: number) => ipcRenderer.invoke("request:delete", id),
 
   // Location
   addLocation: (location) => ipcRenderer.invoke("location:add", location),

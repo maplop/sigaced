@@ -2,55 +2,42 @@ import { User } from "src/shared/types"
 
 export const login = async (username: string, password: string): Promise<User | null> => {
   const users = await window.api.getUsers()
-  const user = users.find((u) => u.username === username && u.password === password)
-  return user ?? null
+  return users.find((u) => u.username === username && u.password === password) ?? null
 }
 
-export const register = async (user: Omit<User, "id" | "createdAt">): Promise<User | null> => {
+export const register = async (user: Omit<User, "id" | "createdAt">): Promise<User> => {
   const allUsers = await window.api.getUsers()
   const usernameTaken = allUsers.some((u) => u.username === user.username)
-
-  if (usernameTaken) return null
-
+  if (usernameTaken) throw new Error("Nombre de usuario ya está en uso")
   await window.api.addUser(user)
   return user as User
 }
 
 export const getAllUsers = async (): Promise<User[]> => {
-  const users = (await window.api.getUsers()) ?? []
-  return users
+  return await window.api.getUsers()
 }
 
-export const changePassword = async (id: string, newPassword: string): Promise<boolean> => {
-  const allUsers = await window.api.getUsers()
-  const user = allUsers.find((u) => u.id === id)
-
-  if (!user) return false
-
-  await window.api.changeUserPassword({ id: user.id, newPassword })
-  return true
+export const getUserById = async (id: string): Promise<User | null> => {
+  return (await window.api.getUserById(id)) ?? null
 }
 
-export const updateUser = async (user: Omit<User, "createdAt">): Promise<boolean> => {
-  if (!user.id) return false
-
+export const updateUser = async (user: Omit<User, "createdAt">): Promise<void> => {
   const allUsers = await window.api.getUsers()
-
-  const userFound = allUsers.find((u) => u.username === user.username && u.id !== user.id)
-  if (userFound) return false
-
+  console.log("usuario a editar ---", user)
+  const usernameTaken = allUsers.some((u) => u.username === user.username && u.id !== user.id)
+  console.log("Encontrado --- ", usernameTaken)
+  if (usernameTaken) throw new Error("Nombre de usuario ya está en uso")
   await window.api.updateUser(user)
-  return true
 }
 
-export const deleteUser = async (id: string) => {
+export const deleteUser = async (id: string): Promise<void> => {
+  const success = await window.api.deleteUser(id)
+  if (!success) throw new Error("Error al eliminar el usuario")
+}
+
+export const changePassword = async (id: string, newPassword: string): Promise<void> => {
   const allUsers = await window.api.getUsers()
-  const user = allUsers.find((u) => u.id === id)
-
-  if (!user) throw new Error("Usuario no encontrado")
-  const res = await window.api.deleteUser(id)
-
-  if (!res) throw new Error("Error al eliminar el usuario")
-
-  return res
+  const userExists = allUsers.some((u) => u.id === id)
+  if (!userExists) throw new Error("Usuario no encontrado")
+  await window.api.changeUserPassword({ id, newPassword })
 }

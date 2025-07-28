@@ -40,6 +40,14 @@ import {
   deleteUser,
   changeUserPassword
 } from "./queries/user"
+import {
+  addSpotPhase,
+  deleteSpotPhase,
+  getAllSpotPhases,
+  getSpotPhase,
+  updateSpotPhase
+} from "./queries/spotPhase"
+import { insertSpotWithQuantity, insertStudentWithRequests } from "./queries/customQueries"
 
 function createWindow(): void {
   // Create the browser window.
@@ -100,147 +108,381 @@ app.whenReady().then(() => {
 })
 
 // IPC handlers for student CRUD
-ipcMain.handle("student:add", (_event, student) => {
-  return addStudent(student)
+ipcMain.handle("student:add", async (_event, student) => {
+  try {
+    await addStudent(student)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("student:getAll", () => {
-  return getStudents()
+ipcMain.handle("student:getAll", async () => {
+  try {
+    return await getStudents()
+  } catch (error) {
+    console.error("Error al obtener estudiantes:", error)
+    return []
+  }
 })
 
-ipcMain.handle("student:getByCI", (_event, ci) => {
-  return getStudentByCI(ci)
+ipcMain.handle("student:getByCI", async (_event, ci) => {
+  try {
+    return (await getStudentByCI(ci)) ?? null
+  } catch (error) {
+    console.error("Error al obtener estudiante por CI:", error)
+    return null
+  }
 })
 
-ipcMain.handle("student:update", (_event, student) => {
-  return updateStudent(student)
+ipcMain.handle("student:update", async (_event, student) => {
+  try {
+    await updateStudent(student)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("student:delete", (_event, ci) => {
-  return deleteStudent(ci)
+ipcMain.handle("student:delete", async (_event, ci) => {
+  try {
+    await deleteStudent(ci)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("student:addWithRequests", async (_event, studentData) => {
+  try {
+    insertStudentWithRequests(studentData)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
 // IPC handlers for assignment CRUD
-ipcMain.handle("assignment:add", (_event, assignment) => {
-  return addAssignment(assignment)
+ipcMain.handle("assignment:add", async (_event, assignment) => {
+  try {
+    await addAssignment(assignment)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("assignment:getAll", () => {
-  return getAssignments()
+ipcMain.handle("assignment:getAll", async () => {
+  try {
+    return await getAssignments()
+  } catch (error) {
+    console.error("Error al obtener asignaciones:", error)
+    return []
+  }
 })
 
-ipcMain.handle("assignment:update", (_event, assignment) => {
-  return updateAssignment(assignment)
+ipcMain.handle("assignment:update", async (_event, assignment) => {
+  try {
+    await updateAssignment(assignment)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("assignment:delete", (_event, id) => {
-  return deleteAssignment(id)
+ipcMain.handle("assignment:delete", async (_event, id) => {
+  try {
+    await deleteAssignment(id)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
 // IPC handlers for career CRUD
-ipcMain.handle("career:add", (_event, career) => {
-  return addCareer(career)
+ipcMain.handle("career:add", async (_event, career) => {
+  try {
+    await addCareer(career)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("career:getAll", () => {
-  return getCareers()
+ipcMain.handle("career:getAll", async () => {
+  try {
+    return await getCareers()
+  } catch (error) {
+    console.error("Error al obtener carreras:", error)
+    return []
+  }
 })
 
-ipcMain.handle("career:getByName", (_event, name) => {
-  return getCareerByName(name)
+ipcMain.handle("career:getByName", async (_event, name) => {
+  try {
+    return (await getCareerByName(name)) ?? null
+  } catch (error) {
+    console.error("Error al obtener carrera por nombre:", error)
+    return null
+  }
 })
 
-ipcMain.handle("career:update", (_event, career) => {
-  return updateCareer(career)
+ipcMain.handle("career:update", async (_event, career) => {
+  try {
+    await updateCareer(career)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("career:delete", (_event, id) => {
-  return deleteCareer(id)
+ipcMain.handle("career:delete", async (_event, id) => {
+  try {
+    await deleteCareer(id)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
 // IPC handlers for spot CRUD
-ipcMain.handle("spot:add", (_event, spot) => {
-  return addSpot(spot)
+ipcMain.handle("spot:add", async (_event, spot) => {
+  try {
+    await addSpot(spot)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("spot:getAll", () => {
-  return getSpots()
+ipcMain.handle("spot:getAll", async () => {
+  try {
+    return await getSpots()
+  } catch (error) {
+    console.error("Error al obtener spots:", error)
+    return []
+  }
 })
 
-ipcMain.handle("spot:update", (_event, spot) => {
-  return updateSpot(spot)
+ipcMain.handle("spot:update", async (_event, spot) => {
+  try {
+    await updateSpot(spot)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("spot:delete", (_event, id) => {
-  return deleteSpot(id)
+ipcMain.handle("spot:delete", async (_event, id) => {
+  try {
+    await deleteSpot(id)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("spot:addWithQuantity", async (_event, spotData) => {
+  try {
+    insertSpotWithQuantity(spotData)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+// IPC handlers for spot phase CRUD
+ipcMain.handle("spotPhase:add", async (_event, spotPhase) => {
+  try {
+    await addSpotPhase(spotPhase)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("spotPhase:getAll", async () => {
+  try {
+    return await getAllSpotPhases()
+  } catch (error) {
+    console.error("Error al obtener spot phases:", error)
+    return []
+  }
+})
+
+ipcMain.handle("spotPhase:getOne", async (_event, spotId, phaseId) => {
+  try {
+    return (await getSpotPhase(spotId, phaseId)) ?? null
+  } catch (error) {
+    console.error("Error al obtener spotPhase:", error)
+    return null
+  }
+})
+
+ipcMain.handle("spotPhase:update", async (_event, spotPhase) => {
+  try {
+    await updateSpotPhase(spotPhase)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("spotPhase:delete", async (_event, spotId, phaseId) => {
+  try {
+    await deleteSpotPhase(spotId, phaseId)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
 // IPC handlers for request CRUD
-ipcMain.handle("request:add", (_event, request) => {
-  return addRequest(request)
+ipcMain.handle("request:add", async (_event, request) => {
+  try {
+    await addRequest(request)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("request:getAll", () => {
-  return getRequests()
+ipcMain.handle("request:getAll", async () => {
+  try {
+    return await getRequests()
+  } catch (error) {
+    console.error("Error al obtener solicitudes:", error)
+    return []
+  }
 })
 
-ipcMain.handle("request:update", (_event, request) => {
-  return updateRequest(request)
+ipcMain.handle("request:update", async (_event, request) => {
+  try {
+    await updateRequest(request)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("request:delete", (_event, id) => {
-  return deleteRequest(id)
+ipcMain.handle("request:delete", async (_event, id) => {
+  try {
+    await deleteRequest(id)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
 // IPC handlers for location CRUD
-ipcMain.handle("location:add", (_event, location) => {
-  return addLocation(location)
+ipcMain.handle("location:add", async (_event, location) => {
+  try {
+    await addLocation(location)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("location:getAll", () => {
-  return getLocations()
+ipcMain.handle("location:getAll", async () => {
+  try {
+    return await getLocations()
+  } catch (error) {
+    console.error("Error al obtener ubicaciones:", error)
+    return []
+  }
 })
 
-ipcMain.handle("location:getByName", (_event, name) => {
-  return getLocationByName(name)
+ipcMain.handle("location:getByName", async (_event, name) => {
+  try {
+    return (await getLocationByName(name)) ?? null
+  } catch (error) {
+    console.error("Error al obtener ubicación por nombre:", error)
+    return null
+  }
 })
 
-ipcMain.handle("location:update", (_event, location) => {
-  return updateLocation(location)
+ipcMain.handle("location:update", async (_event, location) => {
+  try {
+    await updateLocation(location)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("location:delete", (_event, id) => {
-  return deleteLocation(id)
+ipcMain.handle("location:delete", async (_event, id) => {
+  try {
+    await deleteLocation(id)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
 // IPC handlers for phase
-ipcMain.handle("phase:getAll", () => {
-  return getPhases()
+ipcMain.handle("phase:getAll", async () => {
+  try {
+    return await getPhases()
+  } catch (error) {
+    console.error("Error al obtener fases:", error)
+    return []
+  }
 })
 
 // IPC handlers for user CRUD
-ipcMain.handle("user:addUser", (_event, user) => {
-  return addUser(user)
+ipcMain.handle("user:addUser", async (_event, user) => {
+  try {
+    await addUser(user)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("user:getAll", () => {
-  return getUsers()
+ipcMain.handle("user:getAll", async () => {
+  try {
+    return await getUsers()
+  } catch (error) {
+    console.error("Error al obtener usuarios:", error)
+    return []
+  }
 })
 
-ipcMain.handle("user:getById", (_event, id) => {
-  return getUserById(id)
+ipcMain.handle("user:getById", async (_event, id) => {
+  try {
+    return (await getUserById(id)) ?? null
+  } catch (error) {
+    console.error("Error al obtener usuario:", error)
+    return null
+  }
 })
 
-ipcMain.handle("user:update", (_event, user) => {
-  return updateUser(user)
+ipcMain.handle("user:update", async (_event, user) => {
+  try {
+    await updateUser(user)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("user:delete", (_event, id) => {
-  return deleteUser(id)
+ipcMain.handle("user:delete", async (_event, id) => {
+  try {
+    await deleteUser(id)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
-ipcMain.handle("user:changePassword", (_event, data) => {
-  return changeUserPassword(data.id, data.newPassword)
+ipcMain.handle("user:changePassword", async (_event, data) => {
+  try {
+    await changeUserPassword(data.id, data.newPassword)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

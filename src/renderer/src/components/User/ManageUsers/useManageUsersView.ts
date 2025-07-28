@@ -35,7 +35,7 @@ export const useManageUsersView = () => {
     role: "admin"
   })
 
-  const { data, isLoading: loadingUsers } = useQuery({
+  const { data = [], isLoading: loadingUsers } = useQuery({
     queryKey: [rqKeys.USERS],
     queryFn: getAllUsers
   })
@@ -63,14 +63,7 @@ export const useManageUsersView = () => {
 
   const mutation = useMutation({
     mutationFn: handleUserSubmit,
-    onSuccess: (data) => {
-      if (data === null || data === false) {
-        toast.error("El nombre de usuario ya está en uso. Intenta con otro.", {
-          style: { color: "var(--errorMessage)" }
-        })
-        return
-      }
-
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [rqKeys.USERS] })
       resetForm()
       toast.success(
@@ -78,8 +71,9 @@ export const useManageUsersView = () => {
       )
     },
     onError: (error) => {
-      console.error("Error procesando usuario:", error)
-      toast.error("Ocurrió un error al procesar el usuario. Intenta nuevamente.", {
+      console.error("Registration error:", error)
+      const errorMessage = error instanceof Error ? error.message : "Error al registrar el usuario."
+      toast.error(errorMessage, {
         style: {
           color: "var(--errorMessage)"
         }

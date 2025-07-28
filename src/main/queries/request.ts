@@ -4,8 +4,8 @@ import { Request } from "../../shared/types"
 // Create
 export function addRequest(request: Omit<Request, "id">): void {
   const stmt = db.prepare(`
-    INSERT INTO request (student_ci, spot_id, preference_order, phase_id)
-    VALUES (@studentCi, @spotId, @preferenceOrder, @phaseId)
+    INSERT INTO request (student_ci, spot_phase_id, preference_order)
+    VALUES (@studentCi, @spotPhaseId, @preferenceOrder)
   `)
   stmt.run(request)
 }
@@ -18,9 +18,8 @@ export function getRequests(): Request[] {
     SELECT
       id,
       student_ci AS studentCi,
-      spot_id AS spotId,
-      preference_order AS preferenceOrder,
-      phase_id AS phaseId
+      spot_phase_id AS spotPhaseId,
+      preference_order AS preferenceOrder
     FROM request
   `
     )
@@ -33,9 +32,8 @@ export function updateRequest(request: Request): void {
     UPDATE request
     SET
       student_ci = @studentCi,
-      spot_id = @spotId,
-      preference_order = @preferenceOrder,
-      phase_id = @phaseId
+      spot_phase_id = @spotPhaseId,
+      preference_order = @preferenceOrder
     WHERE id = @id
   `)
   stmt.run(request)
