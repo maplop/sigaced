@@ -9,14 +9,14 @@ export const menuItems = [
     icon: ChartNoAxesCombinedIcon
   },
   {
-    title: "Aspirantes",
-    url: ROUTES.APPLICANTS,
-    icon: Users
-  },
-  {
     title: "Carreras",
     url: ROUTES.CAREERS,
     icon: GraduationCap
+  },
+  {
+    title: "Localización",
+    url: ROUTES.LOCATION,
+    icon: MapPin
   },
   {
     title: "Plazas",
@@ -24,8 +24,8 @@ export const menuItems = [
     icon: Landmark
   },
   {
-    title: "Localización",
-    url: ROUTES.LOCATION,
-    icon: MapPin
+    title: "Aspirantes",
+    url: ROUTES.APPLICANTS,
+    icon: Users
   }
 ]

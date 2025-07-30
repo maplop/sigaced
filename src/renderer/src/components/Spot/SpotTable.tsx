@@ -5,30 +5,32 @@ import { Button } from "@renderer/components/ui/button"
 import { Edit, Trash2 } from "lucide-react"
 import { Label } from "@renderer/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
-import { Location } from "src/shared/types"
+import { SpotFull } from "src/shared/types"
 import SkeletonTable from "./SkeletonTable"
 import ConfirmDeleteDialog from "@renderer/components/common/ConfirmDeleteDialog"
+import { Badge } from "../ui/badge"
+import clsx from "clsx"
 
 
-export interface LocationsTableProps {
-  loadingLocations: boolean
-  paginatedLocations: Location[]
-  filteredAndSortedLocations: Location[]
+export interface SpotsTableProps {
+  loadingSpots: boolean
+  paginatedSpots: SpotFull[]
   currentPage: number
   totalPages: number
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>
   itemsPerPage: number,
   setItemsPerPage: React.Dispatch<React.SetStateAction<number>>
-  sortField: keyof Location | null
+  sortField: keyof SpotFull | null
   sortDirection: "asc" | "desc"
-  handleSort: (field: keyof Location) => void
-  handleEdit: (location: Location) => void
-  handleDelete: (id: string) => void
+  handleSort: (field: keyof SpotFull) => void
+  handleEdit: (spot: SpotFull) => void
+  handleDelete: (id: number) => void
+  filteredAndSortedSpots: SpotFull[]
 }
 
-const LocationsTable = ({
-  loadingLocations,
-  paginatedLocations,
+const SpotsTable = ({
+  loadingSpots,
+  paginatedSpots,
   currentPage,
   totalPages,
   setCurrentPage,
@@ -39,45 +41,68 @@ const LocationsTable = ({
   handleSort,
   handleDelete,
   handleEdit,
-  filteredAndSortedLocations
-}: LocationsTableProps) => {
+  filteredAndSortedSpots
+}: SpotsTableProps) => {
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
 
   return (
     <>
-      {!loadingLocations ? (
+      {!loadingSpots ? (
         <div className="space-y-4">
           <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50">#</TableHead>
-                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("name")}>
-                    Localización {sortField === "name" && (sortDirection === "asc" ? "↑" : "↓")}
+                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("careerName")}>
+                    Carrera {sortField === "careerName" && (sortDirection === "asc" ? "↑" : "↓")}
+                  </TableHead>
+                  <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("locationName")}>
+                    Localización {sortField === "locationName" && (sortDirection === "asc" ? "↑" : "↓")}
+                  </TableHead>
+                  <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("availableQuantity")}>
+                    Plazas Disponibles {sortField === 'availableQuantity' && (sortDirection === 'asc' ? "↑" : "↓")}
+                  </TableHead>
+                  <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("phaseName")}>
+                    Fase {sortField === 'phaseName' && (sortDirection === 'asc' ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="flex justify-end items-center mr-12">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
-              {filteredAndSortedLocations.length !== 0 ? (
+              {filteredAndSortedSpots.length !== 0 ? (
                 <TableBody>
-                  {paginatedLocations.map((location, index) => {
+                  {paginatedSpots.map((spot, index) => {
                     return (
-                      <TableRow key={location.id}>
+                      <TableRow key={spot.spotId}>
                         <TableCell className="text-center">
                           {(currentPage - 1) * itemsPerPage + index + 1}
                         </TableCell>
-                        <TableCell>{location.name}</TableCell>
+                        <TableCell>{spot.careerName}</TableCell>
+                        <TableCell>{spot.locationName}</TableCell>
+                        <TableCell className="text-center"><Badge>{spot.availableQuantity}</Badge></TableCell>
+                        <TableCell className="flex justify-center items-center">
+                          <Badge
+                            className={clsx(
+                              "px-2 py-1 rounded",
+                              spot.phaseId === 1 && "bg-green-100 text-green-800",
+                              spot.phaseId === 2 && "bg-blue-100 text-blue-800",
+                              spot.phaseId === 3 && "bg-yellow-100 text-yellow-800"
+                            )}
+                          >
+                            {spot.phaseName}
+                          </Badge>
+                        </TableCell>
                         <TableCell >
                           <div className="flex justify-end items-center mr-8 space-x-2">
-                            <Button variant="outline" size="sm" onClick={() => handleEdit(location)}>
+                            <Button variant="outline" size="sm" onClick={() => handleEdit(spot)}>
                               <Edit className="h-4 w-4" />
                             </Button>
                             <ConfirmDeleteDialog
-                              onConfirm={() => handleDelete(location.id)}
-                              title="Eliminar localización"
-                              description={`¿Deseas eliminar la localización "${location.name}"? Esta acción no se puede deshacer.`}
+                              onConfirm={() => handleDelete(spot.spotId)}
+                              title="Eliminar plaza"
+                              description={`¿Deseas eliminar la plaza "${spot.careerName} - ${spot.locationName} - ${spot.phaseName}"? Esta acción no se puede deshacer.`}
                               trigger={
                                 <Button variant="outline" size="sm">
                                   <Trash2 className="h-4 w-4 text-red-500" />
@@ -93,8 +118,8 @@ const LocationsTable = ({
               ) : (
                 <TableBody>
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
-                      No se encontraron localizaciones.
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      No se encontraron plazas.
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -142,4 +167,4 @@ const LocationsTable = ({
   )
 }
 
-export default LocationsTable
+export default SpotsTable

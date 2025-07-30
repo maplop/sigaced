@@ -1,37 +1,23 @@
-import { Spot } from "src/shared/types"
+import type { OperationResult, Spot, SpotFull } from "src/shared/types"
 
-export const getAllSpots = async (): Promise<Spot[]> => {
-  const spots = (await window.api.getSpots()) ?? []
+export const getAllSpots = async (): Promise<SpotFull[]> => {
+  const spots = await window.api.getAllSpots()
+  if (!spots) throw new Error("No se pudieron obtener las plazas")
   return spots
 }
 
-export const createSpot = async (spot: Omit<Spot, "id">): Promise<boolean> => {
-  try {
-    await window.api.addSpot(spot)
-    return true
-  } catch (error) {
-    console.error("Error al agregar plaza:", error)
-    return false
-  }
+export const createSpot = async (spotData: Omit<Spot, "id">): Promise<void> => {
+  const response: OperationResult = await window.api.createSpot(spotData)
+  if (!response.success) throw new Error(response.error || "Error al agregar la plaza")
 }
 
-export const editSpot = async (spot: Spot): Promise<boolean> => {
-  if (!spot.id) return false
-  try {
-    await window.api.updateSpot(spot)
-    return true
-  } catch (error) {
-    console.error("Error al agregar plaza:", error)
-    return false
-  }
+export const updateSpot = async (spotData: Spot): Promise<void> => {
+  const response: OperationResult = await window.api.updateSpot(spotData)
+  if (!response.success) throw new Error(response.error || "Error al actualizar la plaza")
 }
 
-export const deleteSpot = async (id: string): Promise<boolean> => {
-  try {
-    await window.api.deleteSpot(id)
-    return true
-  } catch (error) {
-    console.error("Error al eliminar plaza:", error)
-    return false
-  }
+export const deleteSpot = async (spotId: number): Promise<void> => {
+  const response: OperationResult = await window.api.deleteSpot(spotId)
+  if (!response.success)
+    throw new Error(response.error || "Error al eliminar la plaza completamente")
 }

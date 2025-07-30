@@ -82,15 +82,7 @@ export const useLocationView = () => {
 
   const mutation = useMutation({
     mutationFn: handleLocationSubmit,
-    onSuccess: (data) => {
-      if (data === null || data === false) {
-        toast.error("Ocurrió un error al procesar el usuario. Intenta nuevamente.", {
-          style: {
-            color: "var(--errorMessage)"
-          }
-        })
-        return
-      }
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [rqKeys.LOCATIONS] })
       resetForm()
       toast.success(
@@ -101,7 +93,13 @@ export const useLocationView = () => {
     },
     onError: (error) => {
       console.error("Error procesando localización:", error)
-      toast.error("Ocurrió un error al procesar la localización. Intenta nuevamente.", {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : editingLocation
+            ? "Error al editar la localización."
+            : "Error al crear la localización"
+      toast.error(errorMessage, {
         style: {
           color: "var(--errorMessage)"
         }
@@ -124,13 +122,7 @@ export const useLocationView = () => {
 
   const deleteMutation = useMutation({
     mutationFn: deleteLocation,
-    onSuccess: (_, id) => {
-      if (!id) {
-        toast.error("Ha ocurrido un error. No se encuentra la localización.", {
-          style: { color: "var(--errorMessage)" }
-        })
-        return
-      }
+    onSuccess: () => {
       toast.success("Localización eliminada correctamente.")
       queryClient.invalidateQueries({ queryKey: [rqKeys.LOCATIONS] })
       resetForm()

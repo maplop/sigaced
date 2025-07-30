@@ -2,10 +2,11 @@ import { rqKeys } from "@renderer/utils/rqKeys"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
-import { Spot } from "src/shared/types"
-import { getAllSpots, createSpot, editSpot, deleteSpot } from "@renderer/api/spot"
+import { Spot, SpotFull } from "src/shared/types"
+import { getAllSpots, createSpot, updateSpot, deleteSpot } from "@renderer/api/spot"
 import { getAllCareers } from "@renderer/api/career"
 import { getAllLocations } from "@renderer/api/location"
+import { getAllPhases } from "@renderer/api/phase"
 
 export const useSpotView = () => {
   const queryClient = useQueryClient()
@@ -13,13 +14,14 @@ export const useSpotView = () => {
   const [itemsPerPage, setItemsPerPage] = useState<number>(10)
 
   const [searchTerm, setSearchTerm] = useState<string>("")
-  const [sortField, setSortField] = useState<keyof Spot | null>(null)
+  const [sortField, setSortField] = useState<keyof SpotFull | null>(null)
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingSpot, setEditingSpot] = useState<Spot | null>(null)
+  const [editingSpot, setEditingSpot] = useState<SpotFull | null>(null)
   const [formData, setFormData] = useState<Omit<Spot, "id">>({
-    careerId: "",
-    locationId: "",
+    careerId: undefined,
+    locationId: undefined,
+    phaseId: undefined,
     availableQuantity: 0
   })
 
@@ -38,49 +40,34 @@ export const useSpotView = () => {
     queryFn: getAllLocations
   })
 
-  const careerMap = useMemo(() => {
-    const map = new Map<string, string>()
-    careers?.forEach((c) => map.set(c.id.toString(), c.fullName))
-    return map
-  }, [careers])
-
-  const locationMap = useMemo(() => {
-    const map = new Map<string, string>()
-    locations?.forEach((l) => map.set(l.id.toString(), l.name))
-    return map
-  }, [locations])
+  const { data: phases, isLoading: loadingPhases } = useQuery({
+    queryKey: [rqKeys.PHASE],
+    queryFn: getAllPhases
+  })
 
   // Filtrado y ordenamiento
   const filteredAndSortedSpots = useMemo(() => {
-    const filtered = data?.filter((spot) => {
-      const careerName = careerMap.get(spot.careerId.toString())?.toLowerCase() ?? ""
-      const locationName = locationMap.get(spot.locationId.toString())?.toLowerCase() ?? ""
+    if (!data) return []
 
+    // Filtro: busca término en carrera, localización o fase
+    const filtered = data.filter((spot) => {
+      const term = searchTerm.toLowerCase()
       return (
-        careerName.includes(searchTerm.toLowerCase()) ||
-        locationName.includes(searchTerm.toLowerCase())
+        spot.careerName.toLowerCase().includes(term) ||
+        spot.locationName.toLowerCase().includes(term) ||
+        spot.phaseName.toLowerCase().includes(term)
       )
     })
 
     if (sortField) {
-      filtered?.sort((a, b) => {
-        let aValue: string | number
-        let bValue: string | number
+      filtered.sort((a, b) => {
+        let aValue: string | number = a[sortField]!
+        let bValue: string | number = b[sortField]!
 
-        if (sortField === "careerId") {
-          aValue = careerMap.get(a.careerId.toString()) ?? ""
-          bValue = careerMap.get(b.careerId.toString()) ?? ""
-        } else if (sortField === "locationId") {
-          aValue = locationMap.get(a.locationId.toString()) ?? ""
-          bValue = locationMap.get(b.locationId.toString()) ?? ""
-        } else {
-          aValue = a[sortField]
-          bValue = b[sortField]
-        }
-
-        if (typeof aValue === "string") {
+        // Normaliza strings para comparación
+        if (typeof aValue === "string" && typeof bValue === "string") {
           aValue = aValue.toLowerCase()
-          bValue = (bValue as string).toLowerCase()
+          bValue = bValue.toLowerCase()
         }
 
         if (aValue < bValue) return sortDirection === "asc" ? -1 : 1
@@ -89,10 +76,10 @@ export const useSpotView = () => {
       })
     }
 
-    return filtered ?? []
-  }, [data, searchTerm, sortField, sortDirection, careerMap, locationMap])
+    return filtered
+  }, [data, searchTerm, sortField, sortDirection])
 
-  const paginatedSpots: Spot[] = useMemo(() => {
+  const paginatedSpots: SpotFull[] = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
     return filteredAndSortedSpots.slice(startIndex, endIndex)
@@ -102,7 +89,7 @@ export const useSpotView = () => {
     return Math.ceil(filteredAndSortedSpots?.length / itemsPerPage)
   }, [filteredAndSortedSpots, itemsPerPage])
 
-  const handleSort = (field: keyof Spot) => {
+  const handleSort = (field: keyof SpotFull) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
@@ -112,23 +99,16 @@ export const useSpotView = () => {
   }
 
   const handleSpotSubmit = async (spot: Omit<Spot, "id">) => {
+    console.log("editing plaza --- ", editingSpot)
     if (!editingSpot) {
       return await createSpot(spot)
     }
-    return await editSpot({ ...spot, id: editingSpot.id })
+    return await updateSpot({ ...spot, id: editingSpot.spotId })
   }
 
   const mutation = useMutation({
     mutationFn: handleSpotSubmit,
-    onSuccess: (data) => {
-      if (data === null || data === false) {
-        toast.error("Ocurrió un error al procesar el usuario. Intenta nuevamente.", {
-          style: {
-            color: "var(--errorMessage)"
-          }
-        })
-        return
-      }
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [rqKeys.SPOT] })
       resetForm()
       toast.success(
@@ -137,7 +117,13 @@ export const useSpotView = () => {
     },
     onError: (error) => {
       console.error("Error procesando plaza:", error)
-      toast.error("Ocurrió un error al procesar la plaza. Intenta nuevamente.", {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : editingSpot
+            ? "Error al editar la plaza."
+            : "Error al crear la plaza"
+      toast.error(errorMessage, {
         style: {
           color: "var(--errorMessage)"
         }
@@ -150,11 +136,12 @@ export const useSpotView = () => {
     mutation.mutate(formData)
   }
 
-  const handleEdit = (spot: Spot) => {
+  const handleEdit = (spot: SpotFull) => {
     setEditingSpot(spot)
     setFormData({
       careerId: spot.careerId,
       locationId: spot.locationId,
+      phaseId: spot.phaseId,
       availableQuantity: spot.availableQuantity
     })
     setIsDialogOpen(true)
@@ -162,18 +149,12 @@ export const useSpotView = () => {
 
   const deleteMutation = useMutation({
     mutationFn: deleteSpot,
-    onSuccess: (_, id) => {
-      if (!id) {
-        toast.error("Ha ocurrido un error. No se encuentra la plaza.", {
-          style: { color: "var(--errorMessage)" }
-        })
-        return
-      }
+    onSuccess: () => {
       toast.success("Plaza eliminada correctamente.")
       queryClient.invalidateQueries({ queryKey: [rqKeys.SPOT] })
       resetForm()
     },
-    onError: (error: unknown) => {
+    onError: (error) => {
       console.error(error)
       const errorMessage =
         error instanceof Error ? error.message : "Ocurrió un error al eliminar la plaza."
@@ -183,14 +164,15 @@ export const useSpotView = () => {
     }
   })
 
-  const handleDelete = (id: string) => {
-    deleteMutation.mutate(id)
+  const handleDelete = (spotId: number) => {
+    deleteMutation.mutate(spotId)
   }
 
   const resetForm = () => {
     setFormData({
-      careerId: "",
-      locationId: "",
+      careerId: undefined,
+      locationId: undefined,
+      phaseId: undefined,
       availableQuantity: 0
     })
     setEditingSpot(null)
@@ -207,10 +189,10 @@ export const useSpotView = () => {
     setItemsPerPage,
     careers,
     loadingCareers,
-    careerMap,
     locations,
     loadingLocations,
-    locationMap,
+    phases,
+    loadingPhases,
     searchTerm,
     setSearchTerm,
     sortField,

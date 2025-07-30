@@ -69,3 +69,33 @@ export function insertSpotWithQuantity(spot: SpotWithQuantity) {
 
   insert()
 }
+
+// Obtener todas las plazas con detalle: carrera, sede, fase y cantidad
+export function getAllSpotsWithQuantities(): {
+  spotId: number
+  careerName: string
+  locationName: string
+  phaseId: number
+  phaseName: string
+  availableQuantity: number
+}[] {
+  return db
+    .prepare(
+      `
+    SELECT
+      s.id AS spotId,
+      c.full_name AS careerName,
+      l.name AS locationName,
+      ph.id AS phaseId,
+      ph.name AS phaseName,
+      sp.available_quantity AS availableQuantity
+    FROM spot s
+    JOIN career c ON s.career_id = c.id
+    JOIN location l ON s.location_id = l.id
+    JOIN spot_phase sp ON s.id = sp.spot_id
+    JOIN phase ph ON sp.phase_id = ph.id
+    ORDER BY ph.id, c.full_name
+  `
+    )
+    .all()
+}

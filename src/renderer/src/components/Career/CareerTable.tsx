@@ -24,6 +24,7 @@ export interface CareerTableProps {
   handleSort: (field: keyof Career) => void
   handleEdit: (career: Career) => void
   handleDelete: (id: string) => void
+  filteredAndSortedCareers: Career[]
 }
 
 const CareerTable = ({
@@ -39,6 +40,7 @@ const CareerTable = ({
   handleSort,
   handleDelete,
   handleEdit,
+  filteredAndSortedCareers
 }: CareerTableProps) => {
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
@@ -65,37 +67,47 @@ const CareerTable = ({
                   <TableHead className="flex justify-end items-center mr-12">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {paginatedCareers.map((career, index) => {
-                  return (
-                    <TableRow key={career.id}>
-                      <TableCell className="text-center">
-                        {(currentPage - 1) * itemsPerPage + index + 1}
-                      </TableCell>
-                      <TableCell className="font-medium">{career.fullName}</TableCell>
-                      <TableCell>{career.abbreviation}</TableCell>
-                      <TableCell className="text-center"><Badge>{career.faculty}</Badge></TableCell>
-                      <TableCell >
-                        <div className="flex justify-end items-center mr-8 space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => handleEdit(career)}>
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <ConfirmDeleteDialog
-                            onConfirm={() => handleDelete(career.id)}
-                            title="Eliminar carrera"
-                            description={`¿Deseas eliminar la carrera "${career.abbreviation}"? Esta acción no se puede deshacer.`}
-                            trigger={
-                              <Button variant="outline" size="sm">
-                                <Trash2 className="h-4 w-4 text-red-500" />
-                              </Button>
-                            }
-                          />
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
+              {filteredAndSortedCareers.length !== 0 ? (
+                <TableBody>
+                  {paginatedCareers.map((career, index) => {
+                    return (
+                      <TableRow key={career.id}>
+                        <TableCell className="text-center">
+                          {(currentPage - 1) * itemsPerPage + index + 1}
+                        </TableCell>
+                        <TableCell className="font-medium">{career.fullName}</TableCell>
+                        <TableCell>{career.abbreviation}</TableCell>
+                        <TableCell className="text-center"><Badge>{career.faculty}</Badge></TableCell>
+                        <TableCell >
+                          <div className="flex justify-end items-center mr-8 space-x-2">
+                            <Button variant="outline" size="sm" onClick={() => handleEdit(career)}>
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <ConfirmDeleteDialog
+                              onConfirm={() => handleDelete(career.id)}
+                              title="Eliminar carrera"
+                              description={`¿Deseas eliminar la carrera "${career.abbreviation}"? Esta acción no se puede deshacer.`}
+                              trigger={
+                                <Button variant="outline" size="sm">
+                                  <Trash2 className="h-4 w-4 text-red-500" />
+                                </Button>
+                              }
+                            />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              ) : (
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                      No se encontraron carreras.
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              )}
             </Table>
           </div>
 

@@ -13,7 +13,6 @@ export interface Student {
   age: number
   gender: "M" | "F"
   municipality: string
-  participatedPhases?: number
   assignedPhaseId?: number | null
 }
 
@@ -37,13 +36,20 @@ export interface Location {
 
 export interface Spot {
   id: number
-  careerId: number
-  locationId: number
+  careerId?: number
+  locationId?: number
+  phaseId?: number
+  availableQuantity: number
 }
 
-export interface SpotPhase {
+export interface SpotFull {
   spotId: number
+  careerId: number
+  careerName: string
+  locationId: number
+  locationName: string
   phaseId: number
+  phaseName: string
   availableQuantity: number
 }
 

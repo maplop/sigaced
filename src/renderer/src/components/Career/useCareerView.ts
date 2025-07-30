@@ -79,15 +79,7 @@ export const useCareerView = () => {
 
   const mutation = useMutation({
     mutationFn: handleCareerSubmit,
-    onSuccess: (data) => {
-      if (data === null || data === false) {
-        toast.error("Ocurrió un error al procesar el usuario. Intenta nuevamente.", {
-          style: {
-            color: "var(--errorMessage)"
-          }
-        })
-        return
-      }
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [rqKeys.CAREERS] })
       resetForm()
       toast.success(
@@ -96,7 +88,13 @@ export const useCareerView = () => {
     },
     onError: (error) => {
       console.error("Error procesando carrera:", error)
-      toast.error("Ocurrió un error al procesar la carrera. Intenta nuevamente.", {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : editingCareer
+            ? "Error al editar carrera."
+            : "Error al crear carrera."
+      toast.error(errorMessage, {
         style: {
           color: "var(--errorMessage)"
         }
@@ -121,13 +119,7 @@ export const useCareerView = () => {
 
   const deleteMutation = useMutation({
     mutationFn: deleteCareer,
-    onSuccess: (_, id) => {
-      if (!id) {
-        toast.error("Ha ocurrido un error. No se encuentra la carrera.", {
-          style: { color: "var(--errorMessage)" }
-        })
-        return
-      }
+    onSuccess: () => {
       toast.success("Carrera eliminada correctamente.")
       queryClient.invalidateQueries({ queryKey: [rqKeys.CAREERS] })
       resetForm()

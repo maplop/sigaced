@@ -86,12 +86,8 @@ const LocationView = () => {
               handleSort={handleSort}
               handleEdit={handleEdit}
               handleDelete={handleDelete}
+              filteredAndSortedLocations={filteredAndSortedLocations}
             />
-            {filteredAndSortedLocations.length === 0 && (
-              <div className="text-center py-8 text-muted-foreground">
-                No se encontraron localizaciones.
-              </div>
-            )}
           </CardContent>
         </Card>
       </ScrollArea>

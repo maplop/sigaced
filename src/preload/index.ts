@@ -27,18 +27,10 @@ const api = {
   deleteCareer: (id: string) => ipcRenderer.invoke("career:delete", id),
 
   // Spot
-  addSpot: (spot) => ipcRenderer.invoke("spot:add", spot),
-  getSpots: () => ipcRenderer.invoke("spot:getAll"),
-  updateSpot: (spot) => ipcRenderer.invoke("spot:update", spot),
-  deleteSpot: (id: string) => ipcRenderer.invoke("spot:delete", id),
-  addSpotWithQuantity: (spotData) => ipcRenderer.invoke("spot:addWithQuantity", spotData),
-
-  // SpotPhase
-  addSpotPhase: (spotPhase) => ipcRenderer.invoke("spotPhase:add", spotPhase),
-  getSpotPhases: () => ipcRenderer.invoke("spotPhase:getAll"),
-  getSpotPhase: (spotId, phaseId) => ipcRenderer.invoke("spotPhase:getOne", spotId, phaseId),
-  updateSpotPhase: (spotPhase) => ipcRenderer.invoke("spotPhase:update", spotPhase),
-  deleteSpotPhase: (spotId, phaseId) => ipcRenderer.invoke("spotPhase:delete", spotId, phaseId),
+  createSpot: (spotData) => ipcRenderer.invoke("spot:add", spotData),
+  updateSpot: (spotData) => ipcRenderer.invoke("spot:update", spotData),
+  getAllSpots: () => ipcRenderer.invoke("spot:getAll"),
+  deleteSpot: (spotId: number) => ipcRenderer.invoke("spot:delete", spotId),
 
   // Request
   addRequest: (request) => ipcRenderer.invoke("request:add", request),

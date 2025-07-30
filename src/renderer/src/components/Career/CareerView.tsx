@@ -53,7 +53,7 @@ const CareerView = () => {
           <CardHeader className="flex justify-between">
             <div>
               <CardTitle>Lista de Carreras</CardTitle>
-              <CardDescription>Busca y gestiona todos las carreras registradas</CardDescription>
+              <CardDescription>Busca y gestiona todas las carreras registradas</CardDescription>
             </div>
             <Card className="w-fit p-3 bg-transparent shadow-none">
               <div className="flex items-center gap-2">
@@ -87,12 +87,8 @@ const CareerView = () => {
               handleSort={handleSort}
               handleEdit={handleEdit}
               handleDelete={handleDelete}
+              filteredAndSortedCareers={filteredAndSortedCareers}
             />
-            {filteredAndSortedCareers.length === 0 && (
-              <div className="text-center py-8 text-muted-foreground">
-                No se encontraron carreras.
-              </div>
-            )}
           </CardContent>
         </Card>
       </ScrollArea>

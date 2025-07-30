@@ -9,7 +9,8 @@ import {
   Location,
   Phase,
   User,
-  OperationResult
+  OperationResult,
+  SpotFull
 } from "src/shared/types"
 
 declare global {
@@ -38,18 +39,10 @@ declare global {
       deleteCareer: (id: string) => Promise<OperationResult>
 
       // Spots
-      addSpot: (spot: Omit<Spot, "id">) => Promise<OperationResult>
-      getSpots: () => Promise<Spot[]>
-      updateSpot: (spot: Spot) => Promise<OperationResult>
-      deleteSpot: (id: string) => Promise<OperationResult>
-      addSpotWithQuantity: (spotData: any) => Promise<OperationResult>
-
-      // SpotPhase
-      addSpotPhase: (spotPhase: SpotPhase) => Promise<OperationResult>
-      getSpotPhases: () => Promise<SpotPhase[]>
-      getSpotPhase: (spotId: number, phaseId: number) => Promise<SpotPhase | null>
-      updateSpotPhase: (spotPhase: SpotPhase) => Promise<OperationResult>
-      deleteSpotPhase: (spotId: number, phaseId: number) => Promise<OperationResult>
+      createSpot: (spotData: Omit<Spot, "id">) => Promise<OperationResult>
+      updateSpot: (spotData: Spot) => Promise<OperationResult>
+      getAllSpots: () => Promise<SpotFull[]>
+      deleteSpot: (spotId: number) => Promise<OperationResult>
 
       // Requests
       addRequest: (request: Request) => Promise<OperationResult>

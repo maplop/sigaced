@@ -41,6 +41,7 @@ const UsersTable = ({
   handleSort,
   handleDelete,
   handleEdit,
+  filteredAndSortedUsers,
 }: UsersTableProps) => {
   const { user: loggedUser } = useAuthContext()
   const goToPage = (page: number) => {
@@ -74,49 +75,59 @@ const UsersTable = ({
                   <TableHead className="text-center">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {paginatedUsers.map((user, index) => {
-                  return (
-                    <TableRow key={user.id}>
-                      <TableCell className="text-center">
-                        {(currentPage - 1) * itemsPerPage + index + 1}
-                      </TableCell>
-                      <TableCell>{user.name}</TableCell>
-                      <TableCell>
-                        {user.lastName}
-                      </TableCell>
-                      <TableCell className="text-center font-medium">
-                        {user.username}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
-                          {user.role === 'admin' ? 'Adminsitrador' : 'Supervisor'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-center">{user.createdAt}</TableCell>
-                      {user.id !== loggedUser?.id && (
-                        <TableCell >
-                          <div className="flex justify-center space-x-2">
-                            <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <ConfirmDeleteDialog
-                              onConfirm={() => handleDelete(user.id)}
-                              title="Eliminar usuario"
-                              description={`¿Deseas eliminar al usuario "${user.username}"? Esta acción no se puede deshacer.`}
-                              trigger={
-                                <Button variant="outline" size="sm">
-                                  <Trash2 className="h-4 w-4 text-red-500" />
-                                </Button>
-                              }
-                            />
-                          </div>
+              {filteredAndSortedUsers.length !== 0 ? (
+                <TableBody>
+                  {paginatedUsers.map((user, index) => {
+                    return (
+                      <TableRow key={user.id}>
+                        <TableCell className="text-center">
+                          {(currentPage - 1) * itemsPerPage + index + 1}
                         </TableCell>
-                      )}
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
+                        <TableCell>{user.name}</TableCell>
+                        <TableCell>
+                          {user.lastName}
+                        </TableCell>
+                        <TableCell className="text-center font-medium">
+                          {user.username}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
+                            {user.role === 'admin' ? 'Adminsitrador' : 'Supervisor'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-center">{user.createdAt}</TableCell>
+                        {user.id !== loggedUser?.id && (
+                          <TableCell >
+                            <div className="flex justify-center space-x-2">
+                              <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <ConfirmDeleteDialog
+                                onConfirm={() => handleDelete(user.id)}
+                                title="Eliminar usuario"
+                                description={`¿Deseas eliminar al usuario "${user.username}"? Esta acción no se puede deshacer.`}
+                                trigger={
+                                  <Button variant="outline" size="sm">
+                                    <Trash2 className="h-4 w-4 text-red-500" />
+                                  </Button>
+                                }
+                              />
+                            </div>
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              ) : (
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                      No se encontraron usuarios.
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              )}
             </Table>
           </div>
 

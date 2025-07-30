@@ -22,7 +22,6 @@ import {
   updateCareer,
   deleteCareer
 } from "./queries/career"
-import { getSpots, addSpot, updateSpot, deleteSpot } from "./queries/spot"
 import { getRequests, addRequest, updateRequest, deleteRequest } from "./queries/request"
 import {
   getLocations,
@@ -40,14 +39,8 @@ import {
   deleteUser,
   changeUserPassword
 } from "./queries/user"
-import {
-  addSpotPhase,
-  deleteSpotPhase,
-  getAllSpotPhases,
-  getSpotPhase,
-  updateSpotPhase
-} from "./queries/spotPhase"
-import { insertSpotWithQuantity, insertStudentWithRequests } from "./queries/customQueries"
+import { insertStudentWithRequests } from "./queries/customQueries"
+import { getAllSpots, createSpot, updateSpot, deleteSpot } from "./queries/spot"
 
 function createWindow(): void {
   // Create the browser window.
@@ -246,9 +239,18 @@ ipcMain.handle("career:delete", async (_event, id) => {
 })
 
 // IPC handlers for spot CRUD
-ipcMain.handle("spot:add", async (_event, spot) => {
+ipcMain.handle("spot:add", async (_event, spotData) => {
   try {
-    await addSpot(spot)
+    await createSpot(spotData)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("spot:update", async (_event, spotData) => {
+  try {
+    await updateSpot(spotData)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
@@ -257,80 +259,16 @@ ipcMain.handle("spot:add", async (_event, spot) => {
 
 ipcMain.handle("spot:getAll", async () => {
   try {
-    return await getSpots()
+    return await getAllSpots()
   } catch (error) {
-    console.error("Error al obtener spots:", error)
+    console.error("Error al obtener plazas:", error)
     return []
   }
 })
 
-ipcMain.handle("spot:update", async (_event, spot) => {
+ipcMain.handle("spot:delete", async (_event, spotId: number) => {
   try {
-    await updateSpot(spot)
-    return { success: true }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-})
-
-ipcMain.handle("spot:delete", async (_event, id) => {
-  try {
-    await deleteSpot(id)
-    return { success: true }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-})
-
-ipcMain.handle("spot:addWithQuantity", async (_event, spotData) => {
-  try {
-    insertSpotWithQuantity(spotData)
-    return { success: true }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-})
-
-// IPC handlers for spot phase CRUD
-ipcMain.handle("spotPhase:add", async (_event, spotPhase) => {
-  try {
-    await addSpotPhase(spotPhase)
-    return { success: true }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-})
-
-ipcMain.handle("spotPhase:getAll", async () => {
-  try {
-    return await getAllSpotPhases()
-  } catch (error) {
-    console.error("Error al obtener spot phases:", error)
-    return []
-  }
-})
-
-ipcMain.handle("spotPhase:getOne", async (_event, spotId, phaseId) => {
-  try {
-    return (await getSpotPhase(spotId, phaseId)) ?? null
-  } catch (error) {
-    console.error("Error al obtener spotPhase:", error)
-    return null
-  }
-})
-
-ipcMain.handle("spotPhase:update", async (_event, spotPhase) => {
-  try {
-    await updateSpotPhase(spotPhase)
-    return { success: true }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-})
-
-ipcMain.handle("spotPhase:delete", async (_event, spotId, phaseId) => {
-  try {
-    await deleteSpotPhase(spotId, phaseId)
+    await deleteSpot(spotId)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }

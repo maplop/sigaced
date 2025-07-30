@@ -89,12 +89,6 @@ const ManageUsersView = () => {
                 handleEdit={handleEdit}
                 filteredAndSortedUsers={filteredAndSortedUsers}
               />
-
-              {filteredAndSortedUsers.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  No se encontraron usuarios que coincidan con la búsqueda.
-                </div>
-              )}
             </CardContent>
           </Card>
         </div>

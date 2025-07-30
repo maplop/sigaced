@@ -23,9 +23,7 @@ export const getUserById = async (id: string): Promise<User | null> => {
 
 export const updateUser = async (user: Omit<User, "createdAt">): Promise<void> => {
   const allUsers = await window.api.getUsers()
-  console.log("usuario a editar ---", user)
   const usernameTaken = allUsers.some((u) => u.username === user.username && u.id !== user.id)
-  console.log("Encontrado --- ", usernameTaken)
   if (usernameTaken) throw new Error("Nombre de usuario ya está en uso")
   await window.api.updateUser(user)
 }

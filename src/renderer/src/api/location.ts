@@ -1,37 +1,36 @@
 import { Location } from "src/shared/types"
 
 export const getAllLocations = async (): Promise<Location[]> => {
-  const locations = (await window.api.getLocations()) ?? []
+  const locations = await window.api.getLocations()
+  if (!locations) {
+    throw new Error("No se pudieron obtener las localizaciones.")
+  }
   return locations
 }
 
-export const createLocation = async (location: Omit<Location, "id">): Promise<boolean> => {
-  try {
-    await window.api.addLocation(location)
-    return true
-  } catch (error) {
-    console.error("Error al agregar localización:", error)
-    return false
+export const createLocation = async (location: Omit<Location, "id">): Promise<void> => {
+  const response = await window.api.addLocation(location)
+
+  if (!response.success) {
+    throw new Error(response.error || "Error al agregar la localización")
   }
 }
 
-export const editLocation = async (location: Location): Promise<boolean> => {
-  if (!location.id) return false
-  try {
-    await window.api.updateLocation(location)
-    return true
-  } catch (error) {
-    console.error("Error al agregar localización:", error)
-    return false
+export const editLocation = async (location: Location): Promise<void> => {
+  if (!location.id) {
+    throw new Error("La localización debe tener un ID válido para editarse.")
+  }
+
+  const response = await window.api.updateLocation(location)
+
+  if (!response.success) {
+    throw new Error(response.error || "Error al actualizar la localización.")
   }
 }
 
-export const deleteLocation = async (id: string): Promise<boolean> => {
-  try {
-    await window.api.deleteLocation(id)
-    return true
-  } catch (error) {
-    console.error("Error al eliminar localización:", error)
-    return false
+export const deleteLocation = async (id: string): Promise<void> => {
+  const response = await window.api.deleteLocation(id)
+  if (!response.success) {
+    throw new Error(response.error || "Error al eliminar la localización")
   }
 }

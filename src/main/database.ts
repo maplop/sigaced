@@ -18,7 +18,7 @@ db.exec(`
     name TEXT NOT NULL UNIQUE
   );
   INSERT OR IGNORE INTO phase (id, name) VALUES
-    (1, 'First'), (2, 'Second'), (3, 'Third');
+    (1, 'Primer Otorgamiento'), (2, 'Segundo Otorgamiento'), (3, 'Otorgamiento Manual');
 
   -- Estudiantes
   CREATE TABLE IF NOT EXISTS student (
@@ -30,9 +30,7 @@ db.exec(`
     age INTEGER CHECK (age > 0),
     gender TEXT CHECK (gender IN ('M', 'F')),
     municipality TEXT,
-    assigned_phase_id INTEGER REFERENCES phase(id),
-    phases_participated INTEGER DEFAULT 0,
-    current_phase_id INTEGER NOT NULL DEFAULT 1 REFERENCES phase(id)
+    assigned_phase_id INTEGER REFERENCES phase(id)
   );
 
   -- Historial de fases en las que participó el estudiante
@@ -59,46 +57,38 @@ db.exec(`
     name TEXT UNIQUE NOT NULL
   );
 
-  -- Plazas base (carrera + sede)
+  -- Plazas (cada fila representa una plaza disponible en una fase específica)
   CREATE TABLE IF NOT EXISTS spot (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     career_id INTEGER NOT NULL,
     location_id INTEGER NOT NULL,
+    phase_id INTEGER NOT NULL,
+    available_quantity INTEGER NOT NULL CHECK (available_quantity >= 0),
     FOREIGN KEY (career_id) REFERENCES career(id),
     FOREIGN KEY (location_id) REFERENCES location(id),
-    UNIQUE (career_id, location_id)
-  );
-
-  -- Cantidad por fase (solo se inserta manualmente en fase 1)
-  CREATE TABLE IF NOT EXISTS spot_phase (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    spot_id INTEGER NOT NULL,
-    phase_id INTEGER NOT NULL,
-    available_quantity INTEGER CHECK (available_quantity >= 0),
-    FOREIGN KEY (spot_id) REFERENCES spot(id),
     FOREIGN KEY (phase_id) REFERENCES phase(id),
-    UNIQUE (spot_id, phase_id)
+    UNIQUE (career_id, location_id, phase_id)
   );
 
   -- Solicitudes por fase (máximo 3 por estudiante por fase)
   CREATE TABLE IF NOT EXISTS request (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     student_id INTEGER NOT NULL,
-    spot_phase_id INTEGER NOT NULL,
+    spot_id INTEGER NOT NULL,
     preference_order INTEGER CHECK (preference_order BETWEEN 1 AND 3),
     FOREIGN KEY (student_id) REFERENCES student(id),
-    FOREIGN KEY (spot_phase_id) REFERENCES spot_phase(id),
-    UNIQUE (student_id, preference_order, spot_phase_id)
+    FOREIGN KEY (spot_id) REFERENCES spot(id),
+    UNIQUE (student_id, preference_order, spot_id)
   );
 
   -- Asignaciones finales
   CREATE TABLE IF NOT EXISTS assignment (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     student_id INTEGER NOT NULL,
-    spot_phase_id INTEGER NOT NULL,
+    spot_id INTEGER NOT NULL,
     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES student(id),
-    FOREIGN KEY (spot_phase_id) REFERENCES spot_phase(id),
+    FOREIGN KEY (spot_id) REFERENCES spot(id),
     UNIQUE (student_id)
   );
 

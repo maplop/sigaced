@@ -4,8 +4,8 @@ import { Student } from "../../shared/types"
 // Create
 export function addStudent(student: Student): void {
   const stmt = db.prepare(`
-    INSERT INTO student (ci, name, last_name, grade, age, gender, municipality, phases_participated, assigned_phase_id)
-    VALUES (@ci, @name, @lastName, @grade, @age, @gender, @municipality, COALESCE(@phasesParticipated, 0), @assignedPhaseId)
+    INSERT INTO student (ci, name, last_name, grade, age, gender, municipality, assigned_phase_id)
+    VALUES (@ci, @name, @lastName, @grade, @age, @gender, @municipality, @assignedPhaseId)
   `)
   stmt.run(student)
 }
@@ -24,7 +24,6 @@ export function getStudents(): Student[] {
         age,
         gender,
         municipality,
-        phases_participated AS phasesParticipated,
         assigned_phase_id AS assignedPhaseId
       FROM student
     `
@@ -46,7 +45,6 @@ export function getStudentByCI(ci: string): Student | undefined {
         age,
         gender,
         municipality,
-        phases_participated AS phasesParticipated,
         assigned_phase_id AS assignedPhaseId
       FROM student
       WHERE ci = ?
@@ -66,7 +64,6 @@ export function updateStudent(student: Student): void {
       age = @age,
       gender = @gender,
       municipality = @municipality,
-      phases_participated = COALESCE(@phasesParticipated, phases_participated),
       assigned_phase_id = @assignedPhaseId
     WHERE ci = @ci
   `)

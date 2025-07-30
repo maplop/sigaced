@@ -1,9 +1,9 @@
 import PageContainer from "../common/PageContainer"
 import PageTitle from "../common/PageTitle"
 import { useSpotView } from "./useSpotView"
-import SpotsTable from "./SpotsTable"
+import SpotTable from "./SpotTable"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "../ui/card"
-import { MapPin, Search } from "lucide-react"
+import { ListIcon, MapPin, Search, UsersIcon } from "lucide-react"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll-area"
 import SpotForm from "./SpotForm"
@@ -21,10 +21,10 @@ const SpotView = () => {
     setItemsPerPage,
     careers,
     loadingCareers,
-    careerMap,
     locations,
     loadingLocations,
-    locationMap,
+    phases,
+    loadingPhases,
     searchTerm,
     setSearchTerm,
     sortField,
@@ -42,6 +42,11 @@ const SpotView = () => {
     handleSubmit
   } = useSpotView()
 
+  const totalAvailableSpots = filteredAndSortedSpots.reduce(
+    (total, spot) => total + spot.availableQuantity,
+    0
+  )
+
   return (
     <PageContainer>
       <div className="flex justify-between items-center">
@@ -51,6 +56,8 @@ const SpotView = () => {
           loadingCareers={loadingCareers}
           locations={locations}
           loadingLocations={loadingLocations}
+          phases={phases}
+          loadingPhases={loadingPhases}
           isDialogOpen={isDialogOpen}
           setIsDialogOpen={setIsDialogOpen}
           resetForm={resetForm}
@@ -71,11 +78,15 @@ const SpotView = () => {
                 <CardDescription>Busca y gestiona todas las plazas registradas</CardDescription>
               </div>
               <Card className="w-fit p-3 bg-transparent shadow-none">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium text-foreground">
-                    Total de plazas:
-                  </span>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <ListIcon className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium text-foreground">Registros totales: {filteredAndSortedSpots.length}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <UsersIcon className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium text-foreground">Plazas disponibles: {totalAvailableSpots}</span>
+                  </div>
                 </div>
               </Card>
             </CardHeader>
@@ -89,9 +100,7 @@ const SpotView = () => {
                   className="pl-10 max-w-sm"
                 />
               </div>
-              <SpotsTable
-                careerMap={careerMap}
-                locationMap={locationMap}
+              <SpotTable
                 paginatedSpots={paginatedSpots}
                 loadingSpots={loadingSpots}
                 currentPage={currentPage}
@@ -104,12 +113,8 @@ const SpotView = () => {
                 handleSort={handleSort}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
+                filteredAndSortedSpots={filteredAndSortedSpots}
               />
-              {filteredAndSortedSpots.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  No se encontraron plazas.
-                </div>
-              )}
             </CardContent>
           </Card>
         </div>
