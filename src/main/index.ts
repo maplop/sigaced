@@ -257,9 +257,9 @@ ipcMain.handle("spot:update", async (_event, spotData) => {
   }
 })
 
-ipcMain.handle("spot:getAll", async () => {
+ipcMain.handle("spot:getAll", async (_event, phaseId: number) => {
   try {
-    return await getAllSpots()
+    return await getAllSpots(phaseId)
   } catch (error) {
     console.error("Error al obtener plazas:", error)
     return []

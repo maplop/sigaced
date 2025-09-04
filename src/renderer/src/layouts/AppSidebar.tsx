@@ -3,7 +3,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarGroupLabel,
   SidebarGroupContent,
   SidebarContent,
   SidebarFooter,
@@ -12,12 +11,47 @@ import {
 } from "@renderer/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@renderer/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@renderer/components/ui/avatar"
-import { ChevronDown, GraduationCap, LogOut, User, Users } from "lucide-react"
+import { ChartNoAxesCombinedIcon, ChevronDown, FileCheck, FileCheck2, GraduationCap, ListCheck, LogOut, MapPin, User, Users } from "lucide-react"
 import { useLocation } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
 import { useAuthContext } from "@renderer/context/AuthContext"
-import { menuItems } from "@renderer/utils/menuItems"
+import { Separator } from "@renderer/components/ui/separator"
 
+const menuItems = [
+  {
+    title: "Estadísiticas",
+    url: ROUTES.STATISTICS,
+    icon: ChartNoAxesCombinedIcon
+  },
+  {
+    title: "Carreras",
+    url: ROUTES.CAREERS,
+    icon: GraduationCap
+  },
+  {
+    title: "Localización",
+    url: ROUTES.LOCATION,
+    icon: MapPin
+  },
+]
+
+const allocations = [
+  {
+    title: "Primer Otorgamiento",
+    url: ROUTES.FIRST_ALLOCATION,
+    icon: FileCheck
+  },
+  {
+    title: "Segundo Otorgamiento",
+    url: ROUTES.SECOND_ALLOCATION,
+    icon: FileCheck
+  },
+  {
+    title: "Otorgamiento Manual",
+    url: ROUTES.MANUAL_ALLOCATION,
+    icon: FileCheck2
+  },
+]
 
 export function AppSidebar() {
   const location = useLocation()
@@ -43,12 +77,25 @@ export function AppSidebar() {
 
       <SidebarContent className="bg-white dark:bg-gray-950">
         <SidebarGroup>
-          <SidebarGroupLabel>Navegación Principal</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => {
+              {menuItems.map((item, index) => (
+                <SidebarMenuItem key={index}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={location.pathname === item.url}
+                    className="hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-900 dark:hover:text-gray-100 data-[active=true]:bg-gray-900 data-[active=true]:text-white dark:data-[active=true]:bg-gray-100 dark:data-[active=true]:text-gray-900"
+                  >
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+              <Separator />
+              {allocations.map((item) => {
                 const isActive = location.pathname === item.url
-
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
@@ -64,6 +111,19 @@ export function AppSidebar() {
                   </SidebarMenuItem>
                 )
               })}
+              <Separator />
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={location.pathname === ROUTES.FINAL_LIST}
+                  className="hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-900 dark:hover:text-gray-100 data-[active=true]:bg-gray-900 data-[active=true]:text-white dark:data-[active=true]:bg-gray-100 dark:data-[active=true]:text-gray-900"
+                >
+                  <a href={ROUTES.FINAL_LIST}>
+                    <ListCheck />
+                    <span>Listado Final</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

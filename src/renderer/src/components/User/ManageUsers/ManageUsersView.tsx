@@ -38,29 +38,29 @@ const ManageUsersView = () => {
   } = useManageUsersView()
   return (
     <PageContainer>
-      <div className="flex justify-between items-center">
-        <PageTitle title="Gestionar usuarios" subtitle="Panel de control para la administración de usuarios." />
-        <UserForm
-          changePassword={changePassword}
-          setChangePassword={setChangePassword}
-          isDialogOpen={isDialogOpen}
-          setIsDialogOpen={setIsDialogOpen}
-          resetForm={resetForm}
-          editingUser={editingUser}
-          handleSubmit={handleSubmit}
-          formData={formData}
-          setUserFormData={setUserFormData}
-        />
-      </div>
+      <PageTitle title="Gestionar usuarios" subtitle="Panel de control para la administración de usuarios." />
       <ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">
         <div className="flex flex-col gap-6">
           <UsersStatistics
             users={paginatedUsers}
           />
           <Card>
-            <CardHeader>
-              <CardTitle>Lista de Usuarios</CardTitle>
-              <CardDescription>Busca y gestiona todos los usuarios registrados</CardDescription>
+            <CardHeader className="flex justify-between items-center">
+              <div>
+                <CardTitle>Lista de Usuarios</CardTitle>
+                <CardDescription>Busca y gestiona todos los usuarios registrados</CardDescription>
+              </div>
+              <UserForm
+                changePassword={changePassword}
+                setChangePassword={setChangePassword}
+                isDialogOpen={isDialogOpen}
+                setIsDialogOpen={setIsDialogOpen}
+                resetForm={resetForm}
+                editingUser={editingUser}
+                handleSubmit={handleSubmit}
+                formData={formData}
+                setUserFormData={setUserFormData}
+              />
             </CardHeader>
             <CardContent>
               <div className="relative flex items-center space-x-2 mb-4">

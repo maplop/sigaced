@@ -29,8 +29,13 @@ const generateBreadcrumbs = (pathname: string): BreadcrumbData[] => {
     places: "Plazas",
     location: "Localización",
     profile: "Perfil",
-    "manage-users": 'Gestionar usuarios'
+    "manage-users": "Gestionar usuarios",
+    "first-allocation": "Primer Otorgamiento",
+    "second-allocation": "Segundo Otorgamiento",
+    "manual-allocation": "Otorgamiento Manual",
+    "final-list": "Listado Final"
   }
+
 
   const breadcrumbs: BreadcrumbData[] = [{ name: "Inicio", path: ROUTES.STATISTICS }]
 

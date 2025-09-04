@@ -8,8 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SpotFull } from "src/shared/types"
 import SkeletonTable from "./SkeletonTable"
 import ConfirmDeleteDialog from "@renderer/components/common/ConfirmDeleteDialog"
-import { Badge } from "../ui/badge"
-import clsx from "clsx"
+import { Badge } from "../../ui/badge"
 
 
 export interface SpotsTableProps {
@@ -65,9 +64,6 @@ const SpotsTable = ({
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("availableQuantity")}>
                     Plazas Disponibles {sortField === 'availableQuantity' && (sortDirection === 'asc' ? "↑" : "↓")}
                   </TableHead>
-                  <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("phaseName")}>
-                    Fase {sortField === 'phaseName' && (sortDirection === 'asc' ? "↑" : "↓")}
-                  </TableHead>
                   <TableHead className="flex justify-end items-center mr-12">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
@@ -82,18 +78,6 @@ const SpotsTable = ({
                         <TableCell>{spot.careerName}</TableCell>
                         <TableCell>{spot.locationName}</TableCell>
                         <TableCell className="text-center"><Badge>{spot.availableQuantity}</Badge></TableCell>
-                        <TableCell className="flex justify-center items-center">
-                          <Badge
-                            className={clsx(
-                              "px-2 py-1 rounded",
-                              spot.phaseId === 1 && "bg-green-100 text-green-800",
-                              spot.phaseId === 2 && "bg-blue-100 text-blue-800",
-                              spot.phaseId === 3 && "bg-yellow-100 text-yellow-800"
-                            )}
-                          >
-                            {spot.phaseName}
-                          </Badge>
-                        </TableCell>
                         <TableCell >
                           <div className="flex justify-end items-center mr-8 space-x-2">
                             <Button variant="outline" size="sm" onClick={() => handleEdit(spot)}>
@@ -102,7 +86,7 @@ const SpotsTable = ({
                             <ConfirmDeleteDialog
                               onConfirm={() => handleDelete(spot.spotId)}
                               title="Eliminar plaza"
-                              description={`¿Deseas eliminar la plaza "${spot.careerName} - ${spot.locationName} - ${spot.phaseName}"? Esta acción no se puede deshacer.`}
+                              description={`¿Deseas eliminar la plaza "${spot.careerName} - ${spot.locationName}"? Esta acción no se puede deshacer.`}
                               trigger={
                                 <Button variant="outline" size="sm">
                                   <Trash2 className="h-4 w-4 text-red-500" />

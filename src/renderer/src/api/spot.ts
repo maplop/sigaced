@@ -1,7 +1,7 @@
 import type { OperationResult, Spot, SpotFull } from "src/shared/types"
 
-export const getAllSpots = async (): Promise<SpotFull[]> => {
-  const spots = await window.api.getAllSpots()
+export const getAllSpots = async (phaseId: number): Promise<SpotFull[]> => {
+  const spots = await window.api.getAllSpots(phaseId)
   if (!spots) throw new Error("No se pudieron obtener las plazas")
   return spots
 }

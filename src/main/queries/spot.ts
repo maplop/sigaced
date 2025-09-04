@@ -1,7 +1,7 @@
 import { db } from "../database"
 import { SpotFull, Spot } from "src/shared/types"
 
-export function getAllSpots(): SpotFull[] {
+export function getAllSpots(phaseId: number): SpotFull[] {
   return db
     .prepare(
       `
@@ -18,9 +18,10 @@ export function getAllSpots(): SpotFull[] {
     JOIN career ON career.id = spot.career_id
     JOIN location ON location.id = spot.location_id
     JOIN phase ON phase.id = spot.phase_id
+    WHERE spot.phase_id = ?
   `
     )
-    .all()
+    .all(phaseId)
 }
 
 export function createSpot(spot: Omit<Spot, "id">) {

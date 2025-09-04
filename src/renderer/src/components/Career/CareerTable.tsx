@@ -75,9 +75,9 @@ const CareerTable = ({
                         <TableCell className="text-center">
                           {(currentPage - 1) * itemsPerPage + index + 1}
                         </TableCell>
-                        <TableCell className="font-medium">{career.fullName}</TableCell>
-                        <TableCell>{career.abbreviation}</TableCell>
-                        <TableCell className="text-center"><Badge>{career.faculty}</Badge></TableCell>
+                        <TableCell>{career.fullName}</TableCell>
+                        <TableCell className="font-medium">{career.abbreviation}</TableCell>
+                        <TableCell className="text-center"><Badge variant={'outline'}>{career.faculty}</Badge></TableCell>
                         <TableCell >
                           <div className="flex justify-end items-center mr-8 space-x-2">
                             <Button variant="outline" size="sm" onClick={() => handleEdit(career)}>

@@ -6,12 +6,15 @@ import Statistics from './pages/Statistics'
 import ApplicantsPage from './pages/Applicants'
 import Careers from './pages/Careers'
 import Location from './pages/Location'
-import Spot from './pages/Spot'
 import ManageUsersPage from './pages/User/ManageUsers'
 import ProfilePage from './pages/User/Profile'
+import FirstAllocations from './pages/FirstAllocations'
+import SecondAllocations from './pages/SecondAllocations'
+import ManualAllocations from './pages/ManualAllocations'
 import { ROUTES } from './routes/routes'
 import { Toaster } from './components/ui/sonner'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import FinalList from './pages/FinalList'
 
 const queryClient = new QueryClient()
 
@@ -24,12 +27,26 @@ function App(): React.JSX.Element {
           <Route path="/" element={<Navigate to={ROUTES.LOGIN} replace />} />
           <Route path={ROUTES.LOGIN} element={<Auth />} />
           <Route path={ROUTES.REGISTER} element={<Auth />} />
+
           <Route element={<MainLayout />}>
             <Route index path={ROUTES.STATISTICS} element={<Statistics />} />
-            <Route path={ROUTES.APPLICANTS} element={<ApplicantsPage />} />
             <Route path={ROUTES.CAREERS} element={<Careers />} />
-            <Route path={ROUTES.PLACES} element={<Spot />} />
             <Route path={ROUTES.LOCATION} element={<Location />} />
+
+            <Route path={ROUTES.FIRST_ALLOCATION} element={<FirstAllocations />}>
+              <Route index path={ROUTES.APPLICANTS} element={<ApplicantsPage />} />
+            </Route>
+
+            <Route path={ROUTES.SECOND_ALLOCATION} element={<SecondAllocations />}>
+              <Route index path={ROUTES.APPLICANTS} element={<ApplicantsPage />} />
+            </Route>
+
+            <Route path={ROUTES.MANUAL_ALLOCATION} element={<ManualAllocations />}>
+              <Route index path={ROUTES.APPLICANTS} element={<ApplicantsPage />} />
+            </Route>
+
+            <Route path={ROUTES.FINAL_LIST} element={<FinalList />} />
+
             <Route path={ROUTES.MANAGE_USERS} element={<ManageUsersPage />} />
             <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
           </Route>

@@ -104,7 +104,7 @@ const UserForm = ({ changePassword, setChangePassword, isDialogOpen, setIsDialog
 
             {(!editingUser || changePassword) && (
               <div className="space-y-2">
-                <Label htmlFor="password">Contraseña</Label>
+                <Label htmlFor="password">Nueva contraseña</Label>
                 <div className="relative">
                   <Input
                     id="password"

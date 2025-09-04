@@ -18,7 +18,7 @@ db.exec(`
     name TEXT NOT NULL UNIQUE
   );
   INSERT OR IGNORE INTO phase (id, name) VALUES
-    (1, 'Primer Otorgamiento'), (2, 'Segundo Otorgamiento'), (3, 'Otorgamiento Manual');
+    (1, 'first'), (2, 'second'), (3, 'manual');
 
   -- Estudiantes
   CREATE TABLE IF NOT EXISTS student (

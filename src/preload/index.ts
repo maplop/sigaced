@@ -29,7 +29,7 @@ const api = {
   // Spot
   createSpot: (spotData) => ipcRenderer.invoke("spot:add", spotData),
   updateSpot: (spotData) => ipcRenderer.invoke("spot:update", spotData),
-  getAllSpots: () => ipcRenderer.invoke("spot:getAll"),
+  getAllSpots: (phaseId: number) => ipcRenderer.invoke("spot:getAll", phaseId),
   deleteSpot: (spotId: number) => ipcRenderer.invoke("spot:delete", spotId),
 
   // Request

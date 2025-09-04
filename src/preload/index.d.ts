@@ -41,7 +41,7 @@ declare global {
       // Spots
       createSpot: (spotData: Omit<Spot, "id">) => Promise<OperationResult>
       updateSpot: (spotData: Spot) => Promise<OperationResult>
-      getAllSpots: () => Promise<SpotFull[]>
+      getAllSpots: (phaseId: number) => Promise<SpotFull[]>
       deleteSpot: (spotId: number) => Promise<OperationResult>
 
       // Requests

@@ -3,31 +3,28 @@ import { Button } from "@renderer/components/ui/button"
 import { Label } from "@renderer/components/ui/label"
 import { Input } from "@renderer/components/ui/input"
 import { Plus } from "lucide-react"
-import { Career, Location, Phase, Spot, SpotFull } from "src/shared/types"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Career, Location, Spot, SpotFull } from "src/shared/types"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
 
 interface SpotFormProps {
   careers?: Career[],
   loadingCareers: boolean,
   locations?: Location[],
   loadingLocations: boolean,
-  phases?: Phase[],
-  loadingPhases: boolean,
   isDialogOpen: boolean,
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>,
   resetForm: () => void,
   editingSpot: SpotFull | null,
   handleSubmit: (e: React.FormEvent) => void,
-  formData: Omit<Spot, 'id'>,
+  formData: Omit<Spot, 'id' | 'phaseId'>,
   setSpotFormData: React.Dispatch<React.SetStateAction<Omit<Spot, 'id'>>>;
 }
 
-const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, phases, loadingPhases, isDialogOpen, setIsDialogOpen, resetForm, editingSpot, handleSubmit, formData, setSpotFormData }: SpotFormProps) => {
+const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, isDialogOpen, setIsDialogOpen, resetForm, editingSpot, handleSubmit, formData, setSpotFormData }: SpotFormProps) => {
 
   const isFormComplete =
     formData.careerId !== undefined &&
     formData.locationId !== undefined &&
-    formData.phaseId !== undefined &&
     formData.availableQuantity !== undefined &&
     !isNaN(formData.availableQuantity) &&
     formData.availableQuantity >= 0
@@ -102,35 +99,6 @@ const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, phases
               </SelectContent>
             </Select>
           </div>
-
-          <div className="space-y-2 py-4">
-            <Label htmlFor="phaseId">Fase</Label>
-            <Select
-              value={formData.phaseId?.toString() ?? ""}
-              onValueChange={(value) =>
-                setSpotFormData((prev) => ({ ...prev, phaseId: Number(value) }))
-              }
-              required
-            >
-              <SelectTrigger id="phaseId" className="w-full">
-                <SelectValue placeholder={loadingLocations ? "Cargando fases..." : "Seleccione una fase"} />
-              </SelectTrigger>
-              <SelectContent>
-                {loadingPhases ? (
-                  <SelectItem disabled value="loading">Cargando fases...</SelectItem>
-                ) : phases && phases.length > 0 ? (
-                  phases.map((phase) => (
-                    <SelectItem key={phase.id} value={phase.id.toString()}>
-                      {phase.name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem disabled value="no-locations">No hay fases registradas</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
-          </div>
-
           <div className="w-32 space-y-2 py-4">
             <Label htmlFor="availableQuantity">Plazas disponibles</Label>
             <Input

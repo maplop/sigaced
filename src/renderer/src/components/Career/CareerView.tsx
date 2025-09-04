@@ -1,7 +1,7 @@
 import PageContainer from "../common/PageContainer"
 import PageTitle from "../common/PageTitle"
 import { useCareerView } from "./useCareerView"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "../ui/card"
+import { Card, CardContent, CardHeader, } from "../ui/card"
 import { MapPin, Search } from "lucide-react"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll-area"
@@ -38,24 +38,12 @@ const CareerView = () => {
     <PageContainer>
       <div className="flex justify-between items-center">
         <PageTitle title="Gestionar carreras" subtitle="Agrega, edita y organiza tus carreras  de forma rápida." />
-        <CareerForm
-          isDialogOpen={isDialogOpen}
-          setIsDialogOpen={setIsDialogOpen}
-          resetForm={resetForm}
-          editingCareer={editingCareer}
-          formData={formData}
-          setCareerFormData={setFormData}
-          handleSubmit={handleSubmit}
-        />
+
       </div>
       <ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">
         <Card>
-          <CardHeader className="flex justify-between">
-            <div>
-              <CardTitle>Lista de Carreras</CardTitle>
-              <CardDescription>Busca y gestiona todas las carreras registradas</CardDescription>
-            </div>
-            <Card className="w-fit p-3 bg-transparent shadow-none">
+          <CardHeader className="flex justify-between items-center">
+            <Card className="w-fit p-0 bg-transparent shadow-none">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium text-foreground">
@@ -63,6 +51,15 @@ const CareerView = () => {
                 </span>
               </div>
             </Card>
+            <CareerForm
+              isDialogOpen={isDialogOpen}
+              setIsDialogOpen={setIsDialogOpen}
+              resetForm={resetForm}
+              editingCareer={editingCareer}
+              formData={formData}
+              setCareerFormData={setFormData}
+              handleSubmit={handleSubmit}
+            />
           </CardHeader>
           <CardContent>
             <div className="relative flex items-center space-x-2 mb-4">

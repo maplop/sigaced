@@ -5,3 +5,9 @@ export const rqKeys = {
   SPOT: "spot",
   PHASE: "phase"
 }
+
+export const phases = {
+  FIRST: 1,
+  SECOND: 2,
+  MANUAL: 3
+}

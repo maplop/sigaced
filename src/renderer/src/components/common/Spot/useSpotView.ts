@@ -6,9 +6,9 @@ import { Spot, SpotFull } from "src/shared/types"
 import { getAllSpots, createSpot, updateSpot, deleteSpot } from "@renderer/api/spot"
 import { getAllCareers } from "@renderer/api/career"
 import { getAllLocations } from "@renderer/api/location"
-import { getAllPhases } from "@renderer/api/phase"
+import { PhaseType } from "@renderer/utils/types"
 
-export const useSpotView = () => {
+export const useSpotView = (phaseId: PhaseType) => {
   const queryClient = useQueryClient()
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(10)
@@ -21,13 +21,13 @@ export const useSpotView = () => {
   const [formData, setFormData] = useState<Omit<Spot, "id">>({
     careerId: undefined,
     locationId: undefined,
-    phaseId: undefined,
+    phaseId: phaseId,
     availableQuantity: 0
   })
 
   const { data, isLoading: loadingSpots } = useQuery({
-    queryKey: [rqKeys.SPOT],
-    queryFn: getAllSpots
+    queryKey: [rqKeys.SPOT, phaseId],
+    queryFn: () => getAllSpots(phaseId)
   })
 
   const { data: careers, isLoading: loadingCareers } = useQuery({
@@ -38,11 +38,6 @@ export const useSpotView = () => {
   const { data: locations, isLoading: loadingLocations } = useQuery({
     queryKey: [rqKeys.LOCATIONS],
     queryFn: getAllLocations
-  })
-
-  const { data: phases, isLoading: loadingPhases } = useQuery({
-    queryKey: [rqKeys.PHASE],
-    queryFn: getAllPhases
   })
 
   // Filtrado y ordenamiento
@@ -172,7 +167,7 @@ export const useSpotView = () => {
     setFormData({
       careerId: undefined,
       locationId: undefined,
-      phaseId: undefined,
+      phaseId: phaseId,
       availableQuantity: 0
     })
     setEditingSpot(null)
@@ -191,8 +186,6 @@ export const useSpotView = () => {
     loadingCareers,
     locations,
     loadingLocations,
-    phases,
-    loadingPhases,
     searchTerm,
     setSearchTerm,
     sortField,

@@ -3,7 +3,7 @@ import { Button } from "@renderer/components/ui/button"
 import { Label } from "@renderer/components/ui/label"
 import { Input } from "@renderer/components/ui/input"
 import { Plus } from "lucide-react"
-import { Aspirante, FormData } from "../useApplicantsView"
+import { Aspirante, FormData } from "../../common/Applicants/useApplicantsView"
 import { RadioGroup, RadioGroupItem } from "@renderer/components/ui/radio-group"
 
 interface ApplicantsFormProps {

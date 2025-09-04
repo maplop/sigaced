@@ -1,5 +1,12 @@
 import { ROUTES } from "@renderer/routes/routes"
-import { ChartNoAxesCombinedIcon, GraduationCap, Landmark, MapPin, Users } from "lucide-react"
+import {
+  ChartNoAxesCombinedIcon,
+  GraduationCap,
+  ListCheck,
+  Landmark,
+  MapPin,
+  Users
+} from "lucide-react"
 
 // Datos del menú
 export const menuItems = [
@@ -8,6 +15,13 @@ export const menuItems = [
     url: ROUTES.STATISTICS,
     icon: ChartNoAxesCombinedIcon
   },
+
+  {
+    title: "Listado Final",
+    url: ROUTES.MANUAL_ALLOCATION,
+    icon: ListCheck
+  }
+  /*
   {
     title: "Carreras",
     url: ROUTES.CAREERS,
@@ -28,4 +42,5 @@ export const menuItems = [
     url: ROUTES.APPLICANTS,
     icon: Users
   }
+    */
 ]
