@@ -3,11 +3,11 @@ import { join } from "path"
 import { electronApp, optimizer, is } from "@electron-toolkit/utils"
 import icon from "../../resources/icon.png?asset"
 import {
-  getStudents,
-  getStudentByCI,
   addStudent,
+  getStudents,
   updateStudent,
-  deleteStudent
+  deleteStudentFromPhase,
+  deleteStudentCompletely
 } from "./queries/student"
 import {
   getAssignments,
@@ -39,7 +39,6 @@ import {
   deleteUser,
   changeUserPassword
 } from "./queries/user"
-import { insertStudentWithRequests } from "./queries/customQueries"
 import { getAllSpots, createSpot, updateSpot, deleteSpot } from "./queries/spot"
 
 function createWindow(): void {
@@ -101,54 +100,50 @@ app.whenReady().then(() => {
 })
 
 // IPC handlers for student CRUD
+// Crear aspirante con su fase y opcionalmente solicitudes
 ipcMain.handle("student:add", async (_event, student) => {
   try {
-    await addStudent(student)
-    return { success: true }
+    const id = addStudent(student)
+    return { success: true, id }
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-ipcMain.handle("student:getAll", async () => {
+// Obtener todos los estudiantes y solicitudes de una fase
+ipcMain.handle("student:getAll", async (_event, phaseId: number) => {
   try {
-    return await getStudents()
+    return getStudents(phaseId)
   } catch (error) {
     console.error("Error al obtener estudiantes:", error)
     return []
   }
 })
 
-ipcMain.handle("student:getByCI", async (_event, ci) => {
-  try {
-    return (await getStudentByCI(ci)) ?? null
-  } catch (error) {
-    console.error("Error al obtener estudiante por CI:", error)
-    return null
-  }
-})
-
+// Editar aspirante y/o solicitudes en una fase
 ipcMain.handle("student:update", async (_event, student) => {
   try {
-    await updateStudent(student)
+    updateStudent(student)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-ipcMain.handle("student:delete", async (_event, ci) => {
+// Eliminar aspirante de una fase (se borran solicitudes de esa fase)
+ipcMain.handle("student:deleteFromPhase", async (_event, studentId: number, phaseId: number) => {
   try {
-    await deleteStudent(ci)
+    deleteStudentFromPhase(studentId, phaseId)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-ipcMain.handle("student:addWithRequests", async (_event, studentData) => {
+// Eliminar completamente un aspirante
+ipcMain.handle("student:deleteCompletely", async (_event, studentId: number) => {
   try {
-    insertStudentWithRequests(studentData)
+    deleteStudentCompletely(studentId)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }

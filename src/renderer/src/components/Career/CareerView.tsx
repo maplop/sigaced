@@ -2,7 +2,7 @@ import PageContainer from "../common/PageContainer"
 import PageTitle from "../common/PageTitle"
 import { useCareerView } from "./useCareerView"
 import { Card, CardContent, CardHeader, } from "../ui/card"
-import { MapPin, Search } from "lucide-react"
+import { GraduationCap, Search } from "lucide-react"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll-area"
 import CareerTable from "./CareerTable"
@@ -45,7 +45,7 @@ const CareerView = () => {
           <CardHeader className="flex justify-between items-center">
             <Card className="w-fit p-0 bg-transparent shadow-none">
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <GraduationCap className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium text-foreground">
                   Total de carreras: {filteredAndSortedCareers.length}
                 </span>

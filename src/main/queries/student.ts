@@ -1,76 +1,141 @@
+/* eslint-disable prettier/prettier */
 import { db } from "../database"
-import { Student } from "../../shared/types"
+import { Student } from "src/shared/types"
 
-// Create
-export function addStudent(student: Student): void {
-  const stmt = db.prepare(`
-    INSERT INTO student (ci, name, last_name, grade, age, gender, municipality, assigned_phase_id)
-    VALUES (@ci, @name, @lastName, @grade, @age, @gender, @municipality, @assignedPhaseId)
+// -------------------- CREATE --------------------
+export function addStudent(student: Student): number {
+  const insertStudent = db.prepare(`
+    INSERT INTO student (ci, name, last_name, grade, age, gender, municipality)
+    VALUES (@ci, @name, @lastName, @grade, @age, @gender, @municipality)
   `)
-  stmt.run(student)
+
+  const insertPhase = db.prepare(`
+    INSERT INTO student_phase (student_id, phase_id)
+    VALUES (?, ?)
+  `)
+
+  const insertRequest = db.prepare(`
+    INSERT INTO request (student_id, spot_id, preference_order)
+    VALUES (?, ?, ?)
+  `)
+
+  const tx = db.transaction((s: Student) => {
+    const result = insertStudent.run(s)
+    const studentId = result.lastInsertRowid as number
+
+    insertPhase.run(studentId, s.phaseId)
+
+    if (s.requests) {
+      for (const r of s.requests) {
+        insertRequest.run(studentId, r.spotId, r.preferenceOrder)
+      }
+    }
+
+    return studentId
+  })
+
+  return tx(student)
 }
 
-// Read all
-export function getStudents(): Student[] {
-  return db
+// -------------------- READ --------------------
+export function getStudents(phaseId: number): Student[] {
+  const students = db
     .prepare(
       `
-      SELECT
-        id,
-        ci,
-        name,
-        last_name AS lastName,
-        grade,
-        age,
-        gender,
-        municipality,
-        assigned_phase_id AS assignedPhaseId
-      FROM student
-    `
+    SELECT 
+      st.id,
+      st.ci,
+      st.name,
+      st.last_name AS lastName,
+      st.grade,
+      st.age,
+      st.gender,
+      st.municipality,
+      sp.phase_id AS phaseId
+    FROM student st
+    JOIN student_phase sp ON sp.student_id = st.id
+    WHERE sp.phase_id = ?
+  `
     )
-    .all()
+    .all(phaseId)
+
+  // Traer solicitudes por aspirante
+  const getRequests = db.prepare(
+    `
+    SELECT r.spot_id AS spotId, r.preference_order AS preferenceOrder
+    FROM request r
+    JOIN spot s ON s.id = r.spot_id
+    WHERE r.student_id = ? AND s.phase_id = ?
+    ORDER BY r.preference_order
+  `
+  )
+
+  return students.map((s) => ({
+    ...s,
+    requests: getRequests.all(s.id, phaseId)
+  }))
 }
 
-// Read one by CI
-export function getStudentByCI(ci: string): Student | undefined {
-  return db
-    .prepare(
-      `
-      SELECT
-        id,
-        ci,
-        name,
-        last_name AS lastName,
-        grade,
-        age,
-        gender,
-        municipality,
-        assigned_phase_id AS assignedPhaseId
-      FROM student
-      WHERE ci = ?
-    `
-    )
-    .get(ci)
-}
-
-// Update
+// -------------------- UPDATE --------------------
 export function updateStudent(student: Student): void {
-  const stmt = db.prepare(`
+  const updateSt = db.prepare(`
     UPDATE student
-    SET 
-      name = @name,
-      last_name = @lastName,
-      grade = @grade,
-      age = @age,
-      gender = @gender,
-      municipality = @municipality,
-      assigned_phase_id = @assignedPhaseId
-    WHERE ci = @ci
+    SET name=@name, last_name=@lastName, grade=@grade,
+        age=@age, gender=@gender, municipality=@municipality
+    WHERE id=@id
   `)
-  stmt.run(student)
+
+  const deleteRequests = db.prepare(`
+    DELETE FROM request
+    WHERE student_id = ? AND spot_id IN (
+      SELECT id FROM spot WHERE phase_id = ?
+    )
+  `)
+
+  const insertRequest = db.prepare(`
+    INSERT INTO request (student_id, spot_id, preference_order)
+    VALUES (?, ?, ?)
+  `)
+
+  const tx = db.transaction((s: Student) => {
+    updateSt.run(s)
+
+    // Si pasó requests, actualizamos en esa fase
+    if (s.requests) {
+      deleteRequests.run(s.id, s.phaseId)
+      for (const r of s.requests) {
+        insertRequest.run(s.id, r.spotId, r.preferenceOrder)
+      }
+    }
+  })
+
+  tx(student)
 }
 
-// Delete
-export function deleteStudent(ci: string): void {
-  db.prepare("DELETE FROM student WHERE ci = ?").run(ci)
+// -------------------- DELETE --------------------
+// Eliminar aspirante SOLO de una fase
+export function deleteStudentFromPhase(studentId: number, phaseId: number): void {
+  const deleteRequests = db.prepare(`
+    DELETE FROM request
+    WHERE student_id = ? AND spot_id IN (
+      SELECT id FROM spot WHERE phase_id = ?
+    )
+  `)
+
+  const deletePhase = db.prepare(`
+    DELETE FROM student_phase
+    WHERE student_id = ? AND phase_id = ?
+  `)
+
+  const tx = db.transaction((id: number, ph: number) => {
+    deleteRequests.run(id, ph)
+    deletePhase.run(id, ph)
+  })
+
+  tx(studentId, phaseId)
+}
+
+// Eliminar aspirante COMPLETAMENTE
+export function deleteStudentCompletely(studentId: number): void {
+  db.prepare("DELETE FROM student WHERE id = ?").run(studentId)
 }

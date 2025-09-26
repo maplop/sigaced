@@ -1,7 +1,6 @@
 import { ElectronAPI } from "@electron-toolkit/preload"
 import {
   Student,
-  StudentWithRequests,
   Assignment,
   Career,
   Spot,
@@ -18,12 +17,16 @@ declare global {
     electron: ElectronAPI
     api: {
       // Students
-      addStudent: (student: Student) => Promise<OperationResult>
-      getStudents: () => Promise<Student[]>
-      getStudentByCI: (ci: string) => Promise<Student | null>
-      updateStudent: (student: Student) => Promise<OperationResult>
-      deleteStudent: (ci: string) => Promise<OperationResult>
-      addStudentWithRequests: (data: StudentWithRequests) => Promise<OperationResult>
+      addStudent: (
+        student: Omit<Student, "id">
+      ) => Promise<{ success: boolean; id?: number; error?: string }>
+      getStudents: (phaseId: number) => Promise<Student[]>
+      updateStudent: (student: Student) => Promise<{ success: boolean; error?: string }>
+      deleteStudentFromPhase: (
+        studentId: number,
+        phaseId: number
+      ) => Promise<{ success: boolean; error?: string }>
+      deleteStudentCompletely: (studentId: number) => Promise<{ success: boolean; error?: string }>
 
       // Assignments
       addAssignment: (assignment: Assignment) => Promise<OperationResult>

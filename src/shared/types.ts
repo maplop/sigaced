@@ -13,13 +13,13 @@ export interface Student {
   age: number
   gender: "M" | "F"
   municipality: string
-  assignedPhaseId?: number | null
+  phaseId: number
+  requests?: StudentRequest[]
 }
 
-export interface StudentPhase {
-  id: number
-  studentId: number
-  phaseId: number
+export interface StudentRequest {
+  spotId: number
+  preferenceOrder: 1 | 2 | 3
 }
 
 export interface Career {
@@ -77,7 +77,7 @@ export interface User {
   createdAt: string
 }
 
-// Nuevo: tipo para insertar estudiante con solicitudes
+// Nuevo: tipo para insertar aspirante con solicitudes
 export interface StudentWithRequests {
   ci: string
   name: string

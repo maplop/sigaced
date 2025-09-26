@@ -1,25 +1,30 @@
-import { Search } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../ui/card"
+import { Search, UsersIcon } from "lucide-react"
+import { Card, CardContent, CardHeader } from "../../ui/card"
 import { Input } from "../../ui/input"
-import { ScrollArea } from "../../ui/scroll-area"
-
-import PageContainer from "../PageContainer"
-import PageTitle from "../PageTitle"
-import ApplicantsTable from "./ApplicantsTable/ApplicantsTable"
-import ApplicantsForm from "./ApplicantsForm/AplicantsForm"
-import ApplicantsStatistics from "./ApplicantsStatistics/ApplicantsStatistics"
+//import { ScrollArea } from "../../ui/scroll-area"
+import ApplicantsTable from "./ApplicantsTable"
+import ApplicantsForm from "./ApplicantsForm"
 import { useApplicantsView } from "./useApplicantsView"
+import { PhaseType } from "@renderer/utils/types"
+import { rqKeys } from "@renderer/utils/rqKeys"
+import { useQuery } from "@tanstack/react-query"
+import { getAllSpots } from "@renderer/api/spot"
 
 
+interface ApplicantsViewProps {
+  phase: PhaseType
+}
 
-export default function ApplicantsView() {
+
+export default function ApplicantsView({ phase }: ApplicantsViewProps) {
 
   const {
-    paginatedAspirantes,
+    paginatedStudents,
+    loadingStudents,
     currentPage,
     totalPages,
-    itemsPerPage,
     setCurrentPage,
+    itemsPerPage,
     setItemsPerPage,
     searchTerm,
     setSearchTerm,
@@ -27,80 +32,87 @@ export default function ApplicantsView() {
     sortDirection,
     isDialogOpen,
     setIsDialogOpen,
-    editingAspirante,
+    editingStudent,
     formData,
     setFormData,
-    filteredAndSortedAspirantes,
+    filteredAndSortedStudents,
     handleSort,
     handleSubmit,
     handleEdit,
-    handleDelete,
+    handleDeleteFromPhase,
+    addRequest,
+    updateRequest,
+    removeRequest,
     resetForm
-  } = useApplicantsView()
+  } = useApplicantsView(phase)
+
+  const { data: spots, isLoading: loadingSpots } = useQuery({
+    queryKey: [rqKeys.SPOT, phase],
+    queryFn: () => getAllSpots(phase)
+  })
+
 
   return (
-    <PageContainer>
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <PageTitle title="Gestión de Aspirantes" subtitle="Administra los aspirantes a carreras universitarias" />
-        <ApplicantsForm
-          isDialogOpen={isDialogOpen}
-          setIsDialogOpen={setIsDialogOpen}
-          resetForm={resetForm}
-          editingAspirante={editingAspirante}
-          handleSubmit={handleSubmit}
-          formData={formData}
-          setFormData={setFormData}
-        />
-      </div>
+    <div className="flex flex-col gap-4">
 
-      <ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">
-        <div className="flex flex-col gap-6">
-          {/* Estadísticas */}
-          <ApplicantsStatistics />
 
-          {/* Buscador */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Lista de Aspirantes</CardTitle>
-              <CardDescription>Busca y gestiona todos los aspirantes registrados</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative flex items-center space-x-2 mb-4">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar por nombre..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 max-w-sm"
-                />
-              </div>
-
-              {/* Tabla */}
-              <ApplicantsTable
-                paginatedAspirantes={paginatedAspirantes}
-                totalPages={totalPages}
-                setCurrentPage={setCurrentPage}
-                currentPage={currentPage}
-                itemsPerPage={itemsPerPage}
-                setItemsPerPage={setItemsPerPage}
-                sortField={sortField}
-                sortDirection={sortDirection}
-                handleSort={handleSort}
-                handleDelete={handleDelete}
-                handleEdit={handleEdit}
-                filteredAndSortedAspirantes={filteredAndSortedAspirantes}
-              />
-
-              {filteredAndSortedAspirantes.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  No se encontraron aspirantes que coincidan con la búsqueda.
-                </div>
-              )}
-            </CardContent>
+      {/*<ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">*/}
+      <Card>
+        <CardHeader className="flex justify-between">
+          <Card className="w-fit p-0 bg-transparent shadow-none">
+            <div className="flex items-center gap-2">
+              <UsersIcon className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-foreground">Totales de aspirantes: {filteredAndSortedStudents.length}</span>
+            </div>
           </Card>
-        </div>
-      </ScrollArea>
-    </PageContainer>
+          <ApplicantsForm
+            isDialogOpen={isDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
+            resetForm={resetForm}
+            editingStudent={editingStudent}
+            handleSubmit={handleSubmit}
+            formData={formData}
+            setFormData={setFormData}
+            addRequest={addRequest}
+            updateRequest={updateRequest}
+            removeRequest={removeRequest}
+            spots={spots || []}
+            loadingSpots={loadingSpots}
+          />
+        </CardHeader>
+        <CardContent>
+          <div className="relative flex items-center space-x-2 mb-4">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nombre y apellidos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 max-w-sm"
+            />
+          </div>
+
+          {/* Tabla */}
+          <ApplicantsTable
+            loadingStudents={loadingStudents}
+            filteredAndSortedSpots={filteredAndSortedStudents}
+            paginatedStudents={paginatedStudents}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={setItemsPerPage}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            handleSort={handleSort}
+            handleDeleteFromPhase={handleDeleteFromPhase}
+            handleEdit={handleEdit}
+            filteredAndSortedStudents={filteredAndSortedStudents}
+            spots={spots ?? []}
+            loadingSpots={loadingSpots}
+          />
+        </CardContent>
+      </Card>
+      {/*</ScrollArea>*/}
+    </div>
   )
 }

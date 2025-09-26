@@ -1,17 +1,18 @@
 import { contextBridge } from "electron"
 import { electronAPI } from "@electron-toolkit/preload"
 import { ipcRenderer } from "electron"
+import { Student } from "src/shared/types"
 
 // Custom APIs for renderer
 const api = {
   // Student
-  addStudent: (student) => ipcRenderer.invoke("student:add", student),
-  getStudents: () => ipcRenderer.invoke("student:getAll"),
-  getStudentByCI: (ci: string) => ipcRenderer.invoke("student:getByCI", ci),
-  updateStudent: (student) => ipcRenderer.invoke("student:update", student),
-  deleteStudent: (ci: string) => ipcRenderer.invoke("student:delete", ci),
-  addStudentWithRequests: (studentData) =>
-    ipcRenderer.invoke("student:addWithRequests", studentData),
+  addStudent: (student: Student) => ipcRenderer.invoke("student:add", student),
+  getStudents: (phaseId: number) => ipcRenderer.invoke("student:getAll", phaseId),
+  updateStudent: (student: Student) => ipcRenderer.invoke("student:update", student),
+  deleteStudentFromPhase: (studentId: number, phaseId: number) =>
+    ipcRenderer.invoke("student:deleteFromPhase", studentId, phaseId),
+  deleteStudentCompletely: (studentId: number) =>
+    ipcRenderer.invoke("student:deleteCompletely", studentId),
 
   // Assignment
   addAssignment: (assignment) => ipcRenderer.invoke("assignment:add", assignment),

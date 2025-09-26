@@ -94,7 +94,6 @@ export const useSpotView = (phaseId: PhaseType) => {
   }
 
   const handleSpotSubmit = async (spot: Omit<Spot, "id">) => {
-    console.log("editing plaza --- ", editingSpot)
     if (!editingSpot) {
       return await createSpot(spot)
     }

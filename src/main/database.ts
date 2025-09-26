@@ -29,11 +29,10 @@ db.exec(`
     grade REAL CHECK (grade BETWEEN 0 AND 100),
     age INTEGER CHECK (age > 0),
     gender TEXT CHECK (gender IN ('M', 'F')),
-    municipality TEXT,
-    assigned_phase_id INTEGER REFERENCES phase(id)
+    municipality TEXT
   );
 
-  -- Historial de fases en las que participó el estudiante
+  -- Historial de fases en las que participó el aspirante
   CREATE TABLE IF NOT EXISTS student_phase (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     student_id INTEGER NOT NULL,
@@ -70,7 +69,7 @@ db.exec(`
     UNIQUE (career_id, location_id, phase_id)
   );
 
-  -- Solicitudes por fase (máximo 3 por estudiante por fase)
+  -- Solicitudes por fase (máximo 3 por aspirante por fase)
   CREATE TABLE IF NOT EXISTS request (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     student_id INTEGER NOT NULL,

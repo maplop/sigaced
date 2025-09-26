@@ -2,7 +2,7 @@
 import { db } from "../database"
 import { StudentWithRequests, SpotWithQuantity } from "src/shared/types"
 
-// Insertar un estudiante con sus solicitudes y fase
+// Insertar un aspirante con sus solicitudes y fase
 export function insertStudentWithRequests(student: StudentWithRequests) {
   const insert = db.transaction(() => {
     const insertStudent = db.prepare(`
