@@ -1,8 +1,10 @@
 import { phases } from "@renderer/utils/rqKeys"
+import { PhaseType } from "@renderer/utils/types"
 import AllocationsSectionWrapper from "../common/AllocationsSectionWrapper"
 import SpotView from "../common/Spot/SpotView"
-import { PhaseType } from "@renderer/utils/types"
 import ApplicantsView from "../common/Applicants/ApplicantView"
+import AllocationsView from "../common/Allocations/AllocationsView"
+
 
 const FirstAllocationsView = () => {
   return (
@@ -23,7 +25,7 @@ const FirstAllocationsView = () => {
         {
           label: "Otorgamiento",
           value: "allocation",
-          children: <div>Proceso de otorgamiento aquí</div>,
+          children: <AllocationsView phase={phases.FIRST as PhaseType} />,
         },
       ]}
     />

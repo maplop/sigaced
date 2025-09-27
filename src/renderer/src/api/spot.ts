@@ -7,6 +7,7 @@ export const getAllSpots = async (phaseId: number): Promise<SpotFull[]> => {
 }
 
 export const createSpot = async (spotData: Omit<Spot, "id">): Promise<void> => {
+  console.log("la data del spot --- ", spotData)
   const response: OperationResult = await window.api.createSpot(spotData)
   if (!response.success) throw new Error(response.error || "Error al agregar la plaza")
 }

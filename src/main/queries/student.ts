@@ -139,3 +139,15 @@ export function deleteStudentFromPhase(studentId: number, phaseId: number): void
 export function deleteStudentCompletely(studentId: number): void {
   db.prepare("DELETE FROM student WHERE id = ?").run(studentId)
 }
+
+// -------------------- PROMOTE --------------------
+// Agregar un estudiante a una fase sin duplicar
+export function addStudentToPhase(studentId: number, phaseId: number): void {
+  const insertPhase = db.prepare(`
+    INSERT INTO student_phase (student_id, phase_id)
+    VALUES (?, ?)
+    ON CONFLICT(student_id, phase_id) DO NOTHING
+  `)
+
+  insertPhase.run(studentId, phaseId)
+}
