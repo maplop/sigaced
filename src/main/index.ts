@@ -7,13 +7,15 @@ import {
   getStudents,
   updateStudent,
   deleteStudentFromPhase,
-  deleteStudentCompletely
+  deleteStudentCompletely,
+  addStudentToPhase
 } from "./queries/student"
 import {
   getAssignments,
   addAssignment,
   updateAssignment,
-  deleteAssignment
+  deleteAssignment,
+  getAssignmentsByPhase
 } from "./queries/assignment"
 import {
   getCareers,
@@ -150,8 +152,18 @@ ipcMain.handle("student:deleteCompletely", async (_event, studentId: number) => 
   }
 })
 
+// Agregar un estudiante existente a una fase específica
+ipcMain.handle("student:addStudentToPhase", async (_event, studentId: number, phaseId: number) => {
+  try {
+    addStudentToPhase(studentId, phaseId)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
 // IPC handlers for assignment CRUD
-ipcMain.handle("assignment:add", async (_event, assignment) => {
+ipcMain.handle("assignment:addAssignment", async (_event, assignment) => {
   try {
     await addAssignment(assignment)
     return { success: true }
@@ -160,16 +172,25 @@ ipcMain.handle("assignment:add", async (_event, assignment) => {
   }
 })
 
-ipcMain.handle("assignment:getAll", async () => {
+ipcMain.handle("assignment:getAllAssignment", async () => {
   try {
     return await getAssignments()
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error al obtener asignaciones:", error)
     return []
   }
 })
 
-ipcMain.handle("assignment:update", async (_event, assignment) => {
+ipcMain.handle("assignment:getAssignmentsByPhase", async (_event, phaseId: number) => {
+  try {
+    return await getAssignmentsByPhase(phaseId)
+  } catch (error: any) {
+    console.error("Error al obtener asignaciones por fase:", error)
+    return []
+  }
+})
+
+ipcMain.handle("assignment:updateAssignment", async (_event, assignment) => {
   try {
     await updateAssignment(assignment)
     return { success: true }
@@ -178,7 +199,7 @@ ipcMain.handle("assignment:update", async (_event, assignment) => {
   }
 })
 
-ipcMain.handle("assignment:delete", async (_event, id) => {
+ipcMain.handle("assignment:deleteAssignment", async (_event, id: number) => {
   try {
     await deleteAssignment(id)
     return { success: true }

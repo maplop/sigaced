@@ -96,10 +96,10 @@ const ApplicantsTable = ({
                         {(currentPage - 1) * itemsPerPage + index + 1}
                       </TableCell>
                       <TableCell className="text-center">{student.ci}</TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell>
                         {student.lastName}
                       </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell>
                         {student.name}
                       </TableCell>
                       <TableCell className="text-center">

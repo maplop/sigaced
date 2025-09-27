@@ -4,7 +4,8 @@ export const rqKeys = {
   CAREERS: "careers",
   SPOT: "spot",
   STUDENTS: "students",
-  PHASE: "phase"
+  PHASE: "phase",
+  ASSIGNMENTS: "assignments"
 }
 
 export const phases = {

@@ -13,12 +13,16 @@ const api = {
     ipcRenderer.invoke("student:deleteFromPhase", studentId, phaseId),
   deleteStudentCompletely: (studentId: number) =>
     ipcRenderer.invoke("student:deleteCompletely", studentId),
+  addStudentToPhase: (studentId: number, phaseId: number) =>
+    ipcRenderer.invoke("student:addStudentToPhase", studentId, phaseId),
 
   // Assignment
-  addAssignment: (assignment) => ipcRenderer.invoke("assignment:add", assignment),
-  getAssignments: () => ipcRenderer.invoke("assignment:getAll"),
-  updateAssignment: (assignment) => ipcRenderer.invoke("assignment:update", assignment),
-  deleteAssignment: (id: string) => ipcRenderer.invoke("assignment:delete", id),
+  addAssignment: (assignment) => ipcRenderer.invoke("assignment:addAssignment", assignment),
+  getAssignments: () => ipcRenderer.invoke("assignment:getAllAssignment"),
+  getAssignmentsByPhase: (phaseId: number) =>
+    ipcRenderer.invoke("assignment:getAssignmentsByPhase", phaseId),
+  updateAssignment: (assignment) => ipcRenderer.invoke("assignment:updateAssignment", assignment),
+  deleteAssignment: (id: number) => ipcRenderer.invoke("assignment:deleteAssignment", id),
 
   // Career
   addCareer: (career) => ipcRenderer.invoke("career:add", career),

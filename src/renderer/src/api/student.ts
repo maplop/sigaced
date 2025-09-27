@@ -35,3 +35,13 @@ export const deleteStudentCompletely = async (studentId: number): Promise<void> 
   if (!response.success)
     throw new Error(response.error || "Error al eliminar completamente el aspirante")
 }
+
+// Agregar estudiante a una fase específica
+export const addStudentToPhase = async (studentId: number, phaseId: number): Promise<void> => {
+  const response: { success: boolean; error?: string } = await window.api.addStudentToPhase(
+    studentId,
+    phaseId
+  )
+  if (!response.success)
+    throw new Error(response.error || "Error al agregar el estudiante a la fase")
+}

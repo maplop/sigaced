@@ -57,14 +57,26 @@ export interface Request {
   id: number
   studentCi: string
   spotPhaseId: number
-  preferenceOrder: number // 1 to 3
+  preferenceOrder: number
 }
 
 export interface Assignment {
-  id: string
-  studentCi: string
-  spotPhaseId: number
-  assignmentDate?: string // timestamp, optional if just reading
+  id: number
+  studentId: number
+  spotId: number
+  assignedAt?: string
+}
+
+export interface AssignmentRow {
+  id: number
+  ci: string
+  lastName: string
+  name: string
+  career: string
+  location: string
+  grade: number
+  preferenceOrder: 1 | 2 | 3 | null
+  phase: Phase
 }
 
 export interface User {
@@ -75,31 +87,6 @@ export interface User {
   password: string
   role: "admin" | "viewer"
   createdAt: string
-}
-
-// Nuevo: tipo para insertar aspirante con solicitudes
-export interface StudentWithRequests {
-  ci: string
-  name: string
-  lastName: string
-  grade: number
-  age: number
-  gender: "M" | "F"
-  municipality: string
-  currentPhaseId: number
-  requests: {
-    spotId: number
-    phaseId: number
-    preferenceOrder: number
-  }[]
-}
-
-// Nuevo: tipo para insertar una plaza con su cantidad por fase
-export interface SpotWithQuantity {
-  careerId: number
-  locationId: number
-  phaseId: number
-  availableQuantity: number
 }
 
 export interface OperationResult {

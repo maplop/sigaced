@@ -9,7 +9,8 @@ import {
   Phase,
   User,
   OperationResult,
-  SpotFull
+  SpotFull,
+  AssignmentRow
 } from "src/shared/types"
 
 declare global {
@@ -27,12 +28,17 @@ declare global {
         phaseId: number
       ) => Promise<{ success: boolean; error?: string }>
       deleteStudentCompletely: (studentId: number) => Promise<{ success: boolean; error?: string }>
+      addStudentToPhase: (
+        studentId: number,
+        phaseId: number
+      ) => Promise<{ success: boolean; error?: string }>
 
       // Assignments
-      addAssignment: (assignment: Assignment) => Promise<OperationResult>
-      getAssignments: () => Promise<Assignment[]>
+      addAssignment: (assignment: Omit<Assignment, "id">) => Promise<OperationResult>
+      getAssignments: () => Promise<AssignmentRow[]>
+      getAssignmentsByPhase: (phaseId: number) => Promise<Assignment[]>
       updateAssignment: (assignment: Assignment) => Promise<OperationResult>
-      deleteAssignment: (id: string) => Promise<OperationResult>
+      deleteAssignment: (id: number) => Promise<OperationResult>
 
       // Careers
       addCareer: (career: Omit<Career, "id">) => Promise<OperationResult>
