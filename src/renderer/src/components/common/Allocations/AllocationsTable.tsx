@@ -102,7 +102,7 @@ const AllocationsTable = ({
                 <TableBody>
                   <TableRow>
                     <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
-                      No se encontraron aspirantes.
+                      No se encontraron asignaciones.
                     </TableCell>
                   </TableRow>
                 </TableBody>

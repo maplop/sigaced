@@ -32,6 +32,7 @@ declare global {
         studentId: number,
         phaseId: number
       ) => Promise<{ success: boolean; error?: string }>
+      deleteAllStudentsFromPhase: (phaseId: number) => Promise<{ success: boolean; error?: string }>
 
       // Assignments
       addAssignment: (assignment: Omit<Assignment, "id">) => Promise<OperationResult>
@@ -39,6 +40,7 @@ declare global {
       getAssignmentsByPhase: (phaseId: number) => Promise<Assignment[]>
       updateAssignment: (assignment: Assignment) => Promise<OperationResult>
       deleteAssignment: (id: number) => Promise<OperationResult>
+      deleteAllAssignmentsFromPhase: (phaseId: number) => Promise<OperationResult>
 
       // Careers
       addCareer: (career: Omit<Career, "id">) => Promise<OperationResult>
@@ -46,12 +48,14 @@ declare global {
       getCareerByName: (name: string) => Promise<Career | null>
       updateCareer: (career: Career) => Promise<OperationResult>
       deleteCareer: (id: string) => Promise<OperationResult>
+      deleteAllCareers: () => Promise<OperationResult>
 
       // Spots
       createSpot: (spotData: Omit<Spot, "id">) => Promise<OperationResult>
       updateSpot: (spotData: Spot) => Promise<OperationResult>
       getAllSpots: (phaseId: number) => Promise<SpotFull[]>
       deleteSpot: (spotId: number) => Promise<OperationResult>
+      deleteAllSpotsFromPhase: (phaseId: number) => Promise<OperationResult>
 
       // Requests
       addRequest: (request: Request) => Promise<OperationResult>
@@ -65,6 +69,7 @@ declare global {
       getLocationByName: (name: string) => Promise<Location | null>
       updateLocation: (location: Location) => Promise<OperationResult>
       deleteLocation: (id: string) => Promise<OperationResult>
+      deleteAllLocations: () => Promise<OperationResult>
 
       // Phase
       getPhases: () => Promise<Phase[]>

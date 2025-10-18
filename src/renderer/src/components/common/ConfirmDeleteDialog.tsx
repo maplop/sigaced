@@ -15,15 +15,15 @@ interface ConfirmDeleteDialogProps {
   trigger: React.ReactNode
   onConfirm: () => void
   title?: string
-  description?: string
-  confirmText?: string
+  confirmText?: string,
+  children: React.ReactNode
 }
 
 const ConfirmDeleteDialog = ({
   trigger,
   onConfirm,
   title = "¿Estás seguro?",
-  description = "Esta acción no se puede deshacer.",
+  children,
   confirmText = "Eliminar"
 }: ConfirmDeleteDialogProps) => {
   return (
@@ -37,7 +37,7 @@ const ConfirmDeleteDialog = ({
             <TriangleAlert className="h-12 w-12 text-[var(--errorMessage)]" />
           </div>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogDescription>{children}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>

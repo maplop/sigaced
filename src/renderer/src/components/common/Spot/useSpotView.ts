@@ -3,7 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import { Spot, SpotFull } from "src/shared/types"
-import { getAllSpots, createSpot, updateSpot, deleteSpot } from "@renderer/api/spot"
+import {
+  getAllSpots,
+  createSpot,
+  updateSpot,
+  deleteSpot,
+  deleteAllSpotsFromPhase
+} from "@renderer/api/spot"
 import { getAllCareers } from "@renderer/api/career"
 import { getAllLocations } from "@renderer/api/location"
 import { PhaseType } from "@renderer/utils/types"
@@ -162,6 +168,29 @@ export const useSpotView = (phaseId: PhaseType) => {
     deleteMutation.mutate(spotId)
   }
 
+  const deleteAllFromPhaseMutation = useMutation({
+    mutationFn: () => deleteAllSpotsFromPhase(phaseId),
+    onSuccess: () => {
+      toast.success("Todas las plazas de la fase fueron eliminadas correctamente.")
+      queryClient.invalidateQueries({ queryKey: [rqKeys.SPOT, phaseId] })
+      resetForm()
+    },
+    onError: (error) => {
+      console.error(error)
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Ocurrió un error al eliminar todas las plazas de la fase."
+      toast.error(errorMessage, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  })
+
+  const handleDeleteAllFromPhase = () => {
+    deleteAllFromPhaseMutation.mutate()
+  }
+
   const resetForm = () => {
     setFormData({
       careerId: undefined,
@@ -199,6 +228,7 @@ export const useSpotView = (phaseId: PhaseType) => {
     resetForm,
     handleSubmit,
     handleEdit,
-    handleDelete
+    handleDelete,
+    handleDeleteAllFromPhase
   }
 }

@@ -60,3 +60,12 @@ export function updateCareer(career: Career) {
 export function deleteCareer(id: number) {
   db.prepare("DELETE FROM career WHERE id = ?").run(id)
 }
+
+// Delete all careers
+export function deleteAllCareers() {
+  const transaction = db.transaction(() => {
+    db.prepare("DELETE FROM career").run()
+  })
+
+  transaction()
+}

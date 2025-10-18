@@ -15,6 +15,7 @@ const api = {
     ipcRenderer.invoke("student:deleteCompletely", studentId),
   addStudentToPhase: (studentId: number, phaseId: number) =>
     ipcRenderer.invoke("student:addStudentToPhase", studentId, phaseId),
+  deleteAllStudentsFromPhase: (phaseId: number) => ipcRenderer.invoke("student:deleteAll", phaseId),
 
   // Assignment
   addAssignment: (assignment) => ipcRenderer.invoke("assignment:addAssignment", assignment),
@@ -23,6 +24,8 @@ const api = {
     ipcRenderer.invoke("assignment:getAssignmentsByPhase", phaseId),
   updateAssignment: (assignment) => ipcRenderer.invoke("assignment:updateAssignment", assignment),
   deleteAssignment: (id: number) => ipcRenderer.invoke("assignment:deleteAssignment", id),
+  deleteAllAssignmentsFromPhase: (phaseId: number) =>
+    ipcRenderer.invoke("assignment:deleteAll", phaseId),
 
   // Career
   addCareer: (career) => ipcRenderer.invoke("career:add", career),
@@ -30,12 +33,14 @@ const api = {
   getCareerByName: (name: string) => ipcRenderer.invoke("career:getByName", name),
   updateCareer: (career) => ipcRenderer.invoke("career:update", career),
   deleteCareer: (id: string) => ipcRenderer.invoke("career:delete", id),
+  deleteAllCareers: () => ipcRenderer.invoke("career:deleteAll"),
 
   // Spot
   createSpot: (spotData) => ipcRenderer.invoke("spot:add", spotData),
   updateSpot: (spotData) => ipcRenderer.invoke("spot:update", spotData),
   getAllSpots: (phaseId: number) => ipcRenderer.invoke("spot:getAll", phaseId),
   deleteSpot: (spotId: number) => ipcRenderer.invoke("spot:delete", spotId),
+  deleteAllSpotsFromPhase: (phaseId: number) => ipcRenderer.invoke("spot:deleteAll", phaseId),
 
   // Request
   addRequest: (request) => ipcRenderer.invoke("request:add", request),
@@ -49,6 +54,7 @@ const api = {
   getLocationByName: (name: string) => ipcRenderer.invoke("location:getByName", name),
   updateLocation: (location) => ipcRenderer.invoke("location:update", location),
   deleteLocation: (id: string) => ipcRenderer.invoke("location:delete", id),
+  deleteAllLocations: () => ipcRenderer.invoke("location:deleteAll"),
 
   // Phase
   getPhases: () => ipcRenderer.invoke("phase:getAll"),

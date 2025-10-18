@@ -34,3 +34,10 @@ export const deleteLocation = async (id: string): Promise<void> => {
     throw new Error(response.error || "Error al eliminar la localización")
   }
 }
+
+export const deleteAllLocations = async (): Promise<void> => {
+  const response = await window.api.deleteAllLocations()
+  if (!response.success) {
+    throw new Error(response.error || "Error al eliminar todas las localizaciones.")
+  }
+}

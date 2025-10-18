@@ -1,11 +1,13 @@
 import { useSpotView } from "./useSpotView"
 import SpotTable from "./SpotTable"
 import { Card, CardContent, CardHeader, } from "../../ui/card"
-import { ListIcon, Search, UsersIcon } from "lucide-react"
+import { ListIcon, Search, Trash2, UsersIcon } from "lucide-react"
 import { Input } from "../../ui/input"
 //import { ScrollArea } from "../../ui/scroll-area"
 import SpotForm from "./SpotForm"
 import { PhaseType } from "@renderer/utils/types"
+import ConfirmDeleteDialog from "../ConfirmDeleteDialog"
+import { Button } from "@renderer/components/ui/button"
 
 interface SpotViewProps {
   phase: PhaseType
@@ -39,6 +41,7 @@ const SpotView = ({ phase }: SpotViewProps) => {
     resetForm,
     handleEdit,
     handleDelete,
+    handleDeleteAllFromPhase,
     handleSubmit
   } = useSpotView(phase)
 
@@ -82,15 +85,43 @@ const SpotView = ({ phase }: SpotViewProps) => {
 
           </CardHeader>
           <CardContent>
-            <div className="relative flex items-center space-x-2 mb-4">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por carrera o localización..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 max-w-sm"
-              />
+            <div className="flex justify-between items-center mb-4">
+              <div className="relative flex items-center space-x-2 w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar por carrera o localización..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 max-w-sm"
+                />
+              </div>
+              <ConfirmDeleteDialog
+                onConfirm={() => handleDeleteAllFromPhase()}
+                title="Limpiar tabla"
+                trigger={
+                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm">
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                    Limpiar Tabla
+                  </Button>
+                }
+              >
+                <div className="space-y-2 text-center">
+                  <div className="space-y-2 text-center">
+                    <p>
+                      ¿Seguro que deseas eliminar <strong>todas las plazas</strong> de esta fase?
+                    </p>
+                    <p>
+                      Esta acción también eliminará las <strong>plazas asociadas en fases posteriores </strong>
+                      que dependan de las actuales.
+                    </p>
+                    <p>
+                      Esta operación no se puede deshacer.
+                    </p>
+                  </div>
+                </div>
+              </ConfirmDeleteDialog>
             </div>
+
             <SpotTable
               paginatedSpots={paginatedSpots}
               loadingSpots={loadingSpots}

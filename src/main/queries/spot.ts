@@ -82,3 +82,12 @@ export function deleteSpot(id: number) {
   `)
   stmt.run(id)
 }
+
+export function deleteAllSpotsFromPhase(phaseId: number): void {
+  const stmt = db.prepare(`
+    DELETE FROM spot
+    WHERE phase_id = ?
+  `)
+
+  stmt.run(phaseId)
+}

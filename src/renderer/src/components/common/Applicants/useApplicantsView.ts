@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import {
   createStudent,
+  deleteAllStudentsFromPhase,
   deleteStudentFromPhase,
   getAllStudents,
   updateStudent
@@ -178,6 +179,29 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     deleteFromPhaseMutation.mutate({ studentId, phaseId })
   }
 
+  const deleteAllFromPhaseMutation = useMutation({
+    mutationFn: () => deleteAllStudentsFromPhase(phaseId),
+    onSuccess: () => {
+      toast.success("Todos los aspirantes de la fase fueron eliminados correctamente.")
+      queryClient.invalidateQueries({ queryKey: [rqKeys.STUDENTS, phaseId] })
+      resetForm()
+    },
+    onError: (error) => {
+      console.error(error)
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Ocurrió un error al eliminar los aspirantes de la fase."
+      toast.error(errorMessage, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  })
+
+  const handleDeleteAllFromPhase = () => {
+    deleteAllFromPhaseMutation.mutate()
+  }
+
   // Agregar nueva solicitud (máximo 3)
   const addRequest = () => {
     setFormData((prev) => {
@@ -254,6 +278,7 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     addRequest,
     updateRequest,
     removeRequest,
+    handleDeleteAllFromPhase,
     resetForm
   }
 }

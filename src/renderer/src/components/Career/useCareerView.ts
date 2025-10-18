@@ -1,4 +1,10 @@
-import { createCareer, deleteCareer, editCareer, getAllCareers } from "@renderer/api/career"
+import {
+  createCareer,
+  deleteAllCareers,
+  deleteCareer,
+  editCareer,
+  getAllCareers
+} from "@renderer/api/career"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
@@ -138,6 +144,27 @@ export const useCareerView = () => {
     deleteMutation.mutate(id)
   }
 
+  const deleteAllMutation = useMutation({
+    mutationFn: deleteAllCareers,
+    onSuccess: () => {
+      toast.success("Todas las carreras y sus datos asociados han sido eliminadas correctamente.")
+      queryClient.invalidateQueries({ queryKey: [rqKeys.CAREERS] })
+      resetForm()
+    },
+    onError: (error: unknown) => {
+      console.error(error)
+      const errorMessage =
+        error instanceof Error ? error.message : "Ocurrió un error al eliminar todas las carreras."
+      toast.error(errorMessage, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  })
+
+  const handleDeleteAll = () => {
+    deleteAllMutation.mutate()
+  }
+
   const resetForm = () => {
     setFormData({ fullName: "", abbreviation: "", faculty: "" })
     setEditingCareer(null)
@@ -166,6 +193,7 @@ export const useCareerView = () => {
     resetForm,
     handleSubmit,
     handleEdit,
-    handleDelete
+    handleDelete,
+    handleDeleteAll
   }
 }

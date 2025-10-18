@@ -34,3 +34,10 @@ export const deleteCareer = async (id: string): Promise<void> => {
     throw new Error(response.error || "Error al eliminar carrera.")
   }
 }
+
+export const deleteAllCareers = async (): Promise<void> => {
+  const response = await window.api.deleteAllCareers()
+  if (!response.success) {
+    throw new Error(response.error || "Error al eliminar todas las carreras.")
+  }
+}

@@ -77,13 +77,17 @@ const LocationsTable = ({
                             <ConfirmDeleteDialog
                               onConfirm={() => handleDelete(location.id)}
                               title="Eliminar localización"
-                              description={`¿Deseas eliminar la localización "${location.name}"? Esta acción no se puede deshacer.`}
                               trigger={
                                 <Button variant="outline" size="sm">
                                   <Trash2 className="h-4 w-4 text-red-500" />
                                 </Button>
                               }
-                            />
+                            >
+                              <div className="space-y-2 text-center">
+                                <p>¿Deseas eliminar la localización <strong>{location.name}</strong>?</p>
+                                <p>Esta acción no se puede deshacer.</p>
+                              </div>
+                            </ConfirmDeleteDialog>
                           </div>
                         </TableCell>
                       </TableRow>

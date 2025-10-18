@@ -135,13 +135,20 @@ const ApplicantsTable = ({
                           <ConfirmDeleteDialog
                             onConfirm={() => handleDeleteFromPhase(student.id)}
                             title="Eliminar aspirante"
-                            description={`¿Deseas eliminar al aspirante "${student.name} ${student.lastName}" con CI ${student.ci}? Esta acción solo eliminará al estudiante de la fase actual y se eliminarán todas las solicitudes relacionadas con este estudiante en esta fase. Esta acción no se puede deshacer.`}
                             trigger={
                               <Button variant="outline" size="sm">
                                 <Trash2 className="h-4 w-4 text-red-500" />
                               </Button>
                             }
-                          />
+                          >
+                            <div className="space-y-2 text-center">
+                              <p>
+                                ¿Deseas eliminar al aspirante <strong>{student.name} {student.lastName}</strong> con CI <strong>{student.ci}</strong>?
+                              </p>
+                              <p>Esta acción solo eliminará al estudiante de la fase actual y se eliminarán todas las solicitudes relacionadas con este estudiante en esta fase. Esta acción no se puede deshacer.</p>
+                            </div>
+                          </ConfirmDeleteDialog>
+
                         </div>
                       </TableCell>
                     </TableRow>

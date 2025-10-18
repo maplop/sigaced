@@ -8,21 +8,24 @@ import {
   updateStudent,
   deleteStudentFromPhase,
   deleteStudentCompletely,
-  addStudentToPhase
+  addStudentToPhase,
+  deleteAllStudentsFromPhase
 } from "./queries/student"
 import {
   getAssignments,
   addAssignment,
   updateAssignment,
   deleteAssignment,
-  getAssignmentsByPhase
+  getAssignmentsByPhase,
+  deleteAllAssignmentsFromPhase
 } from "./queries/assignment"
 import {
   getCareers,
   addCareer,
   getCareerByName,
   updateCareer,
-  deleteCareer
+  deleteCareer,
+  deleteAllCareers
 } from "./queries/career"
 import { getRequests, addRequest, updateRequest, deleteRequest } from "./queries/request"
 import {
@@ -30,7 +33,8 @@ import {
   addLocation,
   getLocationByName,
   updateLocation,
-  deleteLocation
+  deleteLocation,
+  deleteAllLocations
 } from "./queries/location"
 import { getPhases } from "./queries/phase"
 import {
@@ -41,7 +45,13 @@ import {
   deleteUser,
   changeUserPassword
 } from "./queries/user"
-import { getAllSpots, createSpot, updateSpot, deleteSpot } from "./queries/spot"
+import {
+  getAllSpots,
+  createSpot,
+  updateSpot,
+  deleteSpot,
+  deleteAllSpotsFromPhase
+} from "./queries/spot"
 
 function createWindow(): void {
   // Create the browser window.
@@ -152,12 +162,23 @@ ipcMain.handle("student:deleteCompletely", async (_event, studentId: number) => 
   }
 })
 
-// Agregar un estudiante existente a una fase específica
+// Agregar un aspirante existente a una fase específica
 ipcMain.handle("student:addStudentToPhase", async (_event, studentId: number, phaseId: number) => {
   try {
     addStudentToPhase(studentId, phaseId)
     return { success: true }
   } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+// Eliminar todos los aspirantes de una fase (sin borrarlos completamente)
+ipcMain.handle("student:deleteAll", async (_event, phaseId: number) => {
+  try {
+    deleteAllStudentsFromPhase(phaseId)
+    return { success: true }
+  } catch (error: any) {
+    console.error("Error al eliminar todos los estudiantes de la fase:", error)
     return { success: false, error: error.message }
   }
 })
@@ -208,6 +229,16 @@ ipcMain.handle("assignment:deleteAssignment", async (_event, id: number) => {
   }
 })
 
+ipcMain.handle("assignment:deleteAll", async (_event, phaseId: number) => {
+  try {
+    await deleteAllAssignmentsFromPhase(phaseId)
+    return { success: true }
+  } catch (error: any) {
+    console.error("Error al eliminar todas las asignaciones de la fase:", error)
+    return { success: false, error: error.message }
+  }
+})
+
 // IPC handlers for career CRUD
 ipcMain.handle("career:add", async (_event, career) => {
   try {
@@ -254,6 +285,16 @@ ipcMain.handle("career:delete", async (_event, id) => {
   }
 })
 
+ipcMain.handle("career:deleteAll", async () => {
+  try {
+    await deleteAllCareers()
+    return { success: true }
+  } catch (error: any) {
+    console.error("Error al eliminar todas las carreras:", error)
+    return { success: false, error: error.message }
+  }
+})
+
 // IPC handlers for spot CRUD
 ipcMain.handle("spot:add", async (_event, spotData) => {
   try {
@@ -287,6 +328,17 @@ ipcMain.handle("spot:delete", async (_event, spotId: number) => {
     await deleteSpot(spotId)
     return { success: true }
   } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+// Eliminar todas las plazas de una fase específica
+ipcMain.handle("spot:deleteAll", async (_event, phaseId: number) => {
+  try {
+    deleteAllSpotsFromPhase(phaseId)
+    return { success: true }
+  } catch (error: any) {
+    console.error("Error al eliminar todas las plazas de la fase:", error)
     return { success: false, error: error.message }
   }
 })
@@ -370,6 +422,16 @@ ipcMain.handle("location:delete", async (_event, id) => {
     await deleteLocation(id)
     return { success: true }
   } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("location:deleteAll", async () => {
+  try {
+    await deleteAllLocations()
+    return { success: true }
+  } catch (error: any) {
+    console.error("Error al eliminar todas las localizaciones:", error)
     return { success: false, error: error.message }
   }
 })

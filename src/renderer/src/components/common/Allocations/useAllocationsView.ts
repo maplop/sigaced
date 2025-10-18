@@ -1,13 +1,16 @@
 import { rqKeys } from "@renderer/utils/rqKeys"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getAllStudents } from "@renderer/api/student"
 import { getAllSpots } from "@renderer/api/spot"
 import { useMemo, useState } from "react"
-import { getAllAssignments } from "@renderer/api/assignment"
+import { deleteAllAssignmentsFromPhase, getAllAssignments } from "@renderer/api/assignment"
 import { AssignmentRow } from "src/shared/types"
 import { handleAllocate } from "@renderer/utils/allocations"
+import { toast } from "sonner"
 
 export const useAllocations = (phaseId: number) => {
+  const queryClient = useQueryClient()
+
   const { data: assignments, isLoading: loadingAssignments } = useQuery({
     queryKey: [rqKeys.ASSIGNMENTS, phaseId],
     queryFn: () => getAllAssignments()
@@ -19,7 +22,7 @@ export const useAllocations = (phaseId: number) => {
   const [sortField, setSortField] = useState<keyof AssignmentRow | null>(null)
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
 
-  const [loading, setLoading] = useState(false)
+  const [isAssigned, setIsAssigned] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [progress, setProgress] = useState(0)
 
@@ -95,7 +98,7 @@ export const useAllocations = (phaseId: number) => {
   const allocate = async () => {
     if (!sortedStudents || !spots) return
 
-    setLoading(true)
+    setIsAssigned(true)
     setError(null)
     setProgress(0)
 
@@ -103,12 +106,35 @@ export const useAllocations = (phaseId: number) => {
       await handleAllocate(sortedStudents, spots, phaseId + 1, (processed, total) => {
         setProgress(Math.round((processed / total) * 100))
       })
+      await queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS, phaseId] })
     } catch (err: any) {
       console.error(err)
       setError(err.message || "Error al asignar plazas")
+      toast.error(error, {
+        style: {
+          color: "var(--errorMessage)"
+        }
+      })
     } finally {
-      setLoading(false)
+      setIsAssigned(false)
     }
+  }
+
+  const deleteAllMutation = useMutation({
+    mutationFn: (phaseId: number) => deleteAllAssignmentsFromPhase(phaseId),
+    onSuccess: () => {
+      toast.success("Todas las asignaciones de la fase fueron eliminadas.")
+      queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS, phaseId] })
+    },
+    onError: (err: any) => {
+      console.error(err)
+      const errorMessage = err instanceof Error ? err.message : "Error al eliminar asignaciones"
+      toast.error(errorMessage, { style: { color: "var(--errorMessage)" } })
+    }
+  })
+
+  const handleDeleteAllFromPhase = () => {
+    deleteAllMutation.mutate(phaseId)
   }
 
   return {
@@ -129,6 +155,8 @@ export const useAllocations = (phaseId: number) => {
     sortDirection,
     filteredAndSortedAssignments,
     handleSort,
-    progress
+    progress,
+    isAssigned,
+    handleDeleteAllFromPhase
   }
 }

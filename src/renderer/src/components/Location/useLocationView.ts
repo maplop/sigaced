@@ -1,5 +1,6 @@
 import {
   createLocation,
+  deleteAllLocations,
   deleteLocation,
   editLocation,
   getAllLocations
@@ -141,6 +142,31 @@ export const useLocationView = () => {
     deleteMutation.mutate(id)
   }
 
+  const deleteAllMutation = useMutation({
+    mutationFn: deleteAllLocations,
+    onSuccess: () => {
+      toast.success(
+        "Todas las localizaciones y sus datos asociados han sido eliminadas correctamente."
+      )
+      queryClient.invalidateQueries({ queryKey: [rqKeys.LOCATIONS] })
+      resetForm()
+    },
+    onError: (error: unknown) => {
+      console.error(error)
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Ocurrió un error al eliminar todas las localizaciones."
+      toast.error(errorMessage, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  })
+
+  const handleDeleteAll = () => {
+    deleteAllMutation.mutate()
+  }
+
   const resetForm = () => {
     setFormData({ name: "" })
     setEditingLocation(null)
@@ -169,6 +195,7 @@ export const useLocationView = () => {
     resetForm,
     handleSubmit,
     handleEdit,
-    handleDelete
+    handleDelete,
+    handleDeleteAll
   }
 }

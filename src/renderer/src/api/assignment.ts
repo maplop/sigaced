@@ -31,3 +31,10 @@ export const deleteAssignment = async (assignmentId: number): Promise<void> => {
   const response: OperationResult = await window.api.deleteAssignment(assignmentId)
   if (!response.success) throw new Error(response.error || "Error al eliminar la asignación")
 }
+
+// Eliminar todas las asignaciones de una fase específica
+export const deleteAllAssignmentsFromPhase = async (phaseId: number): Promise<void> => {
+  const response: OperationResult = await window.api.deleteAllAssignmentsFromPhase(phaseId)
+  if (!response.success)
+    throw new Error(response.error || "Error al eliminar todas las asignaciones de la fase")
+}

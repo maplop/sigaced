@@ -71,3 +71,14 @@ export function updateAssignment(assignment: Assignment) {
 export function deleteAssignment(id: number) {
   db.prepare("DELETE FROM assignment WHERE id = ?").run(id)
 }
+
+// Delete all assignments from a specific phase
+export function deleteAllAssignmentsFromPhase(phaseId: number) {
+  const stmt = db.prepare(`
+    DELETE FROM assignment
+    WHERE spot_id IN (
+      SELECT id FROM spot WHERE phase_id = ?
+    )
+  `)
+  stmt.run(phaseId)
+}

@@ -64,14 +64,18 @@ const Details = () => {
         <ConfirmDeleteDialog
           onConfirm={handleDeleteUser}
           title="Eliminar cuenta"
-          description={`¿Deseas eliminar su cuenta? Esta acción no se puede deshacer.`}
           trigger={
             <Button className="bg-red-100 text-[var(--errorMessage)] hover:bg-red-200">
               <Trash2 className="w-4 h-4" />
               Eliminar cuenta
             </Button>
           }
-        />
+        >
+          <div className="space-y-2 text-center">
+            <p>¿Deseas eliminar su cuenta?</p>
+            <p>Esta acción no se puede deshacer.</p>
+          </div>
+        </ConfirmDeleteDialog>
       </div>
     </Card >
   )

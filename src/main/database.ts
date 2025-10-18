@@ -37,8 +37,8 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     student_id INTEGER NOT NULL,
     phase_id INTEGER NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES student(id),
-    FOREIGN KEY (phase_id) REFERENCES phase(id),
+    FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
+    FOREIGN KEY (phase_id) REFERENCES phase(id) ON DELETE CASCADE,
     UNIQUE (student_id, phase_id)
   );
 
@@ -63,9 +63,9 @@ db.exec(`
     location_id INTEGER NOT NULL,
     phase_id INTEGER NOT NULL,
     available_quantity INTEGER NOT NULL CHECK (available_quantity >= 0),
-    FOREIGN KEY (career_id) REFERENCES career(id),
-    FOREIGN KEY (location_id) REFERENCES location(id),
-    FOREIGN KEY (phase_id) REFERENCES phase(id),
+    FOREIGN KEY (career_id) REFERENCES career(id) ON DELETE CASCADE,
+    FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE,
+    FOREIGN KEY (phase_id) REFERENCES phase(id) ON DELETE CASCADE,
     UNIQUE (career_id, location_id, phase_id)
   );
 
@@ -75,8 +75,8 @@ db.exec(`
     student_id INTEGER NOT NULL,
     spot_id INTEGER NOT NULL,
     preference_order INTEGER CHECK (preference_order BETWEEN 1 AND 3),
-    FOREIGN KEY (student_id) REFERENCES student(id),
-    FOREIGN KEY (spot_id) REFERENCES spot(id),
+    FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
+    FOREIGN KEY (spot_id) REFERENCES spot(id) ON DELETE CASCADE,
     UNIQUE (student_id, preference_order, spot_id)
   );
 
@@ -86,8 +86,8 @@ db.exec(`
     student_id INTEGER NOT NULL,
     spot_id INTEGER NOT NULL,
     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES student(id),
-    FOREIGN KEY (spot_id) REFERENCES spot(id),
+    FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
+    FOREIGN KEY (spot_id) REFERENCES spot(id) ON DELETE CASCADE,
     UNIQUE (student_id)
   );
 

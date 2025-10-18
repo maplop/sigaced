@@ -86,13 +86,19 @@ const CareerTable = ({
                             <ConfirmDeleteDialog
                               onConfirm={() => handleDelete(career.id)}
                               title="Eliminar carrera"
-                              description={`¿Deseas eliminar la carrera "${career.abbreviation}"? Esta acción no se puede deshacer.`}
                               trigger={
                                 <Button variant="outline" size="sm">
                                   <Trash2 className="h-4 w-4 text-red-500" />
                                 </Button>
                               }
-                            />
+                            >
+                              <div className="space-y-2 text-center">
+                                <p>¿Deseas eliminar la carrera <strong>{career.abbreviation}</strong>?</p>
+                                <p>
+                                  Esta acción no se puede deshacer.
+                                </p>
+                              </div>
+                            </ConfirmDeleteDialog>
                           </div>
                         </TableCell>
                       </TableRow>

@@ -34,3 +34,12 @@ export function updateLocation(location: Location): void {
 export function deleteLocation(id: number): void {
   db.prepare("DELETE FROM location WHERE id = ?").run(id)
 }
+
+// Delete all locations
+export function deleteAllLocations() {
+  const transaction = db.transaction(() => {
+    db.prepare("DELETE FROM location").run()
+  })
+
+  transaction()
+}

@@ -86,13 +86,17 @@ const SpotsTable = ({
                             <ConfirmDeleteDialog
                               onConfirm={() => handleDelete(spot.spotId)}
                               title="Eliminar plaza"
-                              description={`¿Deseas eliminar la plaza "${spot.careerName} - ${spot.locationName}"? Esta acción no se puede deshacer.`}
                               trigger={
                                 <Button variant="outline" size="sm">
                                   <Trash2 className="h-4 w-4 text-red-500" />
                                 </Button>
                               }
-                            />
+                            >
+                              <div className="space-y-2 text-center">
+                                <p>¿Deseas eliminar la plaza <strong>{spot.careerName} - {spot.locationName}</strong>?</p>
+                                <p>Esta acción no se puede deshacer.</p>
+                              </div>
+                            </ConfirmDeleteDialog>
                           </div>
                         </TableCell>
                       </TableRow>
