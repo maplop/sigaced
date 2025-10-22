@@ -61,7 +61,7 @@ const SpotView = ({ phase }: SpotViewProps) => {
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
                   <ListIcon className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium text-foreground">Registros totales: {filteredAndSortedSpots.length}</span>
+                  <span className="text-sm font-medium text-foreground">Total de registros: {filteredAndSortedSpots.length}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <UsersIcon className="h-4 w-4 text-muted-foreground" />
@@ -99,7 +99,7 @@ const SpotView = ({ phase }: SpotViewProps) => {
                 onConfirm={() => handleDeleteAllFromPhase()}
                 title="Limpiar tabla"
                 trigger={
-                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm">
+                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedSpots.length === 0}>
                     <Trash2 className="h-4 w-4 text-red-500" />
                     Limpiar Tabla
                   </Button>
@@ -136,6 +136,7 @@ const SpotView = ({ phase }: SpotViewProps) => {
               handleEdit={handleEdit}
               handleDelete={handleDelete}
               filteredAndSortedSpots={filteredAndSortedSpots}
+              phaseId={phase}
             />
           </CardContent>
         </Card>

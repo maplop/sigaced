@@ -63,8 +63,13 @@ const ApplicantsForm = ({
                   <Input
                     id="ci"
                     value={formData.ci}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, ci: e.target.value }))}
                     required
+                    maxLength={11}
+                    minLength={11}
+                    onChange={(e) => {
+                      const onlyNumbers = e.target.value.replace(/\D/g, "");
+                      setFormData((prev) => ({ ...prev, ci: onlyNumbers }));
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -90,7 +95,7 @@ const ApplicantsForm = ({
                   <Input
                     id="grade"
                     type="number"
-                    step="0.1"
+                    step="0.01"
                     min="60"
                     max="100"
                     value={formData.grade}
@@ -164,11 +169,11 @@ const ApplicantsForm = ({
                 )}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-4">
                 {formData.requests?.map((request, index) => (
                   <div key={index} className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <Label className="text-xs text-muted-foreground">Opción {index + 1}</Label>
+                      <Label>Opción {index + 1}</Label>
                       {(formData.requests?.length || 0) > 1 && (
                         <Button
                           type="button"

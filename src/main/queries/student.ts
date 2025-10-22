@@ -4,37 +4,50 @@ import { Student } from "src/shared/types"
 
 // -------------------- CREATE --------------------
 export function addStudent(student: Student): number {
-  const insertStudent = db.prepare(`
-    INSERT INTO student (ci, name, last_name, grade, age, gender, municipality)
-    VALUES (@ci, @name, @lastName, @grade, @age, @gender, @municipality)
-  `)
+  try {
+    const insertStudent = db.prepare(`
+      INSERT INTO student (ci, name, last_name, grade, age, gender, municipality)
+      VALUES (@ci, @name, @lastName, @grade, @age, @gender, @municipality)
+    `)
 
-  const insertPhase = db.prepare(`
-    INSERT INTO student_phase (student_id, phase_id)
-    VALUES (?, ?)
-  `)
+    const insertPhase = db.prepare(`
+      INSERT INTO student_phase (student_id, phase_id)
+      VALUES (?, ?)
+    `)
 
-  const insertRequest = db.prepare(`
-    INSERT INTO request (student_id, spot_id, preference_order)
-    VALUES (?, ?, ?)
-  `)
+    const insertRequest = db.prepare(`
+      INSERT INTO request (student_id, spot_id, preference_order)
+      VALUES (?, ?, ?)
+    `)
 
-  const tx = db.transaction((s: Student) => {
-    const result = insertStudent.run(s)
-    const studentId = result.lastInsertRowid as number
+    const tx = db.transaction((s: Student) => {
+      const result = insertStudent.run(s)
+      const studentId = result.lastInsertRowid as number
 
-    insertPhase.run(studentId, s.phaseId)
+      insertPhase.run(studentId, s.phaseId)
 
-    if (s.requests) {
-      for (const r of s.requests) {
-        insertRequest.run(studentId, r.spotId, r.preferenceOrder)
+      if (s.requests) {
+        for (const r of s.requests) {
+          insertRequest.run(studentId, r.spotId, r.preferenceOrder)
+        }
       }
+
+      return studentId
+    })
+
+    return tx(student)
+  } catch (error: any) {
+    if (error.message.includes("UNIQUE constraint failed: student.ci")) {
+      throw new Error("Ya existe un aspirante con ese CI")
     }
 
-    return studentId
-  })
-
-  return tx(student)
+    if (error.message.includes("UNIQUE constraint failed: request.student_id, request.spot_id")) {
+      throw new Error(
+        "No se puede duplicar la solicitud: el aspirante ya está vinculado a esa plaza."
+      )
+    }
+    throw error
+  }
 }
 
 // -------------------- READ --------------------
@@ -78,38 +91,54 @@ export function getStudents(phaseId: number): Student[] {
 
 // -------------------- UPDATE --------------------
 export function updateStudent(student: Student): void {
-  const updateSt = db.prepare(`
-    UPDATE student
-    SET name=@name, last_name=@lastName, grade=@grade,
-        age=@age, gender=@gender, municipality=@municipality
-    WHERE id=@id
-  `)
+  try {
+    const updateSt = db.prepare(`
+      UPDATE student
+      SET ci=@ci,
+          name=@name,
+          last_name=@lastName,
+          grade=@grade,
+          age=@age,
+          gender=@gender,
+          municipality=@municipality
+      WHERE id=@id
+    `)
 
-  const deleteRequests = db.prepare(`
-    DELETE FROM request
-    WHERE student_id = ? AND spot_id IN (
-      SELECT id FROM spot WHERE phase_id = ?
-    )
-  `)
+    const deleteRequests = db.prepare(`
+      DELETE FROM request
+      WHERE student_id = ? AND spot_id IN (
+        SELECT id FROM spot WHERE phase_id = ?
+      )
+    `)
 
-  const insertRequest = db.prepare(`
-    INSERT INTO request (student_id, spot_id, preference_order)
-    VALUES (?, ?, ?)
-  `)
+    const insertRequest = db.prepare(`
+      INSERT INTO request (student_id, spot_id, preference_order)
+      VALUES (?, ?, ?)
+    `)
 
-  const tx = db.transaction((s: Student) => {
-    updateSt.run(s)
-
-    // Si pasó requests, actualizamos en esa fase
-    if (s.requests) {
-      deleteRequests.run(s.id, s.phaseId)
-      for (const r of s.requests) {
-        insertRequest.run(s.id, r.spotId, r.preferenceOrder)
+    const tx = db.transaction((s: Student) => {
+      updateSt.run(s)
+      if (s.requests) {
+        deleteRequests.run(s.id, s.phaseId)
+        for (const r of s.requests) {
+          insertRequest.run(s.id, r.spotId, r.preferenceOrder)
+        }
       }
-    }
-  })
+    })
 
-  tx(student)
+    tx(student)
+  } catch (error: any) {
+    if (error.message.includes("UNIQUE constraint failed: student.ci")) {
+      throw new Error("Ya existe un aspirante con ese CI")
+    }
+
+    if (error.message.includes("UNIQUE constraint failed: request.student_id, request.spot_id")) {
+      throw new Error(
+        "No se puede duplicar la solicitud: el aspirante ya está vinculado a esa plaza."
+      )
+    }
+    throw error
+  }
 }
 
 // -------------------- DELETE --------------------
@@ -140,7 +169,7 @@ export function deleteStudentCompletely(studentId: number): void {
   db.prepare("DELETE FROM student WHERE id = ?").run(studentId)
 }
 
-// Agregar un estudiante a una fase sin duplicar
+// Agregar un aspirante a una fase sin duplicar
 export function addStudentToPhase(studentId: number, phaseId: number): void {
   const insertPhase = db.prepare(`
     INSERT INTO student_phase (student_id, phase_id)

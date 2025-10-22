@@ -8,7 +8,7 @@ import { createSpot } from "@renderer/api/spot"
 const copySpots = (spots: SpotFull[]) => spots.map((s) => ({ ...s }))
 
 // ---------------------------
-// 2. Intentar asignar un estudiante a sus solicitudes
+// 2. Intentar asignar un aspirante a sus solicitudes
 const assignStudentToSpot = async (student: Student, spots: SpotFull[]): Promise<boolean> => {
   if (!student.requests?.length) return false
 
@@ -18,7 +18,7 @@ const assignStudentToSpot = async (student: Student, spots: SpotFull[]): Promise
       try {
         await createAssignment({ studentId: student.id, spotId: spot.spotId })
         spot.availableQuantity -= 1
-        return true // asignación exitosa
+        return true // otorgamientoexitosa
       } catch (error) {
         console.error(`Error al asignar plaza a ${student.name}:`, error)
         return false
@@ -29,11 +29,10 @@ const assignStudentToSpot = async (student: Student, spots: SpotFull[]): Promise
 }
 
 // ---------------------------
-// 3. Mover estudiante a la siguiente fase  si no tiene plaza
+// 3. Mover aspirante a la siguiente fase  si no tiene plaza
 const moveStudentToNextPhase = async (student: Student, phaseId: number) => {
   try {
     await addStudentToPhase(student.id, phaseId)
-    console.log(`Estudiante ${student.name} agregado a fase ${phaseId}`)
   } catch (error) {
     console.error(`Error al agregar ${student.name} a fase ${phaseId}:`, error)
   }
@@ -51,9 +50,6 @@ const copyRemainingSpotsToNextPhase = async (spots: SpotFull[], phaseId: number)
           phaseId: phaseId,
           availableQuantity: spot.availableQuantity
         })
-        console.log(
-          `Plaza de ${spot.careerName} en ${spot.locationName} copiada a fase ${phaseId} con ${spot.availableQuantity} disponibles`
-        )
       } catch (error: any) {
         console.warn(error.message)
       }

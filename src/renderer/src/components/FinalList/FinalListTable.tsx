@@ -6,6 +6,7 @@ import { Badge } from "@renderer/components/ui/badge"
 import { Label } from "@renderer/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
 import { AssignmentRow } from "src/shared/types"
+import { getPhaseName } from "@renderer/utils/getPhaseName"
 
 
 export interface AllocationsTableProps {
@@ -20,10 +21,9 @@ export interface AllocationsTableProps {
   sortField: keyof AssignmentRow | null
   sortDirection: "asc" | "desc"
   handleSort: (field: keyof AssignmentRow) => void
-  phaseId?: number
 }
 
-const AllocationsTable = ({
+const FinalListTable = ({
   loadingAssignments,
   filteredAndSortedAssignments,
   paginatedAssignments,
@@ -34,13 +34,11 @@ const AllocationsTable = ({
   setItemsPerPage,
   sortField,
   sortDirection,
-  handleSort,
-  phaseId,
+  handleSort
 }: AllocationsTableProps) => {
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
-
 
   return (
     <>
@@ -69,11 +67,12 @@ const AllocationsTable = ({
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("grade")}>
                     Nota {sortField === "grade" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
-                  {phaseId !== 3 && (
-                    <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("preferenceOrder")}>
-                      Preferencia Otorgada {sortField === "preferenceOrder" && (sortDirection === "asc" ? "↑" : "↓")}
-                    </TableHead>
-                  )}
+                  <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("phase")}>
+                    Fase del Otorgamiento{sortField === "preferenceOrder" && (sortDirection === "asc" ? "↑" : "↓")}
+                  </TableHead>
+                  <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("preferenceOrder")}>
+                    Preferencia Otorgada {sortField === "preferenceOrder" && (sortDirection === "asc" ? "↑" : "↓")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               {filteredAndSortedAssignments.length !== 0 ? (
@@ -99,9 +98,10 @@ const AllocationsTable = ({
                       <TableCell className="text-center">
                         <Badge>{assignment.grade.toFixed(2)}</Badge>
                       </TableCell>
-                      {phaseId !== 3 && (
-                        <TableCell className="text-center font-medium">{assignment.preferenceOrder}</TableCell>
-                      )}
+                      <TableCell className="text-center">
+                        {getPhaseName(assignment.phase)}
+                      </TableCell>
+                      <TableCell className="text-center font-medium">{assignment.preferenceOrder}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -158,4 +158,4 @@ const AllocationsTable = ({
   )
 }
 
-export default AllocationsTable
+export default FinalListTable

@@ -85,7 +85,11 @@ export const useLocationView = () => {
     mutationFn: handleLocationSubmit,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [rqKeys.LOCATIONS] })
-      resetForm()
+      if (editingLocation) {
+        resetForm()
+      } else {
+        resetFormWithoutClosing()
+      }
       toast.success(
         editingLocation
           ? "Localización actualizada correctamente."
@@ -165,6 +169,11 @@ export const useLocationView = () => {
 
   const handleDeleteAll = () => {
     deleteAllMutation.mutate()
+  }
+
+  const resetFormWithoutClosing = () => {
+    setFormData({ name: "" })
+    setEditingLocation(null)
   }
 
   const resetForm = () => {

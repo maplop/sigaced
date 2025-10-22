@@ -1,14 +1,15 @@
 import { phases } from "@renderer/utils/rqKeys"
-import AllocationsSectionWrapper from "../common/AllocationsSectionWrapper"
-import SpotView from "../common/Spot/SpotView"
 import { PhaseType } from "@renderer/utils/types"
+import AllocationsSectionWrapper from "../common/AllocationsSectionWrapper"
 import ApplicantsView from "../common/Applicants/ApplicantView"
+import SpotView from "../common/Spot/SpotView"
+import AllocationsView from "../common/Allocations/AllocationsView"
 
 const SecondAllocationsView = () => {
   return (
     <AllocationsSectionWrapper
       title="Segundo Otorgamiento"
-      subtitle="Gestión de plazas y asignaciones de la segunda fase."
+      subtitle="Gestión de plazas y otorgamientos de la segunda fase."
       tabs={[
         {
           label: "Plazas",
@@ -23,7 +24,7 @@ const SecondAllocationsView = () => {
         {
           label: "Otorgamiento",
           value: "allocation",
-          children: <div>Proceso de otorgamiento aquí</div>,
+          children: <AllocationsView phase={phases.SECOND as PhaseType} />,
         },
       ]}
     />

@@ -9,6 +9,7 @@ import { SpotFull } from "src/shared/types"
 import SkeletonTable from "./SkeletonTable"
 import ConfirmDeleteDialog from "@renderer/components/common/ConfirmDeleteDialog"
 import { Badge } from "../../ui/badge"
+import { useEffect, useState } from "react"
 
 
 export interface SpotsTableProps {
@@ -25,6 +26,7 @@ export interface SpotsTableProps {
   handleEdit: (spot: SpotFull) => void
   handleDelete: (id: number) => void
   filteredAndSortedSpots: SpotFull[]
+  phaseId?: number
 }
 
 const SpotsTable = ({
@@ -40,11 +42,22 @@ const SpotsTable = ({
   handleSort,
   handleDelete,
   handleEdit,
-  filteredAndSortedSpots
+  filteredAndSortedSpots,
+  phaseId
 }: SpotsTableProps) => {
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
+
+  const [availableSpots, setAvailableSpots] = useState<SpotFull[] | null>(null)
+
+  useEffect(() => {
+    const storedSpots = localStorage.getItem('spots_3')
+    if (storedSpots) {
+      const parsedSpots = JSON.parse(storedSpots)
+      setAvailableSpots(parsedSpots)
+    }
+  }, [])
 
   return (
     <>
@@ -77,7 +90,18 @@ const SpotsTable = ({
                         </TableCell>
                         <TableCell>{spot.careerName}</TableCell>
                         <TableCell>{spot.locationName}</TableCell>
-                        <TableCell className="text-center"><Badge>{spot.availableQuantity}</Badge></TableCell>
+                        <TableCell className="text-center">
+                          {phaseId === 3 && (
+                            <>
+                              <Badge>
+                                {availableSpots?.find((s) => s.spotId === spot.spotId)?.availableQuantity
+                                  ?? spot.availableQuantity}
+                              </Badge>
+                              {" de "}
+                            </>
+                          )}
+                          <Badge>{spot.availableQuantity}</Badge>
+                        </TableCell>
                         <TableCell >
                           <div className="flex justify-end items-center mr-8 space-x-2">
                             <Button variant="outline" size="sm" onClick={() => handleEdit(spot)}>

@@ -20,7 +20,7 @@ export function getAssignments(): AssignmentRow[] {
       s.ci AS ci,
       s.last_name AS lastName,
       s.name AS name,
-      c.abbreviation AS career,         -- 👈 aquí usamos la abreviatura
+      c.abbreviation AS career,         
       l.name AS location,
       s.grade AS grade,
       r.preference_order AS preferenceOrder,
@@ -38,19 +38,30 @@ export function getAssignments(): AssignmentRow[] {
     .all()
 }
 
-// Obtener asignaciones por fase
-export function getAssignmentsByPhase(phaseId: number): Assignment[] {
+// Obtener otorgamientospor fase
+export function getAssignmentsByPhase(phaseId: number): AssignmentRow[] {
   return db
     .prepare(
       `
       SELECT
-        a.id,
-        a.student_id AS studentId,
-        a.spot_id AS spotId,
-        a.assigned_at AS assignedAt
+        a.id AS id,
+        s.ci AS ci,
+        s.last_name AS lastName,
+        s.name AS name,
+        c.abbreviation AS career,
+        l.name AS location,
+        s.grade AS grade,
+        r.preference_order AS preferenceOrder,
+        sp.phase_id AS phase
       FROM assignment a
-      JOIN spot s ON s.id = a.spot_id
-      WHERE s.phase_id = ?
+      JOIN student s ON a.student_id = s.id
+      JOIN spot sp ON a.spot_id = sp.id
+      JOIN career c ON sp.career_id = c.id
+      JOIN location l ON sp.location_id = l.id
+      LEFT JOIN request r 
+        ON r.student_id = s.id AND r.spot_id = sp.id
+      WHERE sp.phase_id = ?
+      ORDER BY a.id
       `
     )
     .all(phaseId)
@@ -68,8 +79,16 @@ export function updateAssignment(assignment: Assignment) {
 }
 
 // Delete
-export function deleteAssignment(id: number) {
+export function deleteAssignmentForId(id: number) {
   db.prepare("DELETE FROM assignment WHERE id = ?").run(id)
+}
+
+// Delete all assignments (regardless of phase)
+export function deleteAllAssignments() {
+  const stmt = db.prepare(`
+    DELETE FROM assignment
+  `)
+  stmt.run()
 }
 
 // Delete all assignments from a specific phase

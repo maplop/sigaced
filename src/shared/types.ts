@@ -76,7 +76,7 @@ export interface AssignmentRow {
   location: string
   grade: number
   preferenceOrder: 1 | 2 | 3 | null
-  phase: Phase
+  phase: number
 }
 
 export interface User {

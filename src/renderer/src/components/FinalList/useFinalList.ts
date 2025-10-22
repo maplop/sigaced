@@ -1,19 +1,16 @@
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { getAllStudents } from "@renderer/api/student"
-import { getAllSpots } from "@renderer/api/spot"
 import { useMemo, useState } from "react"
-import { deleteAllAssignmentsFromPhase, getAssignmentsByPhase } from "@renderer/api/assignment"
+import { deleteAllAssignments, getAllAssignments } from "@renderer/api/assignment"
 import { AssignmentRow } from "src/shared/types"
-import { handleAllocate } from "@renderer/utils/allocations"
 import { toast } from "sonner"
 
-export const useAllocations = (phaseId: number) => {
+export const useFinalList = () => {
   const queryClient = useQueryClient()
 
   const { data: assignments, isLoading: loadingAssignments } = useQuery({
-    queryKey: [rqKeys.ASSIGNMENTS, phaseId],
-    queryFn: () => getAssignmentsByPhase(phaseId)
+    queryKey: [rqKeys.ASSIGNMENTS],
+    queryFn: () => getAllAssignments()
   })
 
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -21,10 +18,6 @@ export const useAllocations = (phaseId: number) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [sortField, setSortField] = useState<keyof AssignmentRow | null>(null)
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
-
-  const [isAssigned, setIsAssigned] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [progress, setProgress] = useState(0)
 
   const filteredAndSortedAssignments = useMemo(() => {
     if (!assignments) return []
@@ -79,52 +72,11 @@ export const useAllocations = (phaseId: number) => {
     }
   }
 
-  const { data: students } = useQuery({
-    queryKey: [rqKeys.STUDENTS, phaseId],
-    queryFn: () => getAllStudents(phaseId)
-  })
-
-  const { data: spots } = useQuery({
-    queryKey: [rqKeys.SPOT, phaseId],
-    queryFn: () => getAllSpots(phaseId)
-  })
-
-  // Ordenar estudiantes por nota (grade) de mayor a menor
-  const sortedStudents = useMemo(() => {
-    if (!students) return []
-    return [...students].sort((a, b) => b.grade - a.grade)
-  }, [students])
-
-  const allocate = async () => {
-    if (!sortedStudents || !spots) return
-
-    setIsAssigned(true)
-    setError(null)
-    setProgress(0)
-
-    try {
-      await handleAllocate(sortedStudents, spots, phaseId + 1, (processed, total) => {
-        setProgress(Math.round((processed / total) * 100))
-      })
-      await queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS, phaseId] })
-    } catch (err: any) {
-      console.error(err)
-      setError(err.message || "Error al asignar plazas")
-      toast.error(error, {
-        style: {
-          color: "var(--errorMessage)"
-        }
-      })
-    } finally {
-      setIsAssigned(false)
-    }
-  }
-
   const deleteAllMutation = useMutation({
-    mutationFn: (phaseId: number) => deleteAllAssignmentsFromPhase(phaseId),
+    mutationFn: () => deleteAllAssignments(),
     onSuccess: () => {
       toast.success("Todas los otorgamientos de la fase fueron eliminadas.")
-      queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS, phaseId] })
+      queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS] })
     },
     onError: (err: any) => {
       console.error(err)
@@ -134,12 +86,11 @@ export const useAllocations = (phaseId: number) => {
   })
 
   const handleDeleteAllFromPhase = () => {
-    deleteAllMutation.mutate(phaseId)
+    deleteAllMutation.mutate()
   }
 
   return {
     loadingAssignments,
-    allocate,
     paginatedAssignments,
     currentPage,
     setCurrentPage,
@@ -152,8 +103,6 @@ export const useAllocations = (phaseId: number) => {
     sortDirection,
     filteredAndSortedAssignments,
     handleSort,
-    progress,
-    handleDeleteAllFromPhase,
-    isAssigned
+    handleDeleteAllFromPhase
   }
 }

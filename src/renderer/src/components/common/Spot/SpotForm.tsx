@@ -1,10 +1,10 @@
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogDescription, DialogTitle, DialogFooter } from "@renderer/components/ui/dialog"
 import { Button } from "@renderer/components/ui/button"
 import { Label } from "@renderer/components/ui/label"
 import { Input } from "@renderer/components/ui/input"
 import { Plus } from "lucide-react"
 import { Career, Location, Spot, SpotFull } from "src/shared/types"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@renderer/components/ui/dialog"
 
 interface SpotFormProps {
   careers?: Career[],
@@ -20,7 +20,10 @@ interface SpotFormProps {
   setSpotFormData: React.Dispatch<React.SetStateAction<Omit<Spot, 'id'>>>;
 }
 
+
+
 const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, isDialogOpen, setIsDialogOpen, resetForm, editingSpot, handleSubmit, formData, setSpotFormData }: SpotFormProps) => {
+
 
   const isFormComplete =
     formData.careerId !== undefined &&
@@ -72,6 +75,7 @@ const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, isDial
               </SelectContent>
             </Select>
           </div>
+
           <div className="space-y-2 py-4">
             <Label htmlFor="locationId">Localización</Label>
             <Select

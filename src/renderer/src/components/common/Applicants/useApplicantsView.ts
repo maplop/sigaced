@@ -29,7 +29,7 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     ci: "",
     name: "",
     lastName: "",
-    grade: 0.0,
+    grade: 60.0,
     age: 18,
     gender: "F",
     municipality: "",
@@ -111,7 +111,11 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     mutationFn: handleStudentSubmit,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [rqKeys.STUDENTS] })
-      resetForm()
+      if (editingStudent) {
+        resetForm()
+      } else {
+        resetFormWithoutClosing()
+      }
       toast.success(
         editingStudent
           ? "Datos del aspirante actualizados correctamente."
@@ -136,6 +140,15 @@ export const useApplicantsView = (phaseId: PhaseType) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    if (formData.ci.length !== 11) {
+      toast.error("El CI debe tener 11 dígitos.", {
+        style: {
+          color: "var(--errorMessage)"
+        }
+      })
+      return
+    }
+
     mutation.mutate(formData)
   }
 
@@ -242,7 +255,7 @@ export const useApplicantsView = (phaseId: PhaseType) => {
       ci: "",
       name: "",
       lastName: "",
-      grade: 0.0,
+      grade: 60.0,
       age: 18,
       gender: "F",
       municipality: "",
@@ -251,6 +264,21 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     })
     setEditingStudent(null)
     setIsDialogOpen(false)
+  }
+
+  const resetFormWithoutClosing = () => {
+    setFormData({
+      ci: "",
+      name: "",
+      lastName: "",
+      grade: 60.0,
+      age: 18,
+      gender: "F",
+      municipality: "",
+      phaseId: phaseId,
+      requests: []
+    })
+    setEditingStudent(null)
   }
 
   return {

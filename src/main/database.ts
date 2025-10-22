@@ -77,10 +77,10 @@ db.exec(`
     preference_order INTEGER CHECK (preference_order BETWEEN 1 AND 3),
     FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
     FOREIGN KEY (spot_id) REFERENCES spot(id) ON DELETE CASCADE,
-    UNIQUE (student_id, preference_order, spot_id)
+    UNIQUE (student_id, spot_id)
   );
 
-  -- Asignaciones finales
+  -- Otorgamientosfinales
   CREATE TABLE IF NOT EXISTS assignment (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     student_id INTEGER NOT NULL,

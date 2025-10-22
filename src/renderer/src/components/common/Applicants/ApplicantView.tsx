@@ -62,12 +62,12 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
       {/*<ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">*/}
       <Card>
         <CardHeader className="flex justify-between">
-          <Card className="w-fit p-0 bg-transparent shadow-none">
+          <div className="w-fit p-0 bg-transparent shadow-none">
             <div className="flex items-center gap-2">
               <UsersIcon className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-foreground">Totales de aspirantes: {filteredAndSortedStudents.length}</span>
+              <span className="text-sm font-medium text-foreground">Total de aspirantes: {filteredAndSortedStudents.length}</span>
             </div>
-          </Card>
+          </div>
           <ApplicantsForm
             isDialogOpen={isDialogOpen}
             setIsDialogOpen={setIsDialogOpen}
@@ -98,7 +98,7 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
               onConfirm={() => handleDeleteAllFromPhase()}
               title="Limpiar tabla"
               trigger={
-                <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm">
+                <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedStudents.length === 0}>
                   <Trash2 className="h-4 w-4 text-red-500" />
                   Limpiar Tabla
                 </Button>
@@ -138,6 +138,7 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
             filteredAndSortedStudents={filteredAndSortedStudents}
             spots={spots ?? []}
             loadingSpots={loadingSpots}
+            phaseId={phase}
           />
         </CardContent>
       </Card>

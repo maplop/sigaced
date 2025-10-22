@@ -1,37 +1,44 @@
 import { Card, CardContent, CardHeader } from "@renderer/components/ui/card";
 import { Input } from "@renderer/components/ui/input";
-import { Search, UsersIcon, Play, Trash2 } from "lucide-react";
-import { useAllocations } from "./useAllocationsView";
+import { Search, UsersIcon, Trash2 } from "lucide-react";
+import { useManualAllocationView } from "./useManualAllocationView";
 import { PhaseType } from "@renderer/utils/types";
 import { Button } from "@renderer/components/ui/button";
-import AllocationsTable from "./AllocationsTable";
-import { Progress } from "@renderer/components/ui/progress";
-import ConfirmDeleteDialog from "../ConfirmDeleteDialog";
+import AllocationsTable from "../common/Allocations/AllocationsTable";
+import ConfirmDeleteDialog from "../common/ConfirmDeleteDialog";
+import AddManualAllocation from "./AddManualAllocation";
 
 interface AllocationsViewProps {
   phase: PhaseType
 }
 
-export default function AllocationsView({ phase }: AllocationsViewProps) {
+export default function ManualAllocationView({ phase }: AllocationsViewProps) {
   const {
-    loadingAssignments,
-    allocate,
+    isDialogOpen,
+    setIsDialogOpen,
     paginatedAssignments,
+    filteredAndSortedAssignments,
+    loadingAssignments,
     currentPage,
     setCurrentPage,
-    totalPages,
     itemsPerPage,
     setItemsPerPage,
+    totalPages,
     searchTerm,
     setSearchTerm,
     sortField,
-    sortDirection,
-    filteredAndSortedAssignments,
     handleSort,
-    progress,
+    sortDirection,
     handleDeleteAllFromPhase,
-    isAssigned
-  } = useAllocations(phase)
+    studentsCopy,
+    loadingStudents,
+    spotsCopy,
+    loadingSpots,
+    formData,
+    setFormData,
+    handleSubmit,
+    resetForm
+  } = useManualAllocationView(phase)
   return (
     <div className="flex flex-col gap-4">
       <Card>
@@ -39,29 +46,23 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
           <div className="w-fit p-0 bg-transparent shadow-none">
             <div className="flex items-center gap-2">
               <UsersIcon className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-foreground">Total de asignaciones: {filteredAndSortedAssignments.length} </span>
+              <span className="text-sm font-medium text-foreground">Total de asignaciones: {paginatedAssignments.length}  </span>
             </div>
           </div>
-          <Button
-            onClick={allocate}
-            disabled={filteredAndSortedAssignments.length > 0}
-          >
-            <Play className="h-4 w-4" />
-            Otorgar
-          </Button>
+          <AddManualAllocation
+            isDialogOpen={isDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
+            students={studentsCopy ?? []}
+            loadingStudents={loadingStudents}
+            spots={spotsCopy ?? []}
+            loadingSpots={loadingSpots}
+            formData={formData}
+            setFormData={setFormData}
+            handleSubmit={handleSubmit}
+            resetForm={resetForm}
+          />
         </CardHeader>
         <CardContent>
-
-          {isAssigned && (
-            <div className="mb-3.5">
-              <div className="flex justify-between items-center text-muted-foreground mb-1">
-                <span>Asignando...</span>
-                <span>{progress}%</span>
-              </div>
-              <Progress value={progress} className="w-full" />
-            </div>
-          )}
-
           <div className="flex justify-between items-center mb-4">
             <div className="relative flex items-center space-x-2 w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -110,6 +111,7 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
             sortField={sortField}
             sortDirection={sortDirection}
             handleSort={handleSort}
+            phaseId={phase}
           />
         </CardContent>
       </Card>

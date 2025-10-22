@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SpotFull, Student } from "src/shared/types"
 import ConfirmDeleteDialog from "../ConfirmDeleteDialog"
 import { ApplicantsRequestsModal } from "./ApplicantsRequestsModal"
+import { useQuery } from "@tanstack/react-query"
+import { rqKeys } from "@renderer/utils/rqKeys"
+import { getAssignmentsByPhase } from "@renderer/api/assignment"
 
 type SortableField = keyof Student | "requestsCount"
 
@@ -28,7 +31,8 @@ export interface ApplicantsTableProps {
   handleDeleteFromPhase: (studentId: number) => void
   filteredAndSortedStudents: Student[],
   spots: SpotFull[],
-  loadingSpots: boolean
+  loadingSpots: boolean,
+  phaseId?: number
 }
 
 const ApplicantsTable = ({
@@ -46,11 +50,17 @@ const ApplicantsTable = ({
   handleDeleteFromPhase,
   handleEdit,
   spots,
-  loadingSpots
+  loadingSpots,
+  phaseId
 }: ApplicantsTableProps) => {
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
+
+  const { data: assignments, isLoading: loadingAssignments } = useQuery({
+    queryKey: [rqKeys.ASSIGNMENTS, 3],
+    queryFn: () => getAssignmentsByPhase(3)
+  })
 
   return (
     <>
@@ -82,9 +92,16 @@ const ApplicantsTable = ({
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("municipality")}>
                     Municipio {sortField === "municipality" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
-                  <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("requestsCount")}>
-                    Solicitudes {sortField === "municipality" && (sortDirection === "asc" ? "↑" : "↓")}
-                  </TableHead>
+                  {phaseId === 3 && (
+                    <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("requestsCount")}>
+                      Estado {sortField === "municipality" && (sortDirection === "asc" ? "↑" : "↓")}
+                    </TableHead>
+                  )}
+                  {phaseId !== 3 && (
+                    <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("requestsCount")}>
+                      Solicitudes {sortField === "municipality" && (sortDirection === "asc" ? "↑" : "↓")}
+                    </TableHead>
+                  )}
                   <TableHead className="text-center">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
@@ -96,7 +113,7 @@ const ApplicantsTable = ({
                         {(currentPage - 1) * itemsPerPage + index + 1}
                       </TableCell>
                       <TableCell className="text-center">{student.ci}</TableCell>
-                      <TableCell>
+                      <TableCell className="font-medium">
                         {student.lastName}
                       </TableCell>
                       <TableCell>
@@ -112,21 +129,32 @@ const ApplicantsTable = ({
                         </Badge>
                       </TableCell>
                       <TableCell>{student.municipality}</TableCell>
-                      <TableCell className="text-center font-medium">
-                        {(() => {
-                          const requestsCount = student.requests?.length ?? 0;
+                      {phaseId === 3 && (
+                        <TableCell className="text-center">
+                          {loadingAssignments
+                            ? "Cargando..."
+                            : assignments?.some(a => a.ci === student.ci)
+                              ? <Badge className="bg-green-100 text-green-700 font-bold">Asignado</Badge>
+                              : <Badge className="bg-yellow-100 text-yellow-700 font-bold">Pendiente</Badge>}
+                        </TableCell>
+                      )}
+                      {phaseId !== 3 && (
+                        <TableCell className="text-center font-medium">
+                          {(() => {
+                            const requestsCount = student.requests?.length ?? 0;
 
-                          if (requestsCount > 0) {
-                            return (
-                              <div className="flex justify-center items-center gap-2">
-                                <span>{requestsCount}</span>
-                                <ApplicantsRequestsModal student={student} spots={spots ?? []} loadingSpots={loadingSpots} />
-                              </div>
-                            );
-                          }
-                          return <span className="text-red-700">{requestsCount}</span>;
-                        })()}
-                      </TableCell>
+                            if (requestsCount > 0) {
+                              return (
+                                <div className="flex justify-center items-center gap-2">
+                                  <span>{requestsCount}</span>
+                                  <ApplicantsRequestsModal student={student} spots={spots ?? []} loadingSpots={loadingSpots} />
+                                </div>
+                              );
+                            }
+                            return <span className="text-red-700">{requestsCount}</span>;
+                          })()}
+                        </TableCell>
+                      )}
                       <TableCell>
                         <div className="flex justify-center space-x-2">
                           <Button variant="outline" size="sm" onClick={() => handleEdit(student)}>
@@ -145,7 +173,7 @@ const ApplicantsTable = ({
                               <p>
                                 ¿Deseas eliminar al aspirante <strong>{student.name} {student.lastName}</strong> con CI <strong>{student.ci}</strong>?
                               </p>
-                              <p>Esta acción solo eliminará al estudiante de la fase actual y se eliminarán todas las solicitudes relacionadas con este estudiante en esta fase. Esta acción no se puede deshacer.</p>
+                              <p>Esta acción solo eliminará al aspirante de la fase actual y se eliminarán todas las solicitudes relacionadas con este aspirante en esta fase. Esta acción no se puede deshacer.</p>
                             </div>
                           </ConfirmDeleteDialog>
 

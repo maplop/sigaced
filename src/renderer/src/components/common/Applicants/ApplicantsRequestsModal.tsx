@@ -33,7 +33,7 @@ export function ApplicantsRequestsModal({ student, spots, loadingSpots }: Applic
             <Card>
               <CardContent className="p-6 text-center">
                 <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">Este estudiante no tiene solicitudes registradas.</p>
+                <p className="text-muted-foreground">Este aspirante no tiene solicitudes registradas.</p>
               </CardContent>
             </Card>
           ) : (

@@ -37,10 +37,11 @@ declare global {
       // Assignments
       addAssignment: (assignment: Omit<Assignment, "id">) => Promise<OperationResult>
       getAssignments: () => Promise<AssignmentRow[]>
-      getAssignmentsByPhase: (phaseId: number) => Promise<Assignment[]>
+      getAssignmentsByPhase: (phaseId: number) => Promise<AssignmentRow[]>
       updateAssignment: (assignment: Assignment) => Promise<OperationResult>
-      deleteAssignment: (id: number) => Promise<OperationResult>
+      deleteAssignmentForId: (id: number) => Promise<OperationResult>
       deleteAllAssignmentsFromPhase: (phaseId: number) => Promise<OperationResult>
+      deleteAllAssignments: () => Promise<OperationResult>
 
       // Careers
       addCareer: (career: Omit<Career, "id">) => Promise<OperationResult>
@@ -56,12 +57,6 @@ declare global {
       getAllSpots: (phaseId: number) => Promise<SpotFull[]>
       deleteSpot: (spotId: number) => Promise<OperationResult>
       deleteAllSpotsFromPhase: (phaseId: number) => Promise<OperationResult>
-
-      // Requests
-      addRequest: (request: Request) => Promise<OperationResult>
-      getRequests: () => Promise<Request[]>
-      updateRequest: (request: Request) => Promise<OperationResult>
-      deleteRequest: (id: number) => Promise<OperationResult>
 
       // Location
       addLocation: (location: Omit<Location, "id">) => Promise<OperationResult>

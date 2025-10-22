@@ -110,7 +110,11 @@ export const useSpotView = (phaseId: PhaseType) => {
     mutationFn: handleSpotSubmit,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [rqKeys.SPOT] })
-      resetForm()
+      if (editingSpot) {
+        resetForm()
+      } else {
+        resetFormWithoutClosing()
+      }
       toast.success(
         editingSpot ? "Plaza actualizada correctamente." : "Plaza creada correctamente."
       )
@@ -200,6 +204,16 @@ export const useSpotView = (phaseId: PhaseType) => {
     })
     setEditingSpot(null)
     setIsDialogOpen(false)
+  }
+
+  const resetFormWithoutClosing = () => {
+    setFormData({
+      careerId: undefined,
+      locationId: undefined,
+      phaseId: phaseId,
+      availableQuantity: 0
+    })
+    setEditingSpot(null)
   }
 
   return {

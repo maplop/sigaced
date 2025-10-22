@@ -15,9 +15,10 @@ import {
   getAssignments,
   addAssignment,
   updateAssignment,
-  deleteAssignment,
+  deleteAssignmentForId,
   getAssignmentsByPhase,
-  deleteAllAssignmentsFromPhase
+  deleteAllAssignmentsFromPhase,
+  deleteAllAssignments
 } from "./queries/assignment"
 import {
   getCareers,
@@ -27,7 +28,6 @@ import {
   deleteCareer,
   deleteAllCareers
 } from "./queries/career"
-import { getRequests, addRequest, updateRequest, deleteRequest } from "./queries/request"
 import {
   getLocations,
   addLocation,
@@ -206,7 +206,7 @@ ipcMain.handle("assignment:getAssignmentsByPhase", async (_event, phaseId: numbe
   try {
     return await getAssignmentsByPhase(phaseId)
   } catch (error: any) {
-    console.error("Error al obtener asignaciones por fase:", error)
+    console.error("Error al obtener otorgamientospor fase:", error)
     return []
   }
 })
@@ -220,21 +220,31 @@ ipcMain.handle("assignment:updateAssignment", async (_event, assignment) => {
   }
 })
 
-ipcMain.handle("assignment:deleteAssignment", async (_event, id: number) => {
+ipcMain.handle("assignment:deleteAssignmentForId", async (_event, id: number) => {
   try {
-    await deleteAssignment(id)
+    await deleteAssignmentForId(id)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-ipcMain.handle("assignment:deleteAll", async (_event, phaseId: number) => {
+ipcMain.handle("assignment:deleteAllFromPhase", async (_event, phaseId: number) => {
   try {
     await deleteAllAssignmentsFromPhase(phaseId)
     return { success: true }
   } catch (error: any) {
-    console.error("Error al eliminar todas las asignaciones de la fase:", error)
+    console.error("Error al eliminar todas los otorgamientos de la fase:", error)
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("assignment:deleteAll", async (_event) => {
+  try {
+    await deleteAllAssignments()
+    return { success: true }
+  } catch (error: any) {
+    console.error("Error al eliminar todas las asignaciones.", error)
     return { success: false, error: error.message }
   }
 })
@@ -339,43 +349,6 @@ ipcMain.handle("spot:deleteAll", async (_event, phaseId: number) => {
     return { success: true }
   } catch (error: any) {
     console.error("Error al eliminar todas las plazas de la fase:", error)
-    return { success: false, error: error.message }
-  }
-})
-
-// IPC handlers for request CRUD
-ipcMain.handle("request:add", async (_event, request) => {
-  try {
-    await addRequest(request)
-    return { success: true }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-})
-
-ipcMain.handle("request:getAll", async () => {
-  try {
-    return await getRequests()
-  } catch (error) {
-    console.error("Error al obtener solicitudes:", error)
-    return []
-  }
-})
-
-ipcMain.handle("request:update", async (_event, request) => {
-  try {
-    await updateRequest(request)
-    return { success: true }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-})
-
-ipcMain.handle("request:delete", async (_event, id) => {
-  try {
-    await deleteRequest(id)
-    return { success: true }
-  } catch (error: any) {
     return { success: false, error: error.message }
   }
 })

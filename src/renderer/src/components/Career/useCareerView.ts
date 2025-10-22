@@ -87,7 +87,11 @@ export const useCareerView = () => {
     mutationFn: handleCareerSubmit,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [rqKeys.CAREERS] })
-      resetForm()
+      if (editingCareer) {
+        resetForm()
+      } else {
+        resetFormWithoutClosing()
+      }
       toast.success(
         editingCareer ? "Carrera actualizada correctamente." : "Carrera creada correctamente."
       )
@@ -169,6 +173,11 @@ export const useCareerView = () => {
     setFormData({ fullName: "", abbreviation: "", faculty: "" })
     setEditingCareer(null)
     setIsDialogOpen(false)
+  }
+
+  const resetFormWithoutClosing = () => {
+    setFormData({ fullName: "", abbreviation: "", faculty: "" })
+    setEditingCareer(null)
   }
 
   return {

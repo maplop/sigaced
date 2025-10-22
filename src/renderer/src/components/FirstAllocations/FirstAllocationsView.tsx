@@ -10,7 +10,7 @@ const FirstAllocationsView = () => {
   return (
     <AllocationsSectionWrapper
       title="Primer Otorgamiento"
-      subtitle="Gestión de plazas y asignaciones de la primera fase."
+      subtitle="Gestión de plazas y otorgamientos de la primera fase."
       tabs={[
         {
           label: "Plazas",

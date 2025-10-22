@@ -46,14 +46,14 @@ const CareerView = () => {
       <ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">
         <Card>
           <CardHeader className="flex justify-between items-center">
-            <Card className="w-fit p-0 bg-transparent shadow-none">
+            <div className="w-fit p-0 bg-transparent shadow-none">
               <div className="flex items-center gap-2">
                 <GraduationCap className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium text-foreground">
                   Total de carreras: {filteredAndSortedCareers.length}
                 </span>
               </div>
-            </Card>
+            </div>
             <CareerForm
               isDialogOpen={isDialogOpen}
               setIsDialogOpen={setIsDialogOpen}
@@ -79,7 +79,7 @@ const CareerView = () => {
                 onConfirm={() => handleDeleteAll()}
                 title="Limpiar tabla"
                 trigger={
-                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm">
+                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedCareers.length === 0}>
                     <Trash2 className="h-4 w-4 text-red-500" />
                     Limpiar Tabla
                   </Button>

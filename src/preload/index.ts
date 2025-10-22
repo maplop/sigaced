@@ -23,9 +23,10 @@ const api = {
   getAssignmentsByPhase: (phaseId: number) =>
     ipcRenderer.invoke("assignment:getAssignmentsByPhase", phaseId),
   updateAssignment: (assignment) => ipcRenderer.invoke("assignment:updateAssignment", assignment),
-  deleteAssignment: (id: number) => ipcRenderer.invoke("assignment:deleteAssignment", id),
+  deleteAssignmentForId: (id: number) => ipcRenderer.invoke("assignment:deleteAssignmentForId", id),
   deleteAllAssignmentsFromPhase: (phaseId: number) =>
-    ipcRenderer.invoke("assignment:deleteAll", phaseId),
+    ipcRenderer.invoke("assignment:deleteAllFromPhase", phaseId),
+  deleteAllAssignments: () => ipcRenderer.invoke("assignment:deleteAll"),
 
   // Career
   addCareer: (career) => ipcRenderer.invoke("career:add", career),
@@ -41,12 +42,6 @@ const api = {
   getAllSpots: (phaseId: number) => ipcRenderer.invoke("spot:getAll", phaseId),
   deleteSpot: (spotId: number) => ipcRenderer.invoke("spot:delete", spotId),
   deleteAllSpotsFromPhase: (phaseId: number) => ipcRenderer.invoke("spot:deleteAll", phaseId),
-
-  // Request
-  addRequest: (request) => ipcRenderer.invoke("request:add", request),
-  getRequests: () => ipcRenderer.invoke("request:getAll"),
-  updateRequest: (request) => ipcRenderer.invoke("request:update", request),
-  deleteRequest: (id: number) => ipcRenderer.invoke("request:delete", id),
 
   // Location
   addLocation: (location) => ipcRenderer.invoke("location:add", location),
