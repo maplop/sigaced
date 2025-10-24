@@ -69,6 +69,8 @@ export interface Assignment {
 
 export interface AssignmentRow {
   id: number
+  spotId: number
+  studentId: number
   ci: string
   lastName: string
   name: string

@@ -20,7 +20,8 @@ interface ApplicantsFormProps {
   formData: Omit<Student, 'id'>,
   setFormData: React.Dispatch<React.SetStateAction<Omit<Student, 'id'>>>;
   spots: SpotFull[],
-  loadingSpots: boolean
+  loadingSpots: boolean,
+  phaseId?: number
 }
 
 const ApplicantsForm = ({
@@ -35,7 +36,8 @@ const ApplicantsForm = ({
   formData,
   setFormData,
   spots,
-  loadingSpots
+  loadingSpots,
+  phaseId
 }: ApplicantsFormProps) => {
 
 
@@ -47,7 +49,7 @@ const ApplicantsForm = ({
           Nuevo Aspirante
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[825px]">
+      <DialogContent className={phaseId === 3 ? "w-auto" : "sm:max-w-[825px]"}>
         <DialogHeader>
           <DialogTitle>{editingStudent ? "Editar Aspirante" : "Nuevo Aspirante"}</DialogTitle>
           <DialogDescription>
@@ -151,70 +153,74 @@ const ApplicantsForm = ({
               </div>
             </div>
 
-            <Separator orientation="vertical" className="h-full" />
+            {phaseId !== 3 && (
+              <>
+                <Separator orientation="vertical" className="h-full" />
 
-            <div className="flex-1 space-y-3">
-              <div className="flex items-center justify-between">
-                <Label className="text-[18px] font-bold">Solicitudes</Label>
-                {(formData.requests?.length || 0) < 3 && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addRequest}
-                    className="h-6 w-6 p-0 bg-transparent"
-                  >
-                    <Plus className="h-3 w-3" />
-                  </Button>
-                )}
-              </div>
-
-              <div className="space-y-4">
-                {formData.requests?.map((request, index) => (
-                  <div key={index} className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <Label>Opción {index + 1}</Label>
-                      {(formData.requests?.length || 0) > 1 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeRequest(index)}
-                          className="h-4 w-4 p-2 text-muted-foreground hover:text-[#0F172B]"
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      )}
-                    </div>
-                    <Select
-                      value={request.spotId ? String(request.spotId) : ""}
-                      onValueChange={(value) => updateRequest(index, parseInt(value))}
-                    >
-                      <SelectTrigger className="h-8 text-xs w-full">
-                        <SelectValue placeholder="Seleccionar carrera" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {loadingSpots ? (
-                          <SelectItem value="0">Cargando...</SelectItem>
-                        ) : (
-                          spots.map((spot) => (
-                            <SelectItem
-                              key={spot.spotId}
-                              value={String(spot.spotId)}
-                            >
-                              {spot.careerName} - {spot.locationName}
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
+                <div className="flex-1 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-[18px] font-bold">Solicitudes</Label>
+                    {(formData.requests?.length || 0) < 3 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addRequest}
+                        className="h-6 w-6 p-0 bg-transparent"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    )}
                   </div>
-                ))}
-              </div>
-            </div>
+
+                  <div className="space-y-4">
+                    {formData.requests?.map((request, index) => (
+                      <div key={index} className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <Label>Opción {index + 1}</Label>
+                          {(formData.requests?.length || 0) > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeRequest(index)}
+                              className="h-4 w-4 p-2 text-muted-foreground hover:text-[#0F172B]"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+                        <Select
+                          value={request.spotId ? String(request.spotId) : ""}
+                          onValueChange={(value) => updateRequest(index, parseInt(value))}
+                        >
+                          <SelectTrigger className="h-8 text-xs w-full">
+                            <SelectValue placeholder="Seleccionar carrera" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {loadingSpots ? (
+                              <SelectItem value="0">Cargando...</SelectItem>
+                            ) : (
+                              spots.map((spot) => (
+                                <SelectItem
+                                  key={spot.spotId}
+                                  value={String(spot.spotId)}
+                                >
+                                  {spot.careerName} - {spot.locationName}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="mt-4">
             <Button type="button" variant="outline" onClick={resetForm}>
               Cancelar
             </Button>

@@ -32,7 +32,7 @@ export function getAssignments(): AssignmentRow[] {
     JOIN location l ON sp.location_id = l.id
     LEFT JOIN request r 
       ON r.student_id = s.id AND r.spot_id = sp.id
-    ORDER BY a.id
+    ORDER BY s.grade DESC
     `
     )
     .all()
@@ -45,6 +45,8 @@ export function getAssignmentsByPhase(phaseId: number): AssignmentRow[] {
       `
       SELECT
         a.id AS id,
+        a.spot_id AS spotId,         
+        a.student_id AS studentId,   
         s.ci AS ci,
         s.last_name AS lastName,
         s.name AS name,
@@ -61,7 +63,7 @@ export function getAssignmentsByPhase(phaseId: number): AssignmentRow[] {
       LEFT JOIN request r 
         ON r.student_id = s.id AND r.spot_id = sp.id
       WHERE sp.phase_id = ?
-      ORDER BY a.id
+      ORDER BY s.grade DESC
       `
     )
     .all(phaseId)

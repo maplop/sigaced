@@ -9,10 +9,7 @@ const api = {
   addStudent: (student: Student) => ipcRenderer.invoke("student:add", student),
   getStudents: (phaseId: number) => ipcRenderer.invoke("student:getAll", phaseId),
   updateStudent: (student: Student) => ipcRenderer.invoke("student:update", student),
-  deleteStudentFromPhase: (studentId: number, phaseId: number) =>
-    ipcRenderer.invoke("student:deleteFromPhase", studentId, phaseId),
-  deleteStudentCompletely: (studentId: number) =>
-    ipcRenderer.invoke("student:deleteCompletely", studentId),
+  deleteStudent: (studentId: number) => ipcRenderer.invoke("student:deleteStudent", studentId),
   addStudentToPhase: (studentId: number, phaseId: number) =>
     ipcRenderer.invoke("student:addStudentToPhase", studentId, phaseId),
   deleteAllStudentsFromPhase: (phaseId: number) => ipcRenderer.invoke("student:deleteAll", phaseId),

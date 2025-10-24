@@ -5,7 +5,7 @@ import { rqKeys } from "@renderer/utils/rqKeys"
 import {
   createStudent,
   deleteAllStudentsFromPhase,
-  deleteStudentFromPhase,
+  deleteStudent,
   getAllStudents,
   updateStudent
 } from "@renderer/api/student"
@@ -168,11 +168,8 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     setIsDialogOpen(true)
   }
 
-  type DeleteStudentPayload = { studentId: number; phaseId: number }
-
-  const deleteFromPhaseMutation = useMutation({
-    mutationFn: ({ studentId, phaseId }: DeleteStudentPayload) =>
-      deleteStudentFromPhase(studentId, phaseId),
+  const deleteStudentMutation = useMutation({
+    mutationFn: deleteStudent,
     onSuccess: () => {
       toast.success("Aspirante eliminado correctamente.")
       queryClient.invalidateQueries({ queryKey: [rqKeys.STUDENTS] })
@@ -188,8 +185,8 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     }
   })
 
-  const handleDeleteFromPhase = (studentId: number) => {
-    deleteFromPhaseMutation.mutate({ studentId, phaseId })
+  const handleDeleteStudent = (studentId: number) => {
+    deleteStudentMutation.mutate(studentId)
   }
 
   const deleteAllFromPhaseMutation = useMutation({
@@ -302,7 +299,7 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     handleSort,
     handleSubmit,
     handleEdit,
-    handleDeleteFromPhase,
+    handleDeleteStudent,
     addRequest,
     updateRequest,
     removeRequest,

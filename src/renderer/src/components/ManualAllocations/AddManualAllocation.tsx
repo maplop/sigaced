@@ -6,12 +6,15 @@ import { SpotFull, Student } from "src/shared/types"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Badge } from "../ui/badge"
 
+type SpotWithAvailable = SpotFull & { availableQuantityReal: number }
+
+
 interface ApplicantsFormProps {
   isDialogOpen: boolean,
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>,
   students: Student[],
   loadingStudents: boolean,
-  spots: SpotFull[],
+  spots: SpotWithAvailable[],
   loadingSpots: boolean,
   resetForm: () => void,
   handleSubmit: (e: React.FormEvent) => void,
@@ -98,15 +101,22 @@ const AddManualAllocation = ({
               required
             >
               <SelectTrigger id="spotId" className="w-full">
-                <SelectValue placeholder={loadingSpots ? "Cargando plazas..." : "Seleccione una plaza"} />
+                <SelectValue placeholder={loadingSpots ? "Cargando plazas..." : "Seleccione una plaza"} >
+
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {loadingSpots ? (
                   <SelectItem disabled value="loading">Cargando plazas...</SelectItem>
                 ) : spots && spots.length > 0 ? (
                   spots.map((spot) => (
-                    <SelectItem key={spot.spotId} value={spot.spotId.toString()}>
-                      {spot.careerName} - {spot.locationName}
+                    <SelectItem key={spot.spotId} value={spot.spotId.toString()} className="block">
+                      <div className="flex justify-between items-center w-full">
+                        <div>
+                          {spot.careerName} - {spot.locationName}
+                        </div>
+                        <Badge>{spot?.availableQuantityReal}</Badge>
+                      </div>
                     </SelectItem>
                   ))
                 ) : (

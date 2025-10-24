@@ -24,7 +24,7 @@ const Auth = () => {
         </div>
         <div className='flex flex-col justify-between'>
           <div className="text-2xl font-bold leading-none text-[#0F172B]">GAPCED</div>
-          <div className="text-sm leading-4 text-gray-600">Gestión de Otorgamientode Plazas del Curso por Encuentro y a Distancia</div>
+          <div className="text-sm leading-4 text-gray-600">Gestión de Otorgamiento de Plazas del Curso por Encuentro y a Distancia</div>
         </div>
       </div>
       <Tabs defaultValue="login" value={currentTab} onValueChange={handleTabChange} className="w-full">

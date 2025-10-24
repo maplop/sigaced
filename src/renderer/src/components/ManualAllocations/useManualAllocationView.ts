@@ -84,12 +84,6 @@ export const useManualAllocationView = (phaseId: number) => {
     onSuccess: () => {
       toast.success("Todas los otorgamientos de la fase fueron eliminadas.")
       queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS, phaseId] })
-
-      localStorage.removeItem(`students_${phaseId}`)
-      localStorage.removeItem(`spots_${phaseId}`)
-
-      setStudentsCopy([])
-      setSpotsCopy([])
     },
     onError: (err: any) => {
       console.error(err)
@@ -103,7 +97,7 @@ export const useManualAllocationView = (phaseId: number) => {
   }
 
   const { data: students, isLoading: loadingStudents } = useQuery({
-    queryKey: [rqKeys.STUDENTS, phaseId],
+    queryKey: [rqKeys.STUDENTS],
     queryFn: () => getAllStudents(phaseId)
   })
 
@@ -120,51 +114,42 @@ export const useManualAllocationView = (phaseId: number) => {
     spotId: null
   })
 
-  const [studentsCopy, setStudentsCopy] = useState<Student[]>([])
-  const [spotsCopy, setSpotsCopy] = useState<SpotFull[]>([])
+  const unassignedStudents = useMemo(() => {
+    if (!students || !assignments) return []
 
-  useEffect(() => {
-    const storedStudents = localStorage.getItem(`students_${phaseId}`)
-    const storedSpots = localStorage.getItem(`spots_${phaseId}`)
+    // Paso 1: obtener IDs de estudiantes asignados
+    const assignedIds = new Set(assignments.map((a) => a.studentId))
 
-    if (storedStudents && storedSpots) {
-      const parsedStudents: Student[] = JSON.parse(storedStudents)
-      const parsedSpots: SpotFull[] = JSON.parse(storedSpots)
+    // Paso 2: filtrar estudiantes que NO están asignados
+    return students.filter((student) => !assignedIds.has(student.id))
+  }, [students, assignments])
 
-      parsedStudents.sort((a, b) => b.grade - a.grade)
+  const assignedCount = useMemo(() => {
+    if (!assignments) return {}
+    return assignments.reduce((acc: Record<number, number>, a) => {
+      acc[a.spotId] = (acc[a.spotId] || 0) + 1
+      return acc
+    }, {})
+  }, [assignments])
 
-      setStudentsCopy(parsedStudents)
-      setSpotsCopy(parsedSpots)
-    } else if (students && spots) {
-      const orderedStudents = [...students].sort((a, b) => b.grade - a.grade)
+  const spotsWithAvailable = useMemo(() => {
+    if (!spots) return []
 
-      localStorage.setItem(`students_${phaseId}`, JSON.stringify(orderedStudents))
-      localStorage.setItem(`spots_${phaseId}`, JSON.stringify(spots))
+    return spots.map((spot) => {
+      const assigned = assignedCount[spot.spotId] || 0
+      const availableQuantityReal = Math.max(spot.availableQuantity - assigned, 0)
+      return { ...spot, availableQuantityReal }
+    })
+  }, [spots, assignedCount])
 
-      setStudentsCopy(orderedStudents)
-      setSpotsCopy(spots)
-    }
-  }, [spots, students, phaseId])
+  const availableSpots = useMemo(() => {
+    return spotsWithAvailable.filter((spot) => spot.availableQuantityReal > 0)
+  }, [spotsWithAvailable])
 
   const manualAssignMutation = useMutation({
     mutationFn: async ({ studentId, spotId }: { studentId: number; spotId: number }) => {
       await createAssignment({ studentId, spotId })
-
-      setStudentsCopy((prevStudents) => {
-        const updated = prevStudents.filter((s) => s.id !== studentId)
-        localStorage.setItem(`students_${phaseId}`, JSON.stringify(updated))
-        return updated
-      })
-
-      setSpotsCopy((prevSpots) => {
-        const updated = prevSpots.map((spot) =>
-          spot.spotId === spotId ? { ...spot, availableQuantity: spot.availableQuantity - 1 } : spot
-        )
-        localStorage.setItem(`spots_${phaseId}`, JSON.stringify(updated))
-        return updated
-      })
     },
-
     onSuccess: () => {
       toast.success("Plaza otorgada al aspirante correctamente.")
       queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS, phaseId] })
@@ -216,9 +201,9 @@ export const useManualAllocationView = (phaseId: number) => {
     handleSort,
     sortDirection,
     handleDeleteAllFromPhase,
-    studentsCopy,
+    unassignedStudents,
     loadingStudents,
-    spotsCopy,
+    availableSpots,
     loadingSpots,
     formData,
     setFormData,

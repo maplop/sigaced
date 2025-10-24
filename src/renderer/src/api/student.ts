@@ -22,16 +22,9 @@ export const updateStudent = async (studentData: Student): Promise<void> => {
   if (!response.success) throw new Error(response.error || "Error al actualizar el aspirante")
 }
 
-// Eliminar aspirante de una fase específica
-export const deleteStudentFromPhase = async (studentId: number, phaseId: number): Promise<void> => {
-  const response: OperationResult = await window.api.deleteStudentFromPhase(studentId, phaseId)
-  if (!response.success)
-    throw new Error(response.error || "Error al eliminar el aspirante de la fase")
-}
-
 // Eliminar aspirante completamente
-export const deleteStudentCompletely = async (studentId: number): Promise<void> => {
-  const response: OperationResult = await window.api.deleteStudentCompletely(studentId)
+export const deleteStudent = async (studentId: number): Promise<void> => {
+  const response: OperationResult = await window.api.deleteStudent(studentId)
   if (!response.success)
     throw new Error(response.error || "Error al eliminar completamente el aspirante")
 }

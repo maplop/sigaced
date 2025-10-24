@@ -23,11 +23,7 @@ declare global {
       ) => Promise<{ success: boolean; id?: number; error?: string }>
       getStudents: (phaseId: number) => Promise<Student[]>
       updateStudent: (student: Student) => Promise<{ success: boolean; error?: string }>
-      deleteStudentFromPhase: (
-        studentId: number,
-        phaseId: number
-      ) => Promise<{ success: boolean; error?: string }>
-      deleteStudentCompletely: (studentId: number) => Promise<{ success: boolean; error?: string }>
+      deleteStudent: (studentId: number) => Promise<{ success: boolean; error?: string }>
       addStudentToPhase: (
         studentId: number,
         phaseId: number

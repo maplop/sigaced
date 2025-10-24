@@ -68,6 +68,7 @@ export function getStudents(phaseId: number): Student[] {
     FROM student st
     JOIN student_phase sp ON sp.student_id = st.id
     WHERE sp.phase_id = ?
+    ORDER BY st.grade DESC 
   `
     )
     .all(phaseId)
@@ -141,32 +142,32 @@ export function updateStudent(student: Student): void {
   }
 }
 
-// -------------------- DELETE --------------------
-// Eliminar aspirante SOLO de una fase
-export function deleteStudentFromPhase(studentId: number, phaseId: number): void {
+// Eliminar aspirante COMPLETAMENTE
+export function deleteStudent(studentId: number): void {
   const deleteRequests = db.prepare(`
-    DELETE FROM request
-    WHERE student_id = ? AND spot_id IN (
-      SELECT id FROM spot WHERE phase_id = ?
-    )
+    DELETE FROM request WHERE student_id = ?
   `)
 
-  const deletePhase = db.prepare(`
-    DELETE FROM student_phase
-    WHERE student_id = ? AND phase_id = ?
+  const deleteAssignments = db.prepare(`
+    DELETE FROM assignment WHERE student_id = ?
   `)
 
-  const tx = db.transaction((id: number, ph: number) => {
-    deleteRequests.run(id, ph)
-    deletePhase.run(id, ph)
+  const deleteStudentPhase = db.prepare(`
+    DELETE FROM student_phase WHERE student_id = ?
+  `)
+
+  const deleteStudent = db.prepare(`
+    DELETE FROM student WHERE id = ?
+  `)
+
+  const tx = db.transaction((id: number) => {
+    deleteRequests.run(id)
+    deleteAssignments.run(id)
+    deleteStudentPhase.run(id)
+    deleteStudent.run(id)
   })
 
-  tx(studentId, phaseId)
-}
-
-// Eliminar aspirante COMPLETAMENTE
-export function deleteStudentCompletely(studentId: number): void {
-  db.prepare("DELETE FROM student WHERE id = ?").run(studentId)
+  tx(studentId)
 }
 
 // Agregar un aspirante a una fase sin duplicar

@@ -28,7 +28,7 @@ export interface ApplicantsTableProps {
   sortDirection: "asc" | "desc"
   handleSort: (field: SortableField) => void
   handleEdit: (student: Student) => void
-  handleDeleteFromPhase: (studentId: number) => void
+  handleDeleteStudent: (studentId: number) => void
   filteredAndSortedStudents: Student[],
   spots: SpotFull[],
   loadingSpots: boolean,
@@ -47,7 +47,7 @@ const ApplicantsTable = ({
   sortField,
   sortDirection,
   handleSort,
-  handleDeleteFromPhase,
+  handleDeleteStudent,
   handleEdit,
   spots,
   loadingSpots,
@@ -161,7 +161,7 @@ const ApplicantsTable = ({
                             <Edit className="h-4 w-4" />
                           </Button>
                           <ConfirmDeleteDialog
-                            onConfirm={() => handleDeleteFromPhase(student.id)}
+                            onConfirm={() => handleDeleteStudent(student.id)}
                             title="Eliminar aspirante"
                             trigger={
                               <Button variant="outline" size="sm">

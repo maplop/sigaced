@@ -6,8 +6,7 @@ import {
   addStudent,
   getStudents,
   updateStudent,
-  deleteStudentFromPhase,
-  deleteStudentCompletely,
+  deleteStudent,
   addStudentToPhase,
   deleteAllStudentsFromPhase
 } from "./queries/student"
@@ -142,20 +141,10 @@ ipcMain.handle("student:update", async (_event, student) => {
   }
 })
 
-// Eliminar aspirante de una fase (se borran solicitudes de esa fase)
-ipcMain.handle("student:deleteFromPhase", async (_event, studentId: number, phaseId: number) => {
-  try {
-    deleteStudentFromPhase(studentId, phaseId)
-    return { success: true }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-})
-
 // Eliminar completamente un aspirante
-ipcMain.handle("student:deleteCompletely", async (_event, studentId: number) => {
+ipcMain.handle("student:deleteStudent", async (_event, studentId: number) => {
   try {
-    deleteStudentCompletely(studentId)
+    deleteStudent(studentId)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }

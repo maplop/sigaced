@@ -41,7 +41,7 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
     handleSort,
     handleSubmit,
     handleEdit,
-    handleDeleteFromPhase,
+    handleDeleteStudent,
     handleDeleteAllFromPhase,
     addRequest,
     updateRequest,
@@ -81,6 +81,7 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
             removeRequest={removeRequest}
             spots={spots || []}
             loadingSpots={loadingSpots}
+            phaseId={phase}
           />
         </CardHeader>
         <CardContent>
@@ -133,7 +134,7 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
             sortField={sortField}
             sortDirection={sortDirection}
             handleSort={handleSort}
-            handleDeleteFromPhase={handleDeleteFromPhase}
+            handleDeleteStudent={handleDeleteStudent}
             handleEdit={handleEdit}
             filteredAndSortedStudents={filteredAndSortedStudents}
             spots={spots ?? []}

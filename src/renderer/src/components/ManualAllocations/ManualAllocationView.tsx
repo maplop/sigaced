@@ -30,9 +30,9 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
     handleSort,
     sortDirection,
     handleDeleteAllFromPhase,
-    studentsCopy,
+    unassignedStudents,
     loadingStudents,
-    spotsCopy,
+    availableSpots,
     loadingSpots,
     formData,
     setFormData,
@@ -52,9 +52,9 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
           <AddManualAllocation
             isDialogOpen={isDialogOpen}
             setIsDialogOpen={setIsDialogOpen}
-            students={studentsCopy ?? []}
+            students={unassignedStudents ?? []}
             loadingStudents={loadingStudents}
-            spots={spotsCopy ?? []}
+            spots={availableSpots ?? []}
             loadingSpots={loadingSpots}
             formData={formData}
             setFormData={setFormData}

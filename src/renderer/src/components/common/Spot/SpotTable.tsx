@@ -9,7 +9,10 @@ import { SpotFull } from "src/shared/types"
 import SkeletonTable from "./SkeletonTable"
 import ConfirmDeleteDialog from "@renderer/components/common/ConfirmDeleteDialog"
 import { Badge } from "../../ui/badge"
-import { useEffect, useState } from "react"
+import { useMemo } from "react"
+import { rqKeys, phases } from "@renderer/utils/rqKeys"
+import { getAssignmentsByPhase } from "@renderer/api/assignment"
+import { useQuery } from "@tanstack/react-query"
 
 
 export interface SpotsTableProps {
@@ -49,15 +52,29 @@ const SpotsTable = ({
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
 
-  const [availableSpots, setAvailableSpots] = useState<SpotFull[] | null>(null)
+  const { data: assignments } = useQuery({
+    queryKey: [rqKeys.ASSIGNMENTS, phaseId],
+    queryFn: () => getAssignmentsByPhase(phases.MANUAL)
+  })
 
-  useEffect(() => {
-    const storedSpots = localStorage.getItem('spots_3')
-    if (storedSpots) {
-      const parsedSpots = JSON.parse(storedSpots)
-      setAvailableSpots(parsedSpots)
-    }
-  }, [])
+  const assignedCount = useMemo(() => {
+    if (!assignments) return {}
+    return assignments.reduce((acc: Record<number, number>, a: any) => {
+      acc[a.spotId] = (acc[a.spotId] || 0) + 1
+      return acc
+    }, {})
+  }, [assignments])
+
+
+  const availableSpots = useMemo(() => {
+    if (!filteredAndSortedSpots) return []
+    return filteredAndSortedSpots.map((spot) => {
+      const assigned = assignedCount[spot.spotId] || 0
+      const availableQuantity = Math.max(spot.availableQuantity - assigned, 0)
+      return { spotId: spot.spotId, availableQuantity }
+    })
+  }, [filteredAndSortedSpots, assignedCount])
+
 
   return (
     <>
@@ -91,11 +108,10 @@ const SpotsTable = ({
                         <TableCell>{spot.careerName}</TableCell>
                         <TableCell>{spot.locationName}</TableCell>
                         <TableCell className="text-center">
-                          {phaseId === 3 && (
+                          {phaseId === phases.MANUAL && (
                             <>
                               <Badge>
-                                {availableSpots?.find((s) => s.spotId === spot.spotId)?.availableQuantity
-                                  ?? spot.availableQuantity}
+                                {availableSpots.find((s) => s.spotId === spot.spotId)?.availableQuantity ?? spot.availableQuantity}
                               </Badge>
                               {" de "}
                             </>
