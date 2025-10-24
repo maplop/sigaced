@@ -194,12 +194,14 @@ const ApplicantsForm = ({
                           value={request.spotId ? String(request.spotId) : ""}
                           onValueChange={(value) => updateRequest(index, parseInt(value))}
                         >
-                          <SelectTrigger className="h-8 text-xs w-full">
-                            <SelectValue placeholder="Seleccionar carrera" />
+                          <SelectTrigger className="h-8 w-full">
+                            <SelectValue placeholder="Seleccionar carrera..." />
                           </SelectTrigger>
                           <SelectContent>
                             {loadingSpots ? (
                               <SelectItem value="0">Cargando...</SelectItem>
+                            ) : spots.length === 0 ? (
+                              <SelectItem value="0" disabled>No hay plazas disponibles</SelectItem>
                             ) : (
                               spots.map((spot) => (
                                 <SelectItem

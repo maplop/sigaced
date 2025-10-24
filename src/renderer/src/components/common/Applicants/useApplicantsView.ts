@@ -25,6 +25,7 @@ export const useApplicantsView = (phaseId: PhaseType) => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingStudent, setEditingStudent] = useState<Student | null>(null)
+
   const [formData, setFormData] = useState<Omit<Student, "id">>({
     ci: "",
     name: "",
@@ -34,7 +35,7 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     gender: "F",
     municipality: "",
     phaseId: phaseId,
-    requests: []
+    requests: phaseId === 3 ? undefined : [{ spotId: 0, preferenceOrder: 1 as 1 }]
   })
 
   const { data: students, isLoading: loadingStudents } = useQuery({
@@ -140,11 +141,26 @@ export const useApplicantsView = (phaseId: PhaseType) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validación del CI
     if (formData.ci.length !== 11) {
       toast.error("El CI debe tener 11 dígitos.", {
-        style: {
-          color: "var(--errorMessage)"
-        }
+        style: { color: "var(--errorMessage)" }
+      })
+      return
+    }
+
+    if (phaseId !== 3 && (!formData.requests || formData.requests.length === 0)) {
+      toast.error("El aspirante debe tener al menos una solicitud.", {
+        style: { color: "var(--errorMessage)" }
+      })
+      return
+    }
+
+    // Validar que ningún spotId sea 0 o negativo, solo si hay requests
+    if (formData.requests && formData.requests.some((req) => req.spotId <= 0)) {
+      toast.error("Debe seleccionar una plaza válida para cada solicitud.", {
+        style: { color: "var(--errorMessage)" }
       })
       return
     }
@@ -257,7 +273,7 @@ export const useApplicantsView = (phaseId: PhaseType) => {
       gender: "F",
       municipality: "",
       phaseId: phaseId,
-      requests: []
+      requests: phaseId === 3 ? undefined : [{ spotId: 0, preferenceOrder: 1 as 1 }]
     })
     setEditingStudent(null)
     setIsDialogOpen(false)
@@ -273,7 +289,7 @@ export const useApplicantsView = (phaseId: PhaseType) => {
       gender: "F",
       municipality: "",
       phaseId: phaseId,
-      requests: []
+      requests: phaseId === 3 ? undefined : [{ spotId: 0, preferenceOrder: 1 as 1 }]
     })
     setEditingStudent(null)
   }
