@@ -120,11 +120,23 @@ const FinalListTable = ({
           {/* Pagination controls */}
           <div className="flex justify-between items-center px-2">
             <div className="flex items-center space-x-3">
-              <Button variant={currentPage === 1 ? 'outline' : 'default'} size="sm" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+              <Button
+                variant={'outline'}
+                size="sm"
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={filteredAndSortedAssignments.length === 0 || currentPage === 1}>
                 Anterior
               </Button>
-              <Label className="text-sm">Página {currentPage} de {totalPages}</Label>
-              <Button variant={currentPage === totalPages ? 'outline' : 'default'} size="sm" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+              {totalPages === 0 ? (
+                <Label className="text-sm opacity-30">No hay páginas</Label>
+              ) : (
+                <Label className="text-sm">Página {currentPage} de {totalPages}</Label>
+              )}
+              <Button
+                variant={'outline'}
+                size="sm"
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={filteredAndSortedAssignments.length === 0 || currentPage === totalPages}>
                 Siguiente
               </Button>
             </div>
