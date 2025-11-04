@@ -1,10 +1,13 @@
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogDescription, DialogTitle, DialogFooter } from "@renderer/components/ui/dialog"
 import { Button } from "@renderer/components/ui/button"
 import { Label } from "@renderer/components/ui/label"
-import { Play } from "lucide-react"
+import { Check, ChevronsUpDown, Play } from "lucide-react"
 import { SpotFull, Student } from "src/shared/types"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Badge } from "../ui/badge"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
+import { useState } from "react"
+import { cn } from "@renderer/lib/utils"
 
 type SpotWithAvailable = SpotFull & { availableQuantityReal: number }
 
@@ -41,6 +44,11 @@ const AddManualAllocation = ({
   resetForm
 }: ApplicantsFormProps) => {
 
+  const [open, setOpen] = useState({ applicant: false, spot: false })
+
+  const handleOpenChange = (key: "applicant" | "spot") => (isOpen: boolean) => {
+    setOpen((prev) => ({ ...prev, [key]: isOpen }))
+  }
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -60,70 +68,130 @@ const AddManualAllocation = ({
         <form onSubmit={handleSubmit}>
           <div className="space-y-2 py-4">
             <Label htmlFor="studentId">Aspirantes</Label>
-            <Select
-              value={formData.studentId?.toString()}
-              onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, studentId: Number(value) }))
-              }
-              required
-            >
-              <SelectTrigger id="studentId" className="w-full">
-                <SelectValue placeholder={loadingStudents ? "Cargando aspirantes..." : "Seleccione un aspirante"} />
-              </SelectTrigger>
-              <SelectContent>
-                {loadingStudents ? (
-                  <SelectItem disabled value="loading">Cargando aspirantes...</SelectItem>
-                ) : students && students.length > 0 ? (
-                  students.map((student) => (
-                    <SelectItem key={student.id} value={student.id.toString()} className="block">
-                      <div className="flex justify-between items-center w-full">
-                        <div>
-                          {student.lastName} {student.name}
+            <Popover open={open.applicant} onOpenChange={handleOpenChange('applicant')}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open.applicant}
+                  className="w-full justify-between"
+                >
+                  {formData.studentId
+                    ? (() => {
+                      const student = students?.find(s => s.id === formData.studentId)
+                      return student ? (
+                        <div className="flex justify-between items-center w-full">
+                          <div>{student.lastName} {student.name}</div>
+                          <Badge>{student.grade.toFixed(2)}</Badge>
                         </div>
-                        <Badge>{student.grade.toFixed(2)}</Badge>
-                      </div>
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem disabled value="no-locations">No hay aspirantes registrados</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
+                      ) : "Seleccione un aspirante..."
+                    })()
+                    : loadingStudents
+                      ? "Cargando aspirantes..."
+                      : "Seleccione un aspirante"}
+                  <ChevronsUpDown className="opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="min-w-[462px] p-0">
+                <Command>
+                  <CommandInput placeholder="Buscar aspirante..." className="h-9" />
+                  <CommandList>
+                    <CommandEmpty>No se encontró ningún aspirante.</CommandEmpty>
+                    <CommandGroup>
+                      {loadingStudents ? (
+                        <CommandItem disabled>Cargando aspirantes...</CommandItem>
+                      ) : (
+                        students?.map((student) => (
+                          <CommandItem
+                            key={student.id}
+                            value={`${student.lastName} ${student.name}`}
+                            onSelect={() => {
+                              setFormData((prev) => ({ ...prev, studentId: student.id }))
+                              setOpen((prev) => ({ ...prev, applicant: false }))
+                            }}
+                          >
+                            <div className="flex justify-between items-center w-full">
+                              <div>{student.lastName} {student.name}</div>
+                              <Badge>{student.grade.toFixed(2)}</Badge>
+                            </div>
+                            <Check
+                              className={cn(
+                                "ml-auto",
+                                formData.studentId === student.id ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))
+                      )}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="space-y-2 py-4">
             <Label htmlFor="spotId">Plazas</Label>
-            <Select
-              value={formData.spotId?.toString() ?? ''}
-              onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, spotId: Number(value) }))
-              }
-              required
-            >
-              <SelectTrigger id="spotId" className="w-full">
-                <SelectValue placeholder={loadingSpots ? "Cargando plazas..." : "Seleccione una plaza"} >
-
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {loadingSpots ? (
-                  <SelectItem disabled value="loading">Cargando plazas...</SelectItem>
-                ) : spots && spots.length > 0 ? (
-                  spots.map((spot) => (
-                    <SelectItem key={spot.spotId} value={spot.spotId.toString()} className="block">
-                      <div className="flex justify-between items-center w-full">
-                        <div>
-                          {spot.careerName} - {spot.locationName}
+            <Popover open={open.spot} onOpenChange={handleOpenChange('spot')}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open.spot}
+                  className="w-full justify-between"
+                >
+                  {formData.spotId
+                    ? (() => {
+                      const spot = spots?.find(s => s.spotId === formData.spotId)
+                      return spot ? (
+                        <div className="flex justify-between items-center w-full">
+                          <div>{spot.careerName} {spot.locationName}</div>
+                          <Badge>{spot.availableQuantityReal}</Badge>
                         </div>
-                        <Badge>{spot?.availableQuantityReal}</Badge>
-                      </div>
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem disabled value="no-locations">No hay plazas registradas</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
+                      ) : "Seleccione una plaza..."
+                    })()
+                    : loadingSpots
+                      ? "Cargando plazas..."
+                      : "Seleccione una plaza"}
+                  <ChevronsUpDown className="opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="min-w-[462px] p-0">
+                <Command>
+                  <CommandInput placeholder="Buscar plaza..." className="h-9" />
+                  <CommandList>
+                    <CommandEmpty>No se encontró ningna plaza.</CommandEmpty>
+                    <CommandGroup>
+                      {loadingSpots ? (
+                        <CommandItem disabled>Cargando plazas...</CommandItem>
+                      ) : (
+                        spots?.map((spot) => (
+                          <CommandItem
+                            key={spot.spotId}
+                            value={`${spot.careerName} en ${spot.locationName}`}
+                            onSelect={() => {
+                              setFormData((prev) => ({ ...prev, spotId: spot.spotId }))
+                              setOpen((prev) => ({ ...prev, spot: false }))
+                            }}
+                          >
+                            <div className="flex justify-between items-center w-full">
+                              <div>{spot.careerName} {spot.locationName}</div>
+                              <Badge>{spot.availableQuantityReal}</Badge>
+                            </div>
+                            <Check
+                              className={cn(
+                                "ml-auto",
+                                formData.spotId === spot.spotId ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))
+                      )}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => resetForm()}>

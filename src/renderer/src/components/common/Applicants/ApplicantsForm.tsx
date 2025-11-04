@@ -2,11 +2,14 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogDescription, 
 import { Button } from "@renderer/components/ui/button"
 import { Label } from "@renderer/components/ui/label"
 import { Input } from "@renderer/components/ui/input"
-import { Plus, X } from "lucide-react"
+import { Check, ChevronsUpDown, Plus, X } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@renderer/components/ui/radio-group"
 import { SpotFull, Student } from "src/shared/types"
 import { Separator } from "@renderer/components/ui/separator"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
+import { Popover, PopoverContent, PopoverTrigger } from "@renderer/components/ui/popover"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@renderer/components/ui/command"
+import { useState } from "react"
+import { cn } from "@renderer/lib/utils"
 
 interface ApplicantsFormProps {
   isDialogOpen: boolean,
@@ -40,6 +43,11 @@ const ApplicantsForm = ({
   phaseId
 }: ApplicantsFormProps) => {
 
+  const [openRequests, setOpenRequests] = useState<{ [key: number]: boolean }>({})
+
+  const handleOpenChangeRequest = (index: number) => (isOpen: boolean) => {
+    setOpenRequests(prev => ({ ...prev, [index]: isOpen }))
+  }
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -190,30 +198,58 @@ const ApplicantsForm = ({
                             </Button>
                           )}
                         </div>
-                        <Select
-                          value={request.spotId ? String(request.spotId) : ""}
-                          onValueChange={(value) => updateRequest(index, parseInt(value))}
-                        >
-                          <SelectTrigger className="h-8 w-full">
-                            <SelectValue placeholder="Seleccionar carrera..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {loadingSpots ? (
-                              <SelectItem value="0">Cargando...</SelectItem>
-                            ) : spots.length === 0 ? (
-                              <SelectItem value="0" disabled>No hay plazas disponibles</SelectItem>
-                            ) : (
-                              spots.map((spot) => (
-                                <SelectItem
-                                  key={spot.spotId}
-                                  value={String(spot.spotId)}
-                                >
-                                  {spot.careerName} - {spot.locationName}
-                                </SelectItem>
-                              ))
-                            )}
-                          </SelectContent>
-                        </Select>
+                        <Popover open={!!openRequests[index]} onOpenChange={handleOpenChangeRequest(index)}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={!!openRequests[index]}
+                              className="w-full justify-between"
+                            >
+                              {request.spotId
+                                ? (() => {
+                                  const spot = spots?.find(s => s.spotId === request.spotId)
+                                  return spot ? `${spot.careerName} - ${spot.locationName}` : "Seleccione una plaza..."
+                                })()
+                                : loadingSpots
+                                  ? "Cargando plazas..."
+                                  : "Seleccione una plaza"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="min-w-[379px] p-0">
+                            <Command>
+                              <CommandInput placeholder="Buscar plaza..." className="h-9" />
+                              <CommandList>
+                                <CommandEmpty>No se encontró ninguna plaza.</CommandEmpty>
+                                <CommandGroup>
+                                  {loadingSpots ? (
+                                    <CommandItem disabled>Cargando plazas...</CommandItem>
+                                  ) : (
+                                    spots?.map((spot) => (
+                                      <CommandItem
+                                        key={spot.spotId}
+                                        value={`${spot.careerName} - ${spot.locationName}`}
+                                        onSelect={() => {
+                                          updateRequest(index, spot.spotId)
+                                          setOpenRequests(prev => ({ ...prev, [index]: false }))
+                                        }}
+                                      >
+                                        {spot.careerName} - {spot.locationName}
+                                        <Check
+                                          className={cn(
+                                            "ml-auto",
+                                            request.spotId === spot.spotId ? "opacity-100" : "opacity-0"
+                                          )}
+                                        />
+                                      </CommandItem>
+                                    ))
+                                  )}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     ))}
                   </div>

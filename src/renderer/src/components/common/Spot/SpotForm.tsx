@@ -1,10 +1,13 @@
 import { Button } from "@renderer/components/ui/button"
 import { Label } from "@renderer/components/ui/label"
 import { Input } from "@renderer/components/ui/input"
-import { Plus } from "lucide-react"
+import { Check, ChevronsUpDown, Plus } from "lucide-react"
 import { Career, Location, Spot, SpotFull } from "src/shared/types"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@renderer/components/ui/dialog"
+import { useState } from "react"
+import { Popover, PopoverContent, PopoverTrigger } from "@renderer/components/ui/popover"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@renderer/components/ui/command"
+import { cn } from "@renderer/lib/utils"
 
 interface SpotFormProps {
   careers?: Career[],
@@ -20,8 +23,6 @@ interface SpotFormProps {
   setSpotFormData: React.Dispatch<React.SetStateAction<Omit<Spot, 'id'>>>;
 }
 
-
-
 const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, isDialogOpen, setIsDialogOpen, resetForm, editingSpot, handleSubmit, formData, setSpotFormData }: SpotFormProps) => {
 
 
@@ -31,6 +32,12 @@ const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, isDial
     formData.availableQuantity !== undefined &&
     !isNaN(formData.availableQuantity) &&
     formData.availableQuantity >= 0
+
+  const [open, setOpen] = useState({ career: false, location: false })
+
+  const handleOpenChange = (key: "career" | "location") => (isOpen: boolean) => {
+    setOpen((prev) => ({ ...prev, [key]: isOpen }))
+  }
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -48,61 +55,113 @@ const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, isDial
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
+
           <div className="space-y-2 py-4">
             <Label htmlFor="careerId">Carrera</Label>
-            <Select
-              value={formData.careerId?.toString() ?? ''}
-              onValueChange={(value) =>
-                setSpotFormData((prev) => ({ ...prev, careerId: Number(value) }))
-              }
-              required
-            >
-              <SelectTrigger id="careerId" className="w-full">
-                <SelectValue placeholder={loadingCareers ? "Cargando carreras..." : "Seleccione una carrera"} />
-              </SelectTrigger>
-              <SelectContent>
-                {loadingCareers ? (
-                  <SelectItem disabled value="loading">Cargando carreras...</SelectItem>
-                ) : careers && careers.length > 0 ? (
-                  careers.map((career) => (
-                    <SelectItem key={career.id} value={career.id.toString()}>
-                      {career.abbreviation} — {career.fullName}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem disabled value="no-careers">No hay carreras registradas</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
+            <Popover open={open.career} onOpenChange={handleOpenChange('career')}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open.career}
+                  className="w-full justify-between"
+                >
+                  {formData.careerId
+                    ? careers?.find((career) => career.id === formData.careerId)?.fullName
+                    : loadingCareers
+                      ? "Cargando carreras..."
+                      : "Seleccione una carrera"}
+                  <ChevronsUpDown className="opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="min-w-[375px] p-0">
+                <Command>
+                  <CommandInput placeholder="Buscar carrera..." className="h-9" />
+                  <CommandList>
+                    <CommandEmpty>No se encontró ninguna carrera.</CommandEmpty>
+                    <CommandGroup>
+                      {loadingCareers ? (
+                        <CommandItem disabled>Cargando carreras...</CommandItem>
+                      ) : (
+                        careers?.map((career) => (
+                          <CommandItem
+                            key={career.id}
+                            value={career.fullName}
+                            onSelect={() => {
+                              setSpotFormData((prev) => ({ ...prev, careerId: career.id }))
+                              setOpen((prev) => ({ ...prev, career: false }))
+                            }}
+                          >
+                            {career.fullName}
+                            <Check
+                              className={cn(
+                                "ml-auto",
+                                formData.careerId === career.id ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))
+                      )}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="space-y-2 py-4">
             <Label htmlFor="locationId">Localización</Label>
-            <Select
-              value={formData.locationId?.toString() ?? ''}
-              onValueChange={(value) =>
-                setSpotFormData((prev) => ({ ...prev, locationId: Number(value) }))
-              }
-              required
-            >
-              <SelectTrigger id="locationId" className="w-full">
-                <SelectValue placeholder={loadingLocations ? "Cargando localizaciones..." : "Seleccione una localización"} />
-              </SelectTrigger>
-              <SelectContent>
-                {loadingLocations ? (
-                  <SelectItem disabled value="loading">Cargando localizaciones...</SelectItem>
-                ) : locations && locations.length > 0 ? (
-                  locations.map((location) => (
-                    <SelectItem key={location.id} value={location.id.toString()}>
-                      {location.name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem disabled value="no-locations">No hay localizaciones registradas</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
+            <Popover open={open.location} onOpenChange={handleOpenChange('location')}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open.location}
+                  className="w-full justify-between"
+                >
+                  {formData.locationId
+                    ? locations?.find((location) => location.id === formData.locationId)?.name
+                    : loadingLocations
+                      ? "Cargando localizaciones..."
+                      : "Seleccione una localización"}
+                  <ChevronsUpDown className="opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="min-w-[375px] p-0">
+                <Command>
+                  <CommandInput placeholder="Buscar localización..." className="h-9" />
+                  <CommandList>
+                    <CommandEmpty>No se encontró ninguna localización.</CommandEmpty>
+                    <CommandGroup>
+                      {loadingLocations ? (
+                        <CommandItem disabled>Cargando localizaciones...</CommandItem>
+                      ) : (
+                        locations?.map((location) => (
+                          <CommandItem
+                            key={location.id}
+                            value={location.name}
+                            onSelect={() => {
+                              setSpotFormData((prev) => ({ ...prev, locationId: location.id }))
+                              setOpen((prev) => ({ ...prev, location: false }))
+                            }}
+                          >
+                            {location.name}
+                            <Check
+                              className={cn(
+                                "ml-auto",
+                                formData.locationId === location.id ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))
+                      )}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
+
           <div className="w-32 space-y-2 py-4">
             <Label htmlFor="availableQuantity">Plazas disponibles</Label>
             <Input

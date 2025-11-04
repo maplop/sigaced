@@ -23,14 +23,14 @@ export interface StudentRequest {
 }
 
 export interface Career {
-  id: string
+  id: number
   fullName: string
   abbreviation: string
   faculty: string
 }
 
 export interface Location {
-  id: string
+  id: number
   name: string
 }
 
