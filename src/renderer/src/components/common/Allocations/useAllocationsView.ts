@@ -7,8 +7,11 @@ import { deleteAllAssignmentsFromPhase, getAssignmentsByPhase } from "@renderer/
 import { AssignmentRow } from "src/shared/types"
 import { handleAllocate } from "@renderer/utils/allocations"
 import { toast } from "sonner"
+import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
+import { PhaseType } from "@renderer/utils/types"
 
 export const useAllocations = (phaseId: number) => {
+  const { setCurrentPhase } = useAssignmentPhase()
   const queryClient = useQueryClient()
 
   const { data: assignments, isLoading: loadingAssignments } = useQuery({
@@ -116,6 +119,7 @@ export const useAllocations = (phaseId: number) => {
         }
       })
     } finally {
+      setCurrentPhase((phaseId + 1) as PhaseType)
       setIsAssigned(false)
     }
   }
@@ -123,6 +127,8 @@ export const useAllocations = (phaseId: number) => {
   const deleteAllMutation = useMutation({
     mutationFn: (phaseId: number) => deleteAllAssignmentsFromPhase(phaseId),
     onSuccess: () => {
+      const prevPhase = phaseId > 1 ? ((phaseId - 1) as PhaseType) : 1
+      setCurrentPhase(prevPhase)
       toast.success("Todas los otorgamientos de la fase fueron eliminadas.")
       queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS, phaseId] })
     },

@@ -16,6 +16,7 @@ import { useLocation } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
 import { useAuthContext } from "@renderer/context/AuthContext"
 import { Separator } from "@renderer/components/ui/separator"
+import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
 
 const menuItems = [
   {
@@ -56,6 +57,7 @@ const allocations = [
 export function AppSidebar() {
   const location = useLocation()
   const { logout, user } = useAuthContext()
+  const { currentPhase } = useAssignmentPhase()
   return (
     <Sidebar className="border-none">
       <SidebarHeader className="bg-white dark:bg-gray-950 border-none">
@@ -94,8 +96,15 @@ export function AppSidebar() {
                 </SidebarMenuItem>
               ))}
               <Separator />
-              {allocations.map((item) => {
+              {allocations.map((item, index) => {
                 const isActive = location.pathname === item.url
+
+                const phaseNumber = index + 1;
+                const dotClass = phaseNumber === currentPhase
+                  ? "bg-green-600 animate-pulse"
+                  : phaseNumber < currentPhase
+                    ? "bg-green-600"
+                    : "bg-gray-400";
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
@@ -106,6 +115,7 @@ export function AppSidebar() {
                       <a href={item.url}>
                         <item.icon />
                         <span>{item.title}</span>
+                        <span className={`h-2 w-2 rounded-full ml-auto ${dotClass}`} />
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

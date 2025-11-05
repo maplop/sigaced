@@ -53,7 +53,6 @@ const SpotView = ({ phase }: SpotViewProps) => {
   return (
     <>
       <div className="flex flex-col gap-4">
-
         {/*<ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">*/}
         <Card>
           <CardHeader className="flex justify-between">
