@@ -17,18 +17,20 @@ declare global {
   interface Window {
     electron: ElectronAPI
     api: {
+      // Statistics
+      getDashboardStats: () => Promise<DashboardStats>
+      getTopStudents: () => Promise<TopStudent[]>
+      getTopCareers: () => Promise<TopCareer[]>
+
       // Students
       addStudent: (
         student: Omit<Student, "id">
       ) => Promise<{ success: boolean; id?: number; error?: string }>
       getStudents: (phaseId: number) => Promise<Student[]>
-      updateStudent: (student: Student) => Promise<{ success: boolean; error?: string }>
-      deleteStudent: (studentId: number) => Promise<{ success: boolean; error?: string }>
-      addStudentToPhase: (
-        studentId: number,
-        phaseId: number
-      ) => Promise<{ success: boolean; error?: string }>
-      deleteAllStudentsFromPhase: (phaseId: number) => Promise<{ success: boolean; error?: string }>
+      updateStudent: (student: Student) => Promise<OperationResult>
+      deleteStudent: (studentId: number) => Promise<OperationResult>
+      addStudentToPhase: (studentId: number, phaseId: number) => Promise<OperationResult>
+      deleteAllStudentsFromPhase: (phaseId: number) => Promise<OperationResult>
 
       // Assignments
       addAssignment: (assignment: Omit<Assignment, "id">) => Promise<OperationResult>

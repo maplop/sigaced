@@ -6,8 +6,8 @@ import { Student } from "src/shared/types"
 export function addStudent(student: Student): number {
   try {
     const insertStudent = db.prepare(`
-      INSERT INTO student (ci, name, last_name, grade, age, gender, municipality)
-      VALUES (@ci, @name, @lastName, @grade, @age, @gender, @municipality)
+      INSERT INTO student (ci, name, last_name, grade, gender, municipality)
+      VALUES (@ci, @name, @lastName, @grade, @gender, @municipality)
     `)
 
     const insertPhase = db.prepare(`
@@ -61,7 +61,6 @@ export function getStudents(phaseId: number): Student[] {
       st.name,
       st.last_name AS lastName,
       st.grade,
-      st.age,
       st.gender,
       st.municipality,
       sp.phase_id AS phaseId
@@ -99,7 +98,6 @@ export function updateStudent(student: Student): void {
           name=@name,
           last_name=@lastName,
           grade=@grade,
-          age=@age,
           gender=@gender,
           municipality=@municipality
       WHERE id=@id

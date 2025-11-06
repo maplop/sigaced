@@ -27,7 +27,6 @@ db.exec(`
     name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     grade REAL CHECK (grade BETWEEN 0 AND 100),
-    age INTEGER CHECK (age > 0),
     gender TEXT CHECK (gender IN ('M', 'F')),
     municipality TEXT
   );

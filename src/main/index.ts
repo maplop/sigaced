@@ -51,6 +51,8 @@ import {
   deleteSpot,
   deleteAllSpotsFromPhase
 } from "./queries/spot"
+import { getDashboardStats, getTopCareers, getTopStudents } from "./queries/statistics"
+import { DashboardStats, OperationResult, TopCareer, TopStudent } from "src/shared/types"
 
 function createWindow(): void {
   // Create the browser window.
@@ -109,6 +111,32 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+})
+
+// IPC handlers for statistics
+
+ipcMain.handle("stats:getDashboardStats", async () => {
+  try {
+    return getDashboardStats()
+  } catch (error: any) {
+    return { success: false, error: error?.message ?? "Error desconocido" } as OperationResult
+  }
+})
+
+ipcMain.handle("stats:getTopStudents", async () => {
+  try {
+    return getTopStudents()
+  } catch (error: any) {
+    return { success: false, error: error?.message ?? "Error desconocido" } as OperationResult
+  }
+})
+
+ipcMain.handle("stats:getTopCareers", async () => {
+  try {
+    return getTopCareers()
+  } catch (error: any) {
+    return { success: false, error: error?.message ?? "Error desconocido" } as OperationResult
+  }
 })
 
 // IPC handlers for student CRUD

@@ -1,6 +1,6 @@
 import { Badge } from "@renderer/components/ui/badge"
 
-export const getPhaseName = (phaseId: number) => {
+export const getBadgePhaseName = (phaseId: number) => {
   switch (phaseId) {
     case 1:
       return <Badge variant={"secondary"} className="bg-blue-100 text-blue-900">Primer Otorgamiento</Badge>

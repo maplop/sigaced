@@ -114,18 +114,6 @@ const ApplicantsForm = ({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="age">Edad</Label>
-                  <Input
-                    id="age"
-                    type="number"
-                    step="1"
-                    min="18"
-                    value={formData.age}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, age: parseFloat(e.target.value) }))}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
                   <Label htmlFor="municipality">Municipio</Label>
                   <Input
                     id="municipality"

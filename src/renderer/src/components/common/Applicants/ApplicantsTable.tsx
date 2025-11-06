@@ -83,9 +83,6 @@ const ApplicantsTable = ({
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("grade")}>
                     Nota {sortField === "grade" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
-                  <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("age")}>
-                    Edad {sortField === "age" && (sortDirection === "asc" ? "↑" : "↓")}
-                  </TableHead>
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("gender")}>
                     Sexo {sortField === "gender" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
@@ -122,7 +119,6 @@ const ApplicantsTable = ({
                       <TableCell className="text-center">
                         <Badge>{student.grade.toFixed(2)}</Badge>
                       </TableCell>
-                      <TableCell className="text-center">{student.age}</TableCell>
                       <TableCell className="text-center">
                         <Badge variant={student.gender === 'F' ? 'secondary' : 'outline'}>
                           {student.gender === 'F' ? 'Femenino' : 'Masculino'}

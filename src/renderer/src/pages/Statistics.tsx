@@ -1,7 +1,9 @@
 
+import StatisticsView from "@renderer/components/Statistics/StatisticsView"
+
 const Statistics = () => {
   return (
-    <div className="p-4">Statistics</div>
+    <StatisticsView />
   )
 }
 export default Statistics

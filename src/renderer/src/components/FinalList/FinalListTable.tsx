@@ -6,7 +6,7 @@ import { Badge } from "@renderer/components/ui/badge"
 import { Label } from "@renderer/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
 import { AssignmentRow } from "src/shared/types"
-import { getPhaseName } from "@renderer/utils/getPhaseName"
+import { getBadgePhaseName } from "@renderer/utils/getBadgePhaseName"
 
 
 export interface AllocationsTableProps {
@@ -99,7 +99,7 @@ const FinalListTable = ({
                         <Badge>{assignment.grade.toFixed(2)}</Badge>
                       </TableCell>
                       <TableCell className="text-center">
-                        {getPhaseName(assignment.phase)}
+                        {getBadgePhaseName(assignment.phase)}
                       </TableCell>
                       <TableCell className="text-center font-medium">{assignment.preferenceOrder}</TableCell>
                     </TableRow>

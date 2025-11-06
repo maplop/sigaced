@@ -10,7 +10,6 @@ export interface Student {
   name: string
   lastName: string
   grade: number
-  age: number
   gender: "M" | "F"
   municipality: string
   phaseId: number
@@ -94,4 +93,26 @@ export interface User {
 export interface OperationResult {
   success: boolean
   error?: string
+}
+
+export interface DashboardStats {
+  totalStudents: number
+  avgGrade: number
+  totalSpots: number
+  totalCareers: number
+  assignedSpots: number
+  remainingSpots: number
+}
+
+export interface TopStudent {
+  name: string
+  lastName: string
+  grade: number
+  career: string | null
+}
+
+export interface TopCareer {
+  career: string
+  totalSpots: number
+  totalRequests: number
 }
