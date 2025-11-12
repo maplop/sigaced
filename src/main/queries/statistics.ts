@@ -6,34 +6,63 @@ import { db } from "../database"
 // =========================
 // ESTADÍSTICAS GENERALES
 // =========================
+export function getDashboardStats(phaseId?: number) {
+  // Total de estudiantes que participaron en la fase
+  const totalStudents =
+    db
+      .prepare(
+        `
+      SELECT COUNT(DISTINCT s.id) AS total
+      FROM student s
+      LEFT JOIN student_phase sp ON sp.student_id = s.id
+      ${phaseId ? `WHERE sp.phase_id = ${phaseId}` : ""}
+    `
+      )
+      .get().total || 0
 
-export function getDashboardStats() {
-  // Total de aspirantes registrados
-  const totalStudents = db.prepare(`SELECT COUNT(*) AS total FROM student`).get().total
-
-  // Promedio general del promedio de todos los aspirantes
+  // Promedio de calificaciones de los estudiantes
   const avgGrade =
-    db.prepare(`SELECT ROUND(AVG(grade), 2) AS average FROM student`).get().average || 0
+    db
+      .prepare(
+        `
+    SELECT ROUND(AVG(grade), 2) AS average
+    FROM (
+      SELECT DISTINCT s.id, s.grade
+      FROM student s
+      LEFT JOIN student_phase sp ON sp.student_id = s.id
+      ${phaseId ? `WHERE sp.phase_id = ${phaseId}` : ""}
+    ) AS unique_students
+  `
+      )
+      .get().average || 0
 
-  // Plazas totales (suma de available_quantity)
+  // Información de las plazas disponibles
   const spotData = db
     .prepare(
       `
-      SELECT 
-        SUM(available_quantity) AS totalSpots,
-        COUNT(DISTINCT career_id) AS totalCareers
-      FROM spot
+      SELECT SUM(sp.available_quantity) AS totalSpots,
+             COUNT(DISTINCT sp.career_id) AS totalCareers
+      FROM spot sp
+      ${phaseId ? `WHERE sp.phase_id = ${phaseId}` : ""}
     `
     )
     .get()
 
-  // Plazas asignadas
-  const assignedSpots = db
-    .prepare(`SELECT COUNT(*) AS totalAssigned FROM assignment`)
-    .get().totalAssigned
+  // Total de plazas asignadas
+  const assignedSpots =
+    db
+      .prepare(
+        `
+      SELECT COUNT(*) AS totalAssigned
+      FROM assignment a
+      LEFT JOIN spot sp ON sp.id = a.spot_id
+      ${phaseId ? `WHERE sp.phase_id = ${phaseId}` : ""}
+    `
+      )
+      .get().totalAssigned || 0
 
   // Plazas restantes
-  const remainingSpots = (spotData.totalSpots || 0) - (assignedSpots || 0)
+  const remainingSpots = (spotData.totalSpots || 0) - assignedSpots
 
   return {
     totalStudents,
@@ -48,20 +77,25 @@ export function getDashboardStats() {
 // =========================
 // TOP 5 ESTUDIANTES
 // =========================
+export function getTopStudents(phaseId?: number) {
+  const phaseFilter = phaseId ? `WHERE sp.phase_id = ${phaseId}` : ""
 
-export function getTopStudents() {
   return db
     .prepare(
       `
       SELECT 
+        s.id,
         s.name,
         s.last_name AS lastName,
         s.grade,
         c.full_name AS career
       FROM student s
+      LEFT JOIN student_phase sp ON sp.student_id = s.id
       LEFT JOIN assignment a ON a.student_id = s.id
-      LEFT JOIN spot sp ON sp.id = a.spot_id
-      LEFT JOIN career c ON c.id = sp.career_id
+      LEFT JOIN spot st ON st.id = a.spot_id
+      LEFT JOIN career c ON c.id = st.career_id
+      ${phaseFilter}
+      GROUP BY s.id
       ORDER BY s.grade DESC
       LIMIT 5
     `
@@ -72,18 +106,24 @@ export function getTopStudents() {
 // =========================
 // CARRERAS MÁS SOLICITADAS
 // =========================
+export function getTopCareers(phaseId?: number) {
+  const phaseCondition = phaseId ? `AND st.phase_id = ${phaseId}` : ""
 
-export function getTopCareers() {
   return db
     .prepare(
       `
-      SELECT 
+      SELECT
         c.full_name AS career,
-        IFNULL(SUM(sp.available_quantity), 0) AS totalSpots,
-        COUNT(r.id) AS totalRequests
+        IFNULL(COUNT(r.id), 0) AS totalRequests,
+        IFNULL((
+          SELECT SUM(s2.available_quantity)
+          FROM spot s2
+          WHERE s2.career_id = c.id
+          ${phaseId ? `AND s2.phase_id = ${phaseId}` : ""}
+        ), 0) AS totalSpots
       FROM career c
-      LEFT JOIN spot sp ON sp.career_id = c.id
-      LEFT JOIN request r ON r.spot_id = sp.id
+      LEFT JOIN spot st ON st.career_id = c.id ${phaseCondition}
+      LEFT JOIN request r ON r.spot_id = st.id
       GROUP BY c.id
       ORDER BY totalRequests DESC
       LIMIT 10

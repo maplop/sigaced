@@ -8,57 +8,42 @@ interface KPICardsProps {
 }
 
 export function KPICards({ stats, loadingStats }: KPICardsProps) {
-  if (loadingStats || !stats) {
-    // Puedes mostrar skeletons o placeholders aquí
-    return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        {Array(5)
-          .fill(0)
-          .map((_, i) => (
-            <Card key={i} className="p-6 animate-pulse">
-              <div className="h-20 bg-gray-200 rounded-lg" />
-            </Card>
-          ))}
-      </div>
-    )
-  }
-
-  // Mapeo real usando stats
   const kpis = [
     {
       title: "Aspirantes Registrados",
-      value: stats.totalStudents.toLocaleString(),
+      value: stats?.totalStudents?.toLocaleString() ?? 0,
       icon: Users,
-      trend: "+12% vs mes anterior", // opcional, puedes calcularlo si tienes historial
-      trendUp: true,
+      trend: "fase seleccionada",
     },
     {
       title: "Promedio General",
-      value: stats.avgGrade.toFixed(2),
+      value: stats?.avgGrade?.toFixed(2) ?? 0.00,
       icon: TrendingUp,
-      trend: "Notas asignadas",
-      trendUp: true,
+      trend: "del total",
     },
     {
       title: "Plazas Disponibles",
-      value: stats.totalSpots.toLocaleString(),
+      value: stats?.totalSpots?.toLocaleString() ?? 0,
       icon: Building2,
-      trend: `${stats.totalCareers} carreras`,
-      trendUp: false,
+      trend: `${stats?.totalCareers ?? 0} carreras`,
     },
     {
       title: "Plazas Asignadas",
-      value: stats.assignedSpots.toLocaleString(),
+      value: stats?.assignedSpots?.toLocaleString() ?? 0,
       icon: CheckCircle,
-      trend: ((stats.assignedSpots / stats.totalSpots) * 100).toFixed(1) + "% del total",
-      trendUp: true,
+      trend:
+        stats && stats.totalSpots > 0
+          ? ((stats.assignedSpots / stats.totalSpots) * 100).toFixed(1) + "% del total"
+          : "No disponible",
     },
     {
       title: "Plazas Restantes",
-      value: stats.remainingSpots.toLocaleString(),
+      value: stats?.remainingSpots?.toLocaleString() ?? 0,
       icon: AlertCircle,
-      trend: ((stats.remainingSpots / stats.totalSpots) * 100).toFixed(1) + "% disponible",
-      trendUp: null,
+      trend:
+        stats && stats.totalSpots > 0
+          ? ((stats.remainingSpots / stats.totalSpots) * 100).toFixed(1) + "% disponible"
+          : "No disponible",
     },
   ]
 
@@ -71,9 +56,20 @@ export function KPICards({ stats, loadingStats }: KPICardsProps) {
             <div className="flex items-start justify-between">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">{kpi.title}</p>
-                <p className="text-3xl font-bold text-foreground">{kpi.value}</p>
-                <p className="text-xs text-muted-foreground">{kpi.trend}</p>
+
+                {loadingStats ? (
+                  <div className="h-7 w-24 bg-muted rounded animate-pulse" />
+                ) : (
+                  <p className="text-3xl font-bold text-foreground">{kpi.value}</p>
+                )}
+
+                {loadingStats ? (
+                  <div className="h-3 w-20 bg-muted rounded animate-pulse" />
+                ) : (
+                  <p className="text-xs text-muted-foreground">{kpi.trend}</p>
+                )}
               </div>
+
               <div className="rounded-lg bg-gray-900 p-3">
                 <Icon className="h-5 w-5 text-white" />
               </div>

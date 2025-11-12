@@ -29,6 +29,9 @@ export const useAllocations = (phaseId: number) => {
   const [error, setError] = useState<string | null>(null)
   const [progress, setProgress] = useState(0)
 
+  const [showAlert, setShowAlert] = useState(false)
+  const [studentsWithoutRequests, setStudentsWithoutRequests] = useState<any[]>([])
+
   const filteredAndSortedAssignments = useMemo(() => {
     if (!assignments) return []
 
@@ -101,6 +104,17 @@ export const useAllocations = (phaseId: number) => {
   const allocate = async () => {
     if (!sortedStudents || !spots) return
 
+    // 1️⃣ Validar que todos los estudiantes tengan al menos una request
+    const missing = sortedStudents.filter(
+      (student) => !student.requests || student.requests.length === 0
+    )
+
+    if (missing.length > 0) {
+      setStudentsWithoutRequests(missing)
+      setShowAlert(true) // 👈 activa el modal
+      return
+    }
+
     setIsAssigned(true)
     setError(null)
     setProgress(0)
@@ -143,6 +157,8 @@ export const useAllocations = (phaseId: number) => {
     deleteAllMutation.mutate(phaseId)
   }
 
+  console.log("---- ", showAlert)
+
   return {
     loadingAssignments,
     allocate,
@@ -160,6 +176,9 @@ export const useAllocations = (phaseId: number) => {
     handleSort,
     progress,
     handleDeleteAllFromPhase,
-    isAssigned
+    isAssigned,
+    showAlert,
+    setShowAlert,
+    studentsWithoutRequests
   }
 }

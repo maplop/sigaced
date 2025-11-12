@@ -6,9 +6,9 @@ import { Student } from "src/shared/types"
 // Custom APIs for renderer
 const api = {
   //Statistics
-  getDashboardStats: () => ipcRenderer.invoke("stats:getDashboardStats"),
-  getTopStudents: () => ipcRenderer.invoke("stats:getTopStudents"),
-  getTopCareers: () => ipcRenderer.invoke("stats:getTopCareers"),
+  getDashboardStats: (phaseId?: number) => ipcRenderer.invoke("stats:getDashboardStats", phaseId),
+  getTopStudents: (phaseId?: number) => ipcRenderer.invoke("stats:getTopStudents", phaseId),
+  getTopCareers: (phaseId?: number) => ipcRenderer.invoke("stats:getTopCareers", phaseId),
 
   // Student
   addStudent: (student: Student) => ipcRenderer.invoke("student:add", student),

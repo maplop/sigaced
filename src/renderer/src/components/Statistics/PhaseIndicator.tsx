@@ -1,9 +1,10 @@
-import { Calendar, CheckCircle2, Circle } from "lucide-react"
+import { Calendar, CheckCircle2, Circle, RefreshCcw } from "lucide-react"
 import { Card } from "../ui/card"
-import { Badge } from "../ui/badge"
 import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
 import { getPhaseName } from "@renderer/utils/getPhaseName"
 import { formatDate } from "@renderer/utils/formatDate"
+import { Button } from "../ui/button"
+import ConfirmDeleteDialog from "../common/ConfirmDeleteDialog"
 
 export function PhaseIndicator() {
   const { currentPhase } = useAssignmentPhase()
@@ -33,11 +34,37 @@ export function PhaseIndicator() {
               <span>{formatDate(today)}</span>
             </div>
           </div>
-
-          <Badge variant="outline" className="flex items-center gap-2 px-3 py-1">
-            <div className="h-3 w-3 rounded-full bg-green-600 animate-pulse" />
-            Activa
-          </Badge>
+          <ConfirmDeleteDialog
+            onConfirm={() => null}
+            title="Reiniciar Proceso"
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => null}
+                className="text-red-500 border-red-500  hover:text-white hover:bg-red-500"
+              >
+                <RefreshCcw className="h-4 w-4" />
+                Reiniciar Proceso
+              </Button>
+            }
+          >
+            <div className="space-y-2 text-center">
+              <p>
+                ¿Estás seguro de que deseas <strong>reiniciar el proceso de asignación</strong>?
+              </p>
+              <p>
+                Esta acción eliminará <strong>todos los aspirantes</strong> registrados en la fase actual,
+                así como sus <strong>solicitudes y asignaciones</strong> asociadas.
+              </p>
+              <p>
+                También se eliminarán los <strong>registros vinculados en fases posteriores</strong> de esos mismos aspirantes.
+              </p>
+              <p className="text-destructive font-medium">
+                Esta operación es irreversible y no se puede deshacer.
+              </p>
+            </div>
+          </ConfirmDeleteDialog>
         </div>
 
         <div className="flex gap-2">

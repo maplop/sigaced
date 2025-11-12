@@ -18,9 +18,9 @@ declare global {
     electron: ElectronAPI
     api: {
       // Statistics
-      getDashboardStats: () => Promise<DashboardStats>
-      getTopStudents: () => Promise<TopStudent[]>
-      getTopCareers: () => Promise<TopCareer[]>
+      getDashboardStats: (phaseId?: number) => Promise<DashboardStats>
+      getTopStudents: (phaseId?: number) => Promise<TopStudent[]>
+      getTopCareers: (phaseId?: number) => Promise<TopCareer[]>
 
       // Students
       addStudent: (

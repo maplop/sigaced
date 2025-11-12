@@ -30,7 +30,10 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
     handleSort,
     progress,
     handleDeleteAllFromPhase,
-    isAssigned
+    isAssigned,
+    showAlert,
+    setShowAlert,
+    studentsWithoutRequests
   } = useAllocations(phase)
   return (
     <div className="flex flex-col gap-4">
@@ -49,6 +52,26 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
             <Play className="h-4 w-4" />
             Otorgar
           </Button>
+
+          <ConfirmDeleteDialog
+            open={showAlert}
+            onOpenChange={setShowAlert}
+            onConfirm={() => setShowAlert(false)}
+            title="Otorgamiento no permitido"
+            confirmText="Entendido"
+          >
+            {studentsWithoutRequests.length === 1
+              ? "Hay 1 estudiante sin solicitudes registradas."
+              : `Hay ${studentsWithoutRequests.length} estudiantes sin solicitudes registradas.`}
+
+            <br /><br />
+
+            <p className="text-center text-sm text-muted-foreground">
+              Cada estudiante debe tener al menos una solicitud registrada para poder
+              proceder con el otorgamiento de plazas.
+              Por favor, revisa los datos antes de continuar.
+            </p>
+          </ConfirmDeleteDialog>
         </CardHeader>
         <CardContent>
 

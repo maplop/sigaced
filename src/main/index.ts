@@ -52,7 +52,7 @@ import {
   deleteAllSpotsFromPhase
 } from "./queries/spot"
 import { getDashboardStats, getTopCareers, getTopStudents } from "./queries/statistics"
-import { DashboardStats, OperationResult, TopCareer, TopStudent } from "src/shared/types"
+import { OperationResult } from "src/shared/types"
 
 function createWindow(): void {
   // Create the browser window.
@@ -115,25 +115,25 @@ app.whenReady().then(() => {
 
 // IPC handlers for statistics
 
-ipcMain.handle("stats:getDashboardStats", async () => {
+ipcMain.handle("stats:getDashboardStats", async (_event, phaseId?: number) => {
   try {
-    return getDashboardStats()
+    return getDashboardStats(phaseId)
   } catch (error: any) {
     return { success: false, error: error?.message ?? "Error desconocido" } as OperationResult
   }
 })
 
-ipcMain.handle("stats:getTopStudents", async () => {
+ipcMain.handle("stats:getTopStudents", async (_event, phaseId?: number) => {
   try {
-    return getTopStudents()
+    return getTopStudents(phaseId)
   } catch (error: any) {
     return { success: false, error: error?.message ?? "Error desconocido" } as OperationResult
   }
 })
 
-ipcMain.handle("stats:getTopCareers", async () => {
+ipcMain.handle("stats:getTopCareers", async (_event, phaseId?: number) => {
   try {
-    return getTopCareers()
+    return getTopCareers(phaseId)
   } catch (error: any) {
     return { success: false, error: error?.message ?? "Error desconocido" } as OperationResult
   }

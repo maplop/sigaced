@@ -179,23 +179,19 @@ export function addStudentToPhase(studentId: number, phaseId: number): void {
   insertPhase.run(studentId, phaseId)
 }
 
-// Elimina a todos los estudiantes de una fase específica
+// Elimina todos los estudiantes de una fase específica de manera eficiente
 export function deleteAllStudentsFromPhase(phaseId: number): void {
-  const deleteRequests = db.prepare(`
-    DELETE FROM request
-    WHERE spot_id IN (
-      SELECT id FROM spot WHERE phase_id = ?
+  const deleteTx = db.prepare(`
+    DELETE FROM student
+    WHERE id IN (
+      SELECT student_id
+      FROM student_phase
+      WHERE phase_id = ?
     )
   `)
 
-  const deleteStudentPhase = db.prepare(`
-    DELETE FROM student_phase
-    WHERE phase_id = ?
-  `)
-
   const tx = db.transaction((ph: number) => {
-    deleteRequests.run(ph)
-    deleteStudentPhase.run(ph)
+    deleteTx.run(ph)
   })
 
   tx(phaseId)
