@@ -7,6 +7,7 @@ import { Button } from "@renderer/components/ui/button";
 import AllocationsTable from "./AllocationsTable";
 import { Progress } from "@renderer/components/ui/progress";
 import ConfirmDeleteDialog from "../ConfirmDeleteDialog";
+import { useAuthContext } from "@renderer/context/AuthContext";
 
 interface AllocationsViewProps {
   phase: PhaseType
@@ -35,6 +36,9 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
     setShowAlert,
     studentsWithoutRequests
   } = useAllocations(phase)
+
+  const { user } = useAuthContext()
+
   return (
     <div className="flex flex-col gap-4">
       <Card>
@@ -45,36 +49,43 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
               <span className="text-sm font-medium text-foreground">Total de asignaciones: {filteredAndSortedAssignments.length} </span>
             </div>
           </div>
-          <Button
-            onClick={allocate}
-            disabled={filteredAndSortedAssignments.length > 0}
-          >
-            <Play className="h-4 w-4" />
-            Otorgar
-          </Button>
+          {user?.role === 'admin' && (
+            <>
+              <Button
+                onClick={() => {
+                  if (user.role === 'admin') {
+                    allocate()
+                  }
+                }}
+                disabled={filteredAndSortedAssignments.length > 0}
+              >
+                <Play className="h-4 w-4" />
+                Otorgar
+              </Button>
 
-          <ConfirmDeleteDialog
-            open={showAlert}
-            onOpenChange={setShowAlert}
-            onConfirm={() => setShowAlert(false)}
-            title="Otorgamiento no permitido"
-            confirmText="Entendido"
-          >
-            {studentsWithoutRequests.length === 1
-              ? "Hay 1 estudiante sin solicitudes registradas."
-              : `Hay ${studentsWithoutRequests.length} estudiantes sin solicitudes registradas.`}
+              <ConfirmDeleteDialog
+                open={showAlert}
+                onOpenChange={setShowAlert}
+                onConfirm={() => setShowAlert(false)}
+                title="Otorgamiento no permitido"
+                confirmText="Entendido"
+              >
+                {studentsWithoutRequests.length === 1
+                  ? "Hay 1 estudiante sin solicitudes registradas."
+                  : `Hay ${studentsWithoutRequests.length} estudiantes sin solicitudes registradas.`}
 
-            <br /><br />
+                <br /><br />
 
-            <p className="text-center text-sm text-muted-foreground">
-              Cada estudiante debe tener al menos una solicitud registrada para poder
-              proceder con el otorgamiento de plazas.
-              Por favor, revisa los datos antes de continuar.
-            </p>
-          </ConfirmDeleteDialog>
+                <p className="text-center text-sm text-muted-foreground">
+                  Cada estudiante debe tener al menos una solicitud registrada para poder
+                  proceder con el otorgamiento de plazas.
+                  Por favor, revisa los datos antes de continuar.
+                </p>
+              </ConfirmDeleteDialog>
+            </>
+          )}
         </CardHeader>
         <CardContent>
-
           {isAssigned && (
             <div className="mb-3.5">
               <div className="flex justify-between items-center text-muted-foreground mb-1">
@@ -95,28 +106,34 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
                 className="pl-10 max-w-sm"
               />
             </div>
-            <ConfirmDeleteDialog
-              onConfirm={() => handleDeleteAllFromPhase()}
-              title="Limpiar otorgamientos de la fase"
-              trigger={
-                <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAssignments.length === 0}>
-                  <Trash2 className="h-4 w-4 text-red-500" />
-                  Deshacer otorgamiento
-                </Button>
-              }
-            >
-              <div className="space-y-2 text-center">
-                <p>
-                  ¿Estás seguro de que deseas eliminar <strong>todas las asignaciones</strong> de esta fase?
-                </p>
-                <p>
-                  Esta acción también eliminará automáticamente cualquier <strong>otorgamientorelacionada en fases posteriores</strong> que dependa de estas.
-                </p>
-                <p>
-                  Esta operación <strong>no se puede deshacer</strong>.
-                </p>
-              </div>
-            </ConfirmDeleteDialog>
+            {user?.role === 'admin' && (
+              <ConfirmDeleteDialog
+                onConfirm={() => {
+                  if (user.role === 'admin') {
+                    handleDeleteAllFromPhase()
+                  }
+                }}
+                title="Limpiar otorgamientos de la fase"
+                trigger={
+                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAssignments.length === 0}>
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                    Deshacer otorgamiento
+                  </Button>
+                }
+              >
+                <div className="space-y-2 text-center">
+                  <p>
+                    ¿Estás seguro de que deseas eliminar <strong>todas las asignaciones</strong> de esta fase?
+                  </p>
+                  <p>
+                    Esta acción también eliminará automáticamente cualquier <strong>otorgamientorelacionada en fases posteriores</strong> que dependa de estas.
+                  </p>
+                  <p>
+                    Esta operación <strong>no se puede deshacer</strong>.
+                  </p>
+                </div>
+              </ConfirmDeleteDialog>
+            )}
           </div>
 
 

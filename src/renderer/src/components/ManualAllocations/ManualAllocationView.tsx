@@ -7,6 +7,7 @@ import { Button } from "@renderer/components/ui/button";
 import AllocationsTable from "../common/Allocations/AllocationsTable";
 import ConfirmDeleteDialog from "../common/ConfirmDeleteDialog";
 import AddManualAllocation from "./AddManualAllocation";
+import { useAuthContext } from "@renderer/context/AuthContext";
 
 interface AllocationsViewProps {
   phase: PhaseType
@@ -39,6 +40,9 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
     handleSubmit,
     resetForm
   } = useManualAllocationView(phase)
+
+  const { user } = useAuthContext()
+
   return (
     <div className="flex flex-col gap-4">
       <Card>
@@ -49,18 +53,21 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
               <span className="text-sm font-medium text-foreground">Total de asignaciones: {paginatedAssignments.length}  </span>
             </div>
           </div>
-          <AddManualAllocation
-            isDialogOpen={isDialogOpen}
-            setIsDialogOpen={setIsDialogOpen}
-            students={unassignedStudents ?? []}
-            loadingStudents={loadingStudents}
-            spots={availableSpots ?? []}
-            loadingSpots={loadingSpots}
-            formData={formData}
-            setFormData={setFormData}
-            handleSubmit={handleSubmit}
-            resetForm={resetForm}
-          />
+          {user?.role === 'admin' && (
+            <AddManualAllocation
+              isDialogOpen={isDialogOpen}
+              setIsDialogOpen={setIsDialogOpen}
+              students={unassignedStudents ?? []}
+              loadingStudents={loadingStudents}
+              spots={availableSpots ?? []}
+              loadingSpots={loadingSpots}
+              formData={formData}
+              setFormData={setFormData}
+              handleSubmit={handleSubmit}
+              resetForm={resetForm}
+            />
+          )}
+
         </CardHeader>
         <CardContent>
           <div className="flex justify-between items-center mb-4">
@@ -73,30 +80,36 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
                 className="pl-10 max-w-sm"
               />
             </div>
-            <ConfirmDeleteDialog
-              onConfirm={() => handleDeleteAllFromPhase()}
-              title="Limpiar otorgamientos de la fase"
-              trigger={
-                <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAssignments.length === 0}>
-                  <Trash2 className="h-4 w-4 text-red-500" />
-                  Deshacer otorgamiento
-                </Button>
-              }
-            >
-              <div className="space-y-2 text-center">
-                <p>
-                  ¿Estás seguro de que deseas eliminar <strong>todas las asignaciones</strong> de esta fase?
-                </p>
-                <p>
-                  Esta acción también eliminará automáticamente cualquier <strong>otorgamientorelacionada en fases posteriores</strong> que dependa de estas.
-                </p>
-                <p>
-                  Esta operación <strong>no se puede deshacer</strong>.
-                </p>
-              </div>
-            </ConfirmDeleteDialog>
+            {user?.role === 'admin' && (
+              <ConfirmDeleteDialog
+                onConfirm={() => {
+                  if (user.role === 'admin') {
+                    handleDeleteAllFromPhase()
+                  }
+                }
+                }
+                title="Limpiar otorgamientos de la fase"
+                trigger={
+                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAssignments.length === 0}>
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                    Deshacer otorgamiento
+                  </Button>
+                }
+              >
+                <div className="space-y-2 text-center">
+                  <p>
+                    ¿Estás seguro de que deseas eliminar <strong>todas las asignaciones</strong> de esta fase?
+                  </p>
+                  <p>
+                    Esta acción también eliminará automáticamente cualquier <strong>otorgamientorelacionada en fases posteriores</strong> que dependa de estas.
+                  </p>
+                  <p>
+                    Esta operación <strong>no se puede deshacer</strong>.
+                  </p>
+                </div>
+              </ConfirmDeleteDialog>
+            )}
           </div>
-
 
           {/* Tabla */}
           <AllocationsTable

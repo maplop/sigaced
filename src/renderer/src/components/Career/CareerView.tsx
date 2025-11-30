@@ -9,6 +9,7 @@ import CareerTable from "./CareerTable"
 import CareerForm from "./CareerForm"
 import ConfirmDeleteDialog from "../common/ConfirmDeleteDialog"
 import { Button } from "../ui/button"
+import { useAuthContext } from "@renderer/context/AuthContext"
 
 const CareerView = () => {
   const {
@@ -36,6 +37,8 @@ const CareerView = () => {
     handleDelete,
     handleDeleteAll
   } = useCareerView()
+
+  const { user } = useAuthContext()
 
   return (
     <PageContainer>
@@ -75,33 +78,38 @@ const CareerView = () => {
                   className="pl-10 max-w-sm"
                 />
               </div>
-              <ConfirmDeleteDialog
-                onConfirm={() => handleDeleteAll()}
-                title="Limpiar tabla"
-                trigger={
-                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedCareers.length === 0}>
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                    Limpiar Tabla
-                  </Button>
-                }
-              >
-                <div className="space-y-2 text-center">
+              {user?.role === 'admin' && (
+                <ConfirmDeleteDialog
+                  onConfirm={() => {
+                    if (user?.role === 'admin') {
+                      handleDeleteAll()
+                    }
+                  }}
+                  title="Limpiar tabla"
+                  trigger={
+                    <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedCareers.length === 0}>
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                      Limpiar Tabla
+                    </Button>
+                  }
+                >
                   <div className="space-y-2 text-center">
-                    <p>
-                      ¿Seguro que deseas eliminar <strong>todas las carreras </strong> del sistema?
-                    </p>
-                    <p>
-                      Esta acción también eliminará las <strong>plazas asociadas a dichas carreras </strong>
-                      en todas las fases.
-                    </p>
-                    <p>
-                      Esta operación no se puede deshacer.
-                    </p>
+                    <div className="space-y-2 text-center">
+                      <p>
+                        ¿Seguro que deseas eliminar <strong>todas las carreras </strong> del sistema?
+                      </p>
+                      <p>
+                        Esta acción también eliminará las <strong>plazas asociadas a dichas carreras </strong>
+                        en todas las fases.
+                      </p>
+                      <p>
+                        Esta operación no se puede deshacer.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </ConfirmDeleteDialog>
+                </ConfirmDeleteDialog>
+              )}
             </div>
-
             <CareerTable
               paginatedCareers={paginatedCareers}
               loadingCareers={loadingCareers}

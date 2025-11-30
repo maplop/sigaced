@@ -5,12 +5,15 @@ import { getPhaseName } from "@renderer/utils/getPhaseName"
 import { formatDate } from "@renderer/utils/formatDate"
 import { Button } from "../ui/button"
 import ConfirmDeleteDialog from "../common/ConfirmDeleteDialog"
+import { useAuthContext } from "@renderer/context/AuthContext"
 
 interface PhaseIndicatorProps {
   clearAllTablesMutation: () => void
 }
 
 export function PhaseIndicator({ clearAllTablesMutation }: PhaseIndicatorProps) {
+  const { user } = useAuthContext()
+
   const { currentPhase } = useAssignmentPhase()
   const today = new Date()
 
@@ -38,38 +41,43 @@ export function PhaseIndicator({ clearAllTablesMutation }: PhaseIndicatorProps) 
               <span>{formatDate(today)}</span>
             </div>
           </div>
-          <ConfirmDeleteDialog
-            onConfirm={clearAllTablesMutation}
-            title="Reiniciar Proceso"
-            trigger={
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-red-500 border-red-500  hover:text-white hover:bg-red-500"
-              >
-                <RefreshCcw className="h-4 w-4" />
-                Reiniciar Proceso
-              </Button>
-            }
-          >
-            <div className="space-y-2 text-center">
-              <p>
-                ¿Estás seguro de que deseas <strong>reiniciar el proceso de asignación</strong>?
-              </p>
-              <p>
-                Esta acción eliminará <strong>todos los aspirantes</strong> registrados en la fase actual,
-                así como sus <strong>solicitudes y asignaciones</strong> asociadas.
-              </p>
-              <p>
-                También se eliminarán los <strong>registros vinculados en fases posteriores</strong> de esos mismos aspirantes.
-              </p>
-              <p className="text-destructive font-medium">
-                Esta operación es irreversible y no se puede deshacer.
-              </p>
-            </div>
-          </ConfirmDeleteDialog>
+          {user?.role === 'admin' && (
+            <ConfirmDeleteDialog
+              onConfirm={() => {
+                if (user?.role === "admin") {
+                  clearAllTablesMutation
+                }
+              }}
+              title="Reiniciar Proceso"
+              trigger={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-red-500 border-red-500  hover:text-white hover:bg-red-500"
+                >
+                  <RefreshCcw className="h-4 w-4" />
+                  Reiniciar Proceso
+                </Button>
+              }
+            >
+              <div className="space-y-2 text-center">
+                <p>
+                  ¿Estás seguro de que deseas <strong>reiniciar el proceso de asignación</strong>?
+                </p>
+                <p>
+                  Esta acción eliminará <strong>todos los aspirantes</strong> registrados en la fase actual,
+                  así como sus <strong>solicitudes y asignaciones</strong> asociadas.
+                </p>
+                <p>
+                  También se eliminarán los <strong>registros vinculados en fases posteriores</strong> de esos mismos aspirantes.
+                </p>
+                <p className="text-destructive font-medium">
+                  Esta operación es irreversible y no se puede deshacer.
+                </p>
+              </div>
+            </ConfirmDeleteDialog>
+          )}
         </div>
-
         <div className="flex gap-2">
           {phases.map((phase) => (
             <div key={phase.name} className="flex flex-1 items-center gap-2">

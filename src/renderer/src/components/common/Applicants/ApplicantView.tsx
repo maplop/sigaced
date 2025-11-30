@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query"
 import { getAllSpots } from "@renderer/api/spot"
 import ConfirmDeleteDialog from "../ConfirmDeleteDialog"
 import { Button } from "@renderer/components/ui/button"
+import { useAuthContext } from "@renderer/context/AuthContext"
 
 
 interface ApplicantsViewProps {
@@ -48,6 +49,8 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
     removeRequest,
     resetForm
   } = useApplicantsView(phase)
+
+  const { user } = useAuthContext()
 
   const { data: spots, isLoading: loadingSpots } = useQuery({
     queryKey: [rqKeys.SPOT, phase],
@@ -95,31 +98,36 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
                 className="pl-10 max-w-sm"
               />
             </div>
-            <ConfirmDeleteDialog
-              onConfirm={() => handleDeleteAllFromPhase()}
-              title="Limpiar tabla"
-              trigger={
-                <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedStudents.length === 0}>
-                  <Trash2 className="h-4 w-4 text-red-500" />
-                  Limpiar Tabla
-                </Button>
-              }
-            >
-              <div className="space-y-2 text-center">
+            {user?.role === 'admin' && (
+              <ConfirmDeleteDialog
+                onConfirm={() => {
+                  if (user?.role === 'admin') {
+                    handleDeleteAllFromPhase()
+                  }
+                }}
+                title="Limpiar tabla"
+                trigger={
+                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedStudents.length === 0}>
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                    Limpiar Tabla
+                  </Button>
+                }
+              >
                 <div className="space-y-2 text-center">
-                  <p>
-                    ¿Seguro que deseas eliminar <strong>todos los aspirantes</strong> de esta fase?
-                  </p>
-                  <p>
-                    Esta acción también eliminará los <strong>registros asociados en fases posteriores</strong>
-                    de los mismos aspirantes.
-                  </p>
-                  <p>Esta operación no se puede deshacer.</p>
+                  <div className="space-y-2 text-center">
+                    <p>
+                      ¿Seguro que deseas eliminar <strong>todos los aspirantes</strong> de esta fase?
+                    </p>
+                    <p>
+                      Esta acción también eliminará los <strong>registros asociados en fases posteriores</strong>
+                      de los mismos aspirantes.
+                    </p>
+                    <p>Esta operación no se puede deshacer.</p>
+                  </div>
                 </div>
-              </div>
-            </ConfirmDeleteDialog>
+              </ConfirmDeleteDialog>
+            )}
           </div>
-
 
           {/* Tabla */}
           <ApplicantsTable

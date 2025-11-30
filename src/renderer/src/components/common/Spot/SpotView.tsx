@@ -8,6 +8,7 @@ import SpotForm from "./SpotForm"
 import { PhaseType } from "@renderer/utils/types"
 import ConfirmDeleteDialog from "../ConfirmDeleteDialog"
 import { Button } from "@renderer/components/ui/button"
+import { useAuthContext } from "@renderer/context/AuthContext"
 
 interface SpotViewProps {
   phase: PhaseType
@@ -44,6 +45,8 @@ const SpotView = ({ phase }: SpotViewProps) => {
     handleDeleteAllFromPhase,
     handleSubmit
   } = useSpotView(phase)
+
+  const { user } = useAuthContext()
 
   const totalAvailableSpots = filteredAndSortedSpots.reduce(
     (total, spot) => total + spot.availableQuantity,
@@ -94,33 +97,38 @@ const SpotView = ({ phase }: SpotViewProps) => {
                   className="pl-10 max-w-sm"
                 />
               </div>
-              <ConfirmDeleteDialog
-                onConfirm={() => handleDeleteAllFromPhase()}
-                title="Limpiar tabla"
-                trigger={
-                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedSpots.length === 0}>
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                    Limpiar Tabla
-                  </Button>
-                }
-              >
-                <div className="space-y-2 text-center">
+              {user?.role === 'admin' && (
+                <ConfirmDeleteDialog
+                  onConfirm={() => {
+                    if (user?.role === 'admin') {
+                      handleDeleteAllFromPhase()
+                    }
+                  }}
+                  title="Limpiar tabla"
+                  trigger={
+                    <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedSpots.length === 0}>
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                      Limpiar Tabla
+                    </Button>
+                  }
+                >
                   <div className="space-y-2 text-center">
-                    <p>
-                      ¿Seguro que deseas eliminar <strong>todas las plazas</strong> de esta fase?
-                    </p>
-                    <p>
-                      Esta acción también eliminará las <strong>plazas asociadas en fases posteriores </strong>
-                      que dependan de las actuales.
-                    </p>
-                    <p>
-                      Esta operación no se puede deshacer.
-                    </p>
+                    <div className="space-y-2 text-center">
+                      <p>
+                        ¿Seguro que deseas eliminar <strong>todas las plazas</strong> de esta fase?
+                      </p>
+                      <p>
+                        Esta acción también eliminará las <strong>plazas asociadas en fases posteriores </strong>
+                        que dependan de las actuales.
+                      </p>
+                      <p>
+                        Esta operación no se puede deshacer.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </ConfirmDeleteDialog>
+                </ConfirmDeleteDialog>
+              )}
             </div>
-
             <SpotTable
               paginatedSpots={paginatedSpots}
               loadingSpots={loadingSpots}

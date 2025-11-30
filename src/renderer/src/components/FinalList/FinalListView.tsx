@@ -7,6 +7,7 @@ import { Search, Trash2, UsersIcon } from "lucide-react"
 import ConfirmDeleteDialog from "../common/ConfirmDeleteDialog"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
+import { useAuthContext } from "@renderer/context/AuthContext"
 
 const FinalListView = () => {
   const {
@@ -25,6 +26,9 @@ const FinalListView = () => {
     handleSort,
     handleDeleteAllFromPhase
   } = useFinalList()
+
+  const { user } = useAuthContext()
+
   return (
     <PageContainer>
       <PageTitle
@@ -51,28 +55,35 @@ const FinalListView = () => {
                   className="pl-10 max-w-sm"
                 />
               </div>
-              <ConfirmDeleteDialog
-                onConfirm={() => handleDeleteAllFromPhase()}
-                title="Limpiar otorgamientos de la fase"
-                trigger={
-                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAssignments.length === 0}>
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                    Deshacer otorgamiento
-                  </Button>
-                }
-              >
-                <div className="space-y-2 text-center">
-                  <p>
-                    ¿Estás seguro de que deseas eliminar <strong>todas las asignaciones</strong> de esta fase?
-                  </p>
-                  <p>
-                    Esta acción también eliminará automáticamente cualquier <strong>otorgamientorelacionada en fases posteriores</strong> que dependa de estas.
-                  </p>
-                  <p>
-                    Esta operación <strong>no se puede deshacer</strong>.
-                  </p>
-                </div>
-              </ConfirmDeleteDialog>
+              {user?.role === 'admin' && (
+                <ConfirmDeleteDialog
+                  onConfirm={() => {
+                    if (user.role === 'admin') {
+                      handleDeleteAllFromPhase()
+                    }
+                  }}
+                  title="Limpiar otorgamientos de la fase"
+                  trigger={
+                    <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAssignments.length === 0}>
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                      Deshacer otorgamiento
+                    </Button>
+                  }
+                >
+                  <div className="space-y-2 text-center">
+                    <p>
+                      ¿Estás seguro de que deseas eliminar <strong>todas las asignaciones</strong> de esta fase?
+                    </p>
+                    <p>
+                      Esta acción también eliminará automáticamente cualquier <strong>otorgamientorelacionada en fases posteriores</strong> que dependa de estas.
+                    </p>
+                    <p>
+                      Esta operación <strong>no se puede deshacer</strong>.
+                    </p>
+                  </div>
+                </ConfirmDeleteDialog>
+              )}
+
             </div>
             <FinalListTable
               loadingAssignments={loadingAssignments}
