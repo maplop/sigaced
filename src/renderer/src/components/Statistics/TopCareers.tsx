@@ -62,13 +62,15 @@ export function TopCareers({ topCareers, loadingTopCareers }: TopCareersProps) {
 
           <div className="space-y-3">
             {topCareers.map((career, index) => {
-              const percentage = (career.totalRequests / career.totalSpots) * 100
+              const total = career.totalRequests ?? career.totalAssignments ?? 0;
+
+              const percentage = (total / career.totalSpots) * 100
               return (
                 <div key={index} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-foreground">{career.career}</span>
                     <span className="text-xs text-muted-foreground">
-                      {career.totalRequests} / {career.totalSpots}
+                      {total} / {career.totalSpots}
                     </span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-muted">

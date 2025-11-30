@@ -107,27 +107,81 @@ export function getTopStudents(phaseId?: number) {
 // CARRERAS MÁS SOLICITADAS
 // =========================
 export function getTopCareers(phaseId?: number) {
+  // 🟦 Caso especial: fase 3 (manual)
+  if (phaseId === 3) {
+    return db
+      .prepare(
+        `
+      SELECT
+        c.full_name AS career,
+        COUNT(a.id) AS totalAssignments,
+        IFNULL((
+          SELECT SUM(s.available_quantity)
+          FROM spot s
+          WHERE s.career_id = c.id AND s.phase_id = 3
+        ), 0) AS totalSpots
+      FROM assignment a
+      JOIN spot sp ON sp.id = a.spot_id
+      JOIN career c ON c.id = sp.career_id
+      WHERE sp.phase_id = 3
+      GROUP BY c.id
+      ORDER BY totalAssignments DESC
+      LIMIT 10
+    `
+      )
+      .all()
+  }
+
+  // 🟢 Fases 1 y 2 → modo normal
   const phaseCondition = phaseId ? `AND st.phase_id = ${phaseId}` : ""
 
   return db
     .prepare(
       `
-      SELECT
-        c.full_name AS career,
-        IFNULL(COUNT(r.id), 0) AS totalRequests,
-        IFNULL((
-          SELECT SUM(s2.available_quantity)
-          FROM spot s2
-          WHERE s2.career_id = c.id
-          ${phaseId ? `AND s2.phase_id = ${phaseId}` : ""}
-        ), 0) AS totalSpots
-      FROM career c
-      LEFT JOIN spot st ON st.career_id = c.id ${phaseCondition}
-      LEFT JOIN request r ON r.spot_id = st.id
-      GROUP BY c.id
-      ORDER BY totalRequests DESC
-      LIMIT 10
-      `
+    SELECT
+      c.full_name AS career,
+      IFNULL(COUNT(r.id), 0) AS totalRequests,
+      IFNULL((
+        SELECT SUM(s2.available_quantity)
+        FROM spot s2
+        WHERE s2.career_id = c.id
+        ${phaseId ? `AND s2.phase_id = ${phaseId}` : ""}
+      ), 0) AS totalSpots
+    FROM career c
+    LEFT JOIN spot st ON st.career_id = c.id ${phaseCondition}
+    LEFT JOIN request r ON r.spot_id = st.id
+    GROUP BY c.id
+    ORDER BY totalRequests DESC
+    LIMIT 10
+  `
     )
     .all()
+}
+
+/**
+ * Limpia todas las tablas excepto 'user'.
+ * Elimina datos y reinicia los autoincrementos.
+ */
+export function clearAllTables() {
+  const tablesToClear = [
+    "student",
+    "student_phase",
+    "career",
+    "location",
+    "spot",
+    "request",
+    "assignment"
+  ]
+
+  const transaction = db.transaction(() => {
+    tablesToClear.forEach((table) => {
+      // Borra todos los registros
+      db.prepare(`DELETE FROM ${table}`).run()
+
+      // Reinicia autoincremento
+      db.prepare(`DELETE FROM sqlite_sequence WHERE name = '${table}'`).run()
+    })
+  })
+
+  transaction()
 }

@@ -15,13 +15,16 @@ const StatisticsView = () => {
     topStudents,
     loadingTopStudents,
     selectedPhase,
-    handlePhaseSelector
+    handlePhaseSelector,
+    clearAllTablesMutation
   } = useStatisticsVew()
+
+  const { mutate: clearAllTablesMutate } = clearAllTablesMutation
 
   return (
     <PageContainer>
       <div className="space-y-6">
-        <PhaseIndicator />
+        <PhaseIndicator clearAllTablesMutation={() => clearAllTablesMutate()} />
         <div className="space-y-3">
           <PhaseSelector selectedPhase={selectedPhase} handlePhaseSelector={handlePhaseSelector} />
           <KPICards stats={stats} loadingStats={loadingStats} />

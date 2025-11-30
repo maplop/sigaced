@@ -17,7 +17,6 @@ export const AssignmentPhaseProvider = ({ children }: { children: React.ReactNod
 
   useEffect(() => {
     localStorage.setItem("currentPhase", currentPhase.toString())
-    console.log("Voy actualizar el local storage a ", currentPhase)
   }, [currentPhase])
 
   return (

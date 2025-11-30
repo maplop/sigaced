@@ -39,7 +39,7 @@ const ConfirmDeleteDialog = ({
             <TriangleAlert className="h-12 w-12 text-red-500" />
           </div>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{children}</AlertDialogDescription>
+          <AlertDialogDescription asChild><div>{children}</div></AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>

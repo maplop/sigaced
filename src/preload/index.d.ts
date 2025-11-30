@@ -21,6 +21,7 @@ declare global {
       getDashboardStats: (phaseId?: number) => Promise<DashboardStats>
       getTopStudents: (phaseId?: number) => Promise<TopStudent[]>
       getTopCareers: (phaseId?: number) => Promise<TopCareer[]>
+      clearAllTables: () => Promise<OperationResult>
 
       // Students
       addStudent: (

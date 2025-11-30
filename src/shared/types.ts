@@ -114,5 +114,6 @@ export interface TopStudent {
 export interface TopCareer {
   career: string
   totalSpots: number
-  totalRequests: number
+  totalRequests?: number
+  totalAssignments?: number
 }

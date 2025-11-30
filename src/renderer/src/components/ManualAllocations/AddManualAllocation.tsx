@@ -74,7 +74,7 @@ const AddManualAllocation = ({
                   variant="outline"
                   role="combobox"
                   aria-expanded={open.applicant}
-                  className="w-full justify-between"
+                  className="w-full justify-between font-normal"
                 >
                   {formData.studentId
                     ? (() => {
@@ -138,14 +138,14 @@ const AddManualAllocation = ({
                   variant="outline"
                   role="combobox"
                   aria-expanded={open.spot}
-                  className="w-full justify-between"
+                  className="w-full justify-between font-normal"
                 >
                   {formData.spotId
                     ? (() => {
                       const spot = spots?.find(s => s.spotId === formData.spotId)
                       return spot ? (
                         <div className="flex justify-between items-center w-full">
-                          <div>{spot.careerName} {spot.locationName}</div>
+                          <div>{spot.careerName} en {spot.locationName}</div>
                           <Badge>{spot.availableQuantityReal}</Badge>
                         </div>
                       ) : "Seleccione una plaza..."
@@ -175,7 +175,7 @@ const AddManualAllocation = ({
                             }}
                           >
                             <div className="flex justify-between items-center w-full">
-                              <div>{spot.careerName} {spot.locationName}</div>
+                              <div>{spot.careerName} en {spot.locationName}</div>
                               <Badge>{spot.availableQuantityReal}</Badge>
                             </div>
                             <Check

@@ -51,7 +51,12 @@ import {
   deleteSpot,
   deleteAllSpotsFromPhase
 } from "./queries/spot"
-import { getDashboardStats, getTopCareers, getTopStudents } from "./queries/statistics"
+import {
+  clearAllTables,
+  getDashboardStats,
+  getTopCareers,
+  getTopStudents
+} from "./queries/statistics"
 import { OperationResult } from "src/shared/types"
 
 function createWindow(): void {
@@ -136,6 +141,15 @@ ipcMain.handle("stats:getTopCareers", async (_event, phaseId?: number) => {
     return getTopCareers(phaseId)
   } catch (error: any) {
     return { success: false, error: error?.message ?? "Error desconocido" } as OperationResult
+  }
+})
+
+ipcMain.handle("stats:clearAllTables", async (_event) => {
+  try {
+    clearAllTables()
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
   }
 })
 

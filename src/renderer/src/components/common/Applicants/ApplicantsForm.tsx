@@ -49,6 +49,25 @@ const ApplicantsForm = ({
     setOpenRequests(prev => ({ ...prev, [index]: isOpen }))
   }
 
+  const [openMunicipality, setOpenMunicipality] = useState(false)
+
+
+  const municipalitiesList = [
+    "Caibarién",
+    "Camajuaní",
+    "Cifuentes",
+    "Corralillo",
+    "Encrucijada",
+    "Manicaragua",
+    "Placetas",
+    "Quemado de Güines",
+    "Ranchuelo",
+    "Remedios",
+    "Sagua la Grande",
+    "Santa Clara",
+    "Santo Domingo"
+  ];
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
@@ -113,14 +132,49 @@ const ApplicantsForm = ({
                     required
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 col-span-2">
                   <Label htmlFor="municipality">Municipio</Label>
-                  <Input
-                    id="municipality"
-                    value={formData.municipality}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, municipality: e.target.value }))}
-                    required
-                  />
+                  <Popover open={openMunicipality} onOpenChange={setOpenMunicipality}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={openMunicipality}
+                        className="w-full justify-between font-normal"
+                      >
+                        {formData.municipality || "Seleccione un municipio"}
+                        <ChevronsUpDown className="opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="min-w-[375px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Buscar municipio..." className="h-9" />
+                        <CommandList>
+                          <CommandEmpty>No se encontró ningún municipio.</CommandEmpty>
+                          <CommandGroup>
+                            {municipalitiesList.map((municipality) => (
+                              <CommandItem
+                                key={municipality}
+                                value={municipality}
+                                onSelect={() => {
+                                  setFormData((prev) => ({ ...prev, municipality }));
+                                  setOpenMunicipality(false);
+                                }}
+                              >
+                                {municipality}
+                                <Check
+                                  className={cn(
+                                    "ml-auto",
+                                    formData.municipality === municipality ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <div className="col-span-2 border rounded-lg p-2">
@@ -192,7 +246,7 @@ const ApplicantsForm = ({
                               variant="outline"
                               role="combobox"
                               aria-expanded={!!openRequests[index]}
-                              className="w-full justify-between"
+                              className="w-full justify-between font-normal"
                             >
                               {request.spotId
                                 ? (() => {

@@ -9,6 +9,7 @@ const api = {
   getDashboardStats: (phaseId?: number) => ipcRenderer.invoke("stats:getDashboardStats", phaseId),
   getTopStudents: (phaseId?: number) => ipcRenderer.invoke("stats:getTopStudents", phaseId),
   getTopCareers: (phaseId?: number) => ipcRenderer.invoke("stats:getTopCareers", phaseId),
+  clearAllTables: () => ipcRenderer.invoke("stats:clearAllTables"),
 
   // Student
   addStudent: (student: Student) => ipcRenderer.invoke("student:add", student),

@@ -6,7 +6,11 @@ import { formatDate } from "@renderer/utils/formatDate"
 import { Button } from "../ui/button"
 import ConfirmDeleteDialog from "../common/ConfirmDeleteDialog"
 
-export function PhaseIndicator() {
+interface PhaseIndicatorProps {
+  clearAllTablesMutation: () => void
+}
+
+export function PhaseIndicator({ clearAllTablesMutation }: PhaseIndicatorProps) {
   const { currentPhase } = useAssignmentPhase()
   const today = new Date()
 
@@ -35,13 +39,12 @@ export function PhaseIndicator() {
             </div>
           </div>
           <ConfirmDeleteDialog
-            onConfirm={() => null}
+            onConfirm={clearAllTablesMutation}
             title="Reiniciar Proceso"
             trigger={
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => null}
                 className="text-red-500 border-red-500  hover:text-white hover:bg-red-500"
               >
                 <RefreshCcw className="h-4 w-4" />

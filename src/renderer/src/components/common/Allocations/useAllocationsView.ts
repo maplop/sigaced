@@ -157,8 +157,6 @@ export const useAllocations = (phaseId: number) => {
     deleteAllMutation.mutate(phaseId)
   }
 
-  console.log("---- ", showAlert)
-
   return {
     loadingAssignments,
     allocate,

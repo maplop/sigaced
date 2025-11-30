@@ -64,7 +64,7 @@ const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, isDial
                   variant="outline"
                   role="combobox"
                   aria-expanded={open.career}
-                  className="w-full justify-between"
+                  className="w-full justify-between font-normal"
                 >
                   {formData.careerId
                     ? careers?.find((career) => career.id === formData.careerId)?.fullName
@@ -117,7 +117,7 @@ const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, isDial
                   variant="outline"
                   role="combobox"
                   aria-expanded={open.location}
-                  className="w-full justify-between"
+                  className="w-full justify-between font-normal"
                 >
                   {formData.locationId
                     ? locations?.find((location) => location.id === formData.locationId)?.name
