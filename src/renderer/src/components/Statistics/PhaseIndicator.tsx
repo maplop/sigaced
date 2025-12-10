@@ -45,7 +45,7 @@ export function PhaseIndicator({ clearAllTablesMutation }: PhaseIndicatorProps) 
             <ConfirmDeleteDialog
               onConfirm={() => {
                 if (user?.role === "admin") {
-                  clearAllTablesMutation
+                  clearAllTablesMutation()
                 }
               }}
               title="Reiniciar Proceso"

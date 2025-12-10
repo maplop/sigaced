@@ -50,7 +50,7 @@ const Details = () => {
         <Label className="text-[18px] my-2">{user?.name} {user?.lastName}</Label>
         <Badge variant={user?.role === 'admin' ? 'default' : 'secondary'}>{user?.role === 'admin' ? 'Administrador' : 'Supervisor'}</Badge>
         <div className="flex justify-between w-full mt-3">
-          <div className="flex-grow">
+          <div className="grow">
             <Label className="text-sm text-gray-500">Usuario</Label>
             <Label className="text-sm block">{user?.username}</Label>
           </div>

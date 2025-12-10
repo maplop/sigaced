@@ -11,12 +11,14 @@ import {
 } from "@renderer/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@renderer/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@renderer/components/ui/avatar"
-import { ChartNoAxesCombinedIcon, ChevronDown, FileCheck, FileCheck2, GraduationCap, ListCheck, LogOut, MapPin, User, Users } from "lucide-react"
+import { ChartNoAxesCombinedIcon, ChevronDown, FileCheck, FileCheck2, GraduationCap, Info, ListCheck, LogOut, MapPin, User, Users } from "lucide-react"
 import { useLocation } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
 import { useAuthContext } from "@renderer/context/AuthContext"
 import { Separator } from "@renderer/components/ui/separator"
 import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
+import { useState } from "react"
+import GAPCEDInfoDialog from "./GapcedInfoDialog"
 
 const menuItems = [
   {
@@ -58,22 +60,24 @@ export function AppSidebar() {
   const location = useLocation()
   const { logout, user } = useAuthContext()
   const { currentPhase } = useAssignmentPhase()
+
+  const [openInfo, setOpenInfo] = useState<boolean>(false);
   return (
     <Sidebar className="border-none">
       <SidebarHeader className="bg-white dark:bg-gray-950 border-none">
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href={ROUTES.STATISTICS} className="flex items-center gap-3">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900">
-                  <GraduationCap className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="text-lg truncate font-bold">GAPCED</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <div className="flex justify-between items-center p-2">
+            <div className="flex items-center gap-3">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900">
+                <GraduationCap className="size-4" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="text-lg truncate font-bold">GAPCED</span>
+              </div>
+            </div>
+
+            <GAPCEDInfoDialog open={openInfo} onOpenChange={setOpenInfo} />
+          </div>
         </SidebarMenu>
       </SidebarHeader>
 
