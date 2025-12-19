@@ -11,7 +11,7 @@ import {
 } from "@renderer/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@renderer/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@renderer/components/ui/avatar"
-import { ChartNoAxesCombinedIcon, ChevronDown, FileCheck, FileCheck2, GraduationCap, Info, ListCheck, LogOut, MapPin, User, Users } from "lucide-react"
+import { ChartNoAxesCombinedIcon, ChevronDown, FileCheck, FileCheck2, GraduationCap, ListCheck, LogOut, MapPin, User, Users } from "lucide-react"
 import { useLocation } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
 import { useAuthContext } from "@renderer/context/AuthContext"
