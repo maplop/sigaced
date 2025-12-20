@@ -21,7 +21,7 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
 
       <DialogContent className="sm:max-w-3xl w-[95%] max-h-[90vh] p-4">
         <DialogHeader>
-          <DialogTitle>GAPCED — Gestión de Otorgamiento de Plazas</DialogTitle>
+          <DialogTitle>Infomación de la aplicación — GAPCED</DialogTitle>
           <DialogDescription>
             Información general del sistema, fases de otorgamiento, datos gestionados y roles.
           </DialogDescription>

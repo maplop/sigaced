@@ -58,6 +58,7 @@ import {
   getTopStudents
 } from "./queries/statistics"
 import { OperationResult } from "src/shared/types"
+import { generatePDF } from "./pdf/generatePDF"
 
 function createWindow(): void {
   // Create the browser window.
@@ -118,8 +119,17 @@ app.whenReady().then(() => {
   })
 })
 
-// IPC handlers for statistics
+// IPC handlers for PDf
+ipcMain.handle("pdf:generate", async (_event, payload) => {
+  try {
+    const filePath = await generatePDF(payload)
+    return { success: true, path: filePath }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
 
+// IPC handlers for statistics
 ipcMain.handle("stats:getDashboardStats", async (_event, phaseId?: number) => {
   try {
     return getDashboardStats(phaseId)

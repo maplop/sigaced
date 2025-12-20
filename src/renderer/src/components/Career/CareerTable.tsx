@@ -84,7 +84,7 @@ const CareerTable = ({
                               <Edit className="h-4 w-4" />
                             </Button>
                             <ConfirmDeleteDialog
-                              onConfirm={() => handleDelete(career.id)}
+                              onConfirm={() => handleDelete(career.id.toString())}
                               title="Eliminar carrera"
                               trigger={
                                 <Button variant="outline" size="sm">

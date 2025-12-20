@@ -5,6 +5,9 @@ import { Student } from "src/shared/types"
 
 // Custom APIs for renderer
 const api = {
+  //PDF
+  generatePDF: (payload) => ipcRenderer.invoke("pdf:generate", payload),
+
   //Statistics
   getDashboardStats: (phaseId?: number) => ipcRenderer.invoke("stats:getDashboardStats", phaseId),
   getTopStudents: (phaseId?: number) => ipcRenderer.invoke("stats:getTopStudents", phaseId),

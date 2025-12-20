@@ -17,6 +17,15 @@ declare global {
   interface Window {
     electron: ElectronAPI
     api: {
+      //PDF
+      generatePDF: (payload: {
+        subtitle?: string
+        table: (string | number)[][]
+        columnWidths?: (number | string)[]
+        columnAlignments?: ("left" | "center" | "right")[]
+        saveName?: string
+      }) => Promise<{ success: boolean; path?: string; error?: string }>
+
       // Statistics
       getDashboardStats: (phaseId?: number) => Promise<DashboardStats>
       getTopStudents: (phaseId?: number) => Promise<TopStudent[]>
