@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@renderer/components/ui/card";
 import { Input } from "@renderer/components/ui/input";
-import { Search, UsersIcon, Trash2 } from "lucide-react";
+import { Search, UsersIcon, Trash2, FileText } from "lucide-react";
 import { useManualAllocationView } from "./useManualAllocationView";
 import { PhaseType } from "@renderer/utils/types";
 import { Button } from "@renderer/components/ui/button";
@@ -8,6 +8,8 @@ import AllocationsTable from "../common/Allocations/AllocationsTable";
 import ConfirmDeleteDialog from "../common/ConfirmDeleteDialog";
 import AddManualAllocation from "./AddManualAllocation";
 import { useAuthContext } from "@renderer/context/AuthContext";
+import { Tooltip, TooltipContent } from "../ui/tooltip";
+import { TooltipTrigger } from "@radix-ui/react-tooltip";
 
 interface AllocationsViewProps {
   phase: PhaseType
@@ -38,7 +40,8 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
     formData,
     setFormData,
     handleSubmit,
-    resetForm
+    resetForm,
+    handleExportPDF
   } = useManualAllocationView(phase)
 
   const { user } = useAuthContext()
@@ -53,21 +56,35 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
               <span className="text-sm font-medium text-foreground">Total de asignaciones: {paginatedAssignments.length}  </span>
             </div>
           </div>
-          {user?.role === 'admin' && (
-            <AddManualAllocation
-              isDialogOpen={isDialogOpen}
-              setIsDialogOpen={setIsDialogOpen}
-              students={unassignedStudents ?? []}
-              loadingStudents={loadingStudents}
-              spots={availableSpots ?? []}
-              loadingSpots={loadingSpots}
-              formData={formData}
-              setFormData={setFormData}
-              handleSubmit={handleSubmit}
-              resetForm={resetForm}
-            />
-          )}
-
+          <div className="flex items-center gap-3">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  className="w-8 h-8 flex justify-center items-center bg-[#F1F5F9] rounded-sm cursor-pointer"
+                  onClick={() => handleExportPDF()}
+                >
+                  <FileText size={16} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Exportar listado a PDF</p>
+              </TooltipContent>
+            </Tooltip>
+            {user?.role === 'admin' && (
+              <AddManualAllocation
+                isDialogOpen={isDialogOpen}
+                setIsDialogOpen={setIsDialogOpen}
+                students={unassignedStudents ?? []}
+                loadingStudents={loadingStudents}
+                spots={availableSpots ?? []}
+                loadingSpots={loadingSpots}
+                formData={formData}
+                setFormData={setFormData}
+                handleSubmit={handleSubmit}
+                resetForm={resetForm}
+              />
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex justify-between items-center mb-4">
@@ -128,6 +145,6 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
           />
         </CardContent>
       </Card>
-    </div>
+    </div >
   )
 }

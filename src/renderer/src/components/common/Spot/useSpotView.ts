@@ -13,6 +13,8 @@ import {
 import { getAllCareers } from "@renderer/api/career"
 import { getAllLocations } from "@renderer/api/location"
 import { PhaseType } from "@renderer/utils/types"
+import { exportPDF } from "@renderer/api/pdf"
+import { getPhaseName } from "@renderer/utils/getPhaseName"
 
 export const useSpotView = (phaseId: PhaseType) => {
   const queryClient = useQueryClient()
@@ -216,6 +218,34 @@ export const useSpotView = (phaseId: PhaseType) => {
     setEditingSpot(null)
   }
 
+  const spotsTable = [
+    ["#", "Carrera", "Localización", "Cantidad"],
+    ...filteredAndSortedSpots.map((spot, index) => [
+      index + 1,
+      spot.careerName,
+      spot.locationName,
+      spot.availableQuantity
+    ])
+  ]
+
+  const handleExportPDF = async () => {
+    try {
+      const path = await exportPDF({
+        subtitle: `Listado de Plazas (${getPhaseName(phaseId)})`,
+        table: spotsTable,
+        columnWidths: [20, "auto", "auto", 100],
+        columnAlignments: ["center", "left", "left", "center"],
+        saveName: `Listado de Plazas ${getPhaseName(phaseId)}.pdf`
+      })
+      toast.success("Reporte descargado en: " + path)
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  }
+
   return {
     paginatedSpots,
     loadingSpots,
@@ -243,6 +273,7 @@ export const useSpotView = (phaseId: PhaseType) => {
     handleSubmit,
     handleEdit,
     handleDelete,
-    handleDeleteAllFromPhase
+    handleDeleteAllFromPhase,
+    handleExportPDF
   }
 }

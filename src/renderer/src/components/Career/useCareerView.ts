@@ -5,6 +5,7 @@ import {
   editCareer,
   getAllCareers
 } from "@renderer/api/career"
+import { exportPDF } from "@renderer/api/pdf"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
@@ -180,6 +181,34 @@ export const useCareerView = () => {
     setEditingCareer(null)
   }
 
+  const careersTable = [
+    ["#", "Carrera", "Abreviatura ", "Facultad"],
+    ...filteredAndSortedCareers.map((career, index) => [
+      index + 1,
+      career.fullName,
+      career.abbreviation,
+      career.faculty
+    ])
+  ]
+
+  const handleExportPDF = async () => {
+    try {
+      const path = await exportPDF({
+        subtitle: "Listado de Carreras",
+        table: careersTable,
+        columnWidths: [20, "auto", 200, 120],
+        columnAlignments: ["center", "left", "center", "center"],
+        saveName: "Listado de Carreras.pdf"
+      })
+      toast.success("Reporte descargado en: " + path)
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  }
+
   return {
     paginatedCareers,
     loadingCareers,
@@ -203,6 +232,7 @@ export const useCareerView = () => {
     handleSubmit,
     handleEdit,
     handleDelete,
-    handleDeleteAll
+    handleDeleteAll,
+    handleExportPDF
   }
 }

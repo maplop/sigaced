@@ -11,6 +11,8 @@ import {
 } from "@renderer/api/student"
 import { Student } from "src/shared/types"
 import { toast } from "sonner"
+import { getPhaseName } from "@renderer/utils/getPhaseName"
+import { exportPDF } from "@renderer/api/pdf"
 
 type SortableField = keyof Student | "requestsCount"
 
@@ -290,6 +292,37 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     setEditingStudent(null)
   }
 
+  const applicantsTable = [
+    ["#", "CI", "Apellidos", "Nombre", "Nota", "Género", "Municipio"],
+    ...filteredAndSortedStudents.map((applicant, index) => [
+      index + 1,
+      applicant.ci,
+      applicant.lastName,
+      applicant.name,
+      applicant.grade.toFixed(2),
+      applicant.gender,
+      applicant.municipality
+    ])
+  ]
+
+  const handleExportPDF = async () => {
+    try {
+      const path = await exportPDF({
+        subtitle: `Listado de Aspirantes (${getPhaseName(phaseId)})`,
+        table: applicantsTable,
+        columnWidths: [20, 60, "auto", "auto", 50, 50, 100],
+        columnAlignments: ["center", "center", "left", "left", "center", "center", "left"],
+        saveName: `Listado de Aspirantes ${getPhaseName(phaseId)}.pdf`
+      })
+      toast.success("Reporte descargado en: " + path)
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  }
+
   return {
     paginatedStudents,
     loadingStudents,
@@ -316,6 +349,7 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     updateRequest,
     removeRequest,
     handleDeleteAllFromPhase,
-    resetForm
+    resetForm,
+    handleExportPDF
   }
 }

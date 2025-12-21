@@ -64,7 +64,7 @@ const AllocationsTable = ({
                     Carrera {sortField === "career" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("location")}>
-                    Lugar {sortField === "location" && (sortDirection === "asc" ? "↑" : "↓")}
+                    Localización {sortField === "location" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("grade")}>
                     Nota {sortField === "grade" && (sortDirection === "asc" ? "↑" : "↓")}

@@ -1,6 +1,6 @@
 export interface PDFPayload {
   subtitle?: string
-  table: (string | number)[][]
+  table: (string | number | null)[][]
   columnWidths?: (number | string)[]
   columnAlignments?: ("left" | "center" | "right")[]
   saveName?: string

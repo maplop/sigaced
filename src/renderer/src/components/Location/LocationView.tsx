@@ -3,13 +3,14 @@ import PageTitle from "../common/PageTitle"
 import { useLocationView } from "./useLocationView"
 import LocationsTable from "./LocationTable"
 import { Card, CardContent, CardHeader, } from "../ui/card"
-import { MapPin, Search, Trash2 } from "lucide-react"
+import { FileText, MapPin, Search, Trash2 } from "lucide-react"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll-area"
 import LocationForm from "./LocationForm"
 import ConfirmDeleteDialog from "../common/ConfirmDeleteDialog"
 import { Button } from "../ui/button"
 import { useAuthContext } from "@renderer/context/AuthContext"
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 
 const LocationView = () => {
   const {
@@ -35,10 +36,13 @@ const LocationView = () => {
     handleEdit,
     handleDelete,
     handleDeleteAll,
-    handleSubmit
+    handleSubmit,
+    handleExportPDF
   } = useLocationView()
 
   const { user } = useAuthContext()
+
+
 
   return (
     <PageContainer>
@@ -77,37 +81,52 @@ const LocationView = () => {
                   className="pl-10 max-w-sm"
                 />
               </div>
-              {user?.role === 'admin' && (
-                <ConfirmDeleteDialog
-                  onConfirm={() => {
-                    if (user?.role === 'admin') {
-                      handleDeleteAll()
+              <div className="flex items-center gap-3">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className="w-8 h-8 flex justify-center items-center bg-[#F1F5F9] rounded-sm cursor-pointer"
+                      onClick={() => handleExportPDF()}
+                    >
+                      <FileText size={16} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Exportar listado a PDF</p>
+                  </TooltipContent>
+                </Tooltip>
+                {user?.role === 'admin' && (
+                  <ConfirmDeleteDialog
+                    onConfirm={() => {
+                      if (user?.role === 'admin') {
+                        handleDeleteAll()
+                      }
+                    }}
+                    title="Limpiar tabla"
+                    trigger={
+                      <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedLocations.length === 0}>
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                        Limpiar Tabla
+                      </Button>
                     }
-                  }}
-                  title="Limpiar tabla"
-                  trigger={
-                    <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedLocations.length === 0}>
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                      Limpiar Tabla
-                    </Button>
-                  }
-                >
-                  <div className="space-y-2 text-center">
+                  >
                     <div className="space-y-2 text-center">
-                      <p>
-                        ¿Seguro que deseas eliminar <strong>todas las localizaciones</strong> del sistema?
-                      </p>
-                      <p>
-                        Esta acción también eliminará las <strong>plazas asociadas a dichas localizaciones</strong>
-                        en todas las fases.
-                      </p>
-                      <p>
-                        Esta operación no se puede deshacer.
-                      </p>
+                      <div className="space-y-2 text-center">
+                        <p>
+                          ¿Seguro que deseas eliminar <strong>todas las localizaciones</strong> del sistema?
+                        </p>
+                        <p>
+                          Esta acción también eliminará las <strong>plazas asociadas a dichas localizaciones</strong>
+                          en todas las fases.
+                        </p>
+                        <p>
+                          Esta operación no se puede deshacer.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </ConfirmDeleteDialog>
-              )}
+                  </ConfirmDeleteDialog>
+                )}
+              </div>
             </div>
             <LocationsTable
               paginatedLocations={paginatedLocations}

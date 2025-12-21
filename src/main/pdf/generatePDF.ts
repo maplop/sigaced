@@ -8,7 +8,7 @@ import { resolveColumnWidths } from "./resolveColumnWidths"
 import { headerPDF } from "./headerPDF"
 import { getAlignedTextX } from "./getAlignedTextX"
 
-type PDFTable = (string | number)[][]
+type PDFTable = (string | number | null)[][]
 
 interface GeneratePDFPayload {
   subtitle?: string
@@ -76,7 +76,7 @@ export async function generatePDF({
         if (isHeader) {
           backgroundColor = rgb255(2, 6, 24)
         } else {
-          backgroundColor = rowIndex % 2 === 0 ? undefined : rgb255(240, 240, 240)
+          backgroundColor = rowIndex % 2 === 0 ? rgb255(240, 240, 240) : undefined
         }
 
         page.drawRectangle({
@@ -88,7 +88,7 @@ export async function generatePDF({
         })
 
         const text = String(cell)
-        const fontSize = isHeader ? 10 : 8
+        const fontSize = 7
         const textWidth = font.widthOfTextAtSize(text, fontSize)
 
         // 👇 toma la alineación de la columna, si no está definida usa "left"

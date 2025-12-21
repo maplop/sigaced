@@ -4,6 +4,8 @@ import { useMemo, useState } from "react"
 import { deleteAllAssignments, getAllAssignments } from "@renderer/api/assignment"
 import { AssignmentRow } from "src/shared/types"
 import { toast } from "sonner"
+import { exportPDF } from "@renderer/api/pdf"
+import { getPhaseName } from "@renderer/utils/getPhaseName"
 
 export const useFinalList = () => {
   const queryClient = useQueryClient()
@@ -89,6 +91,49 @@ export const useFinalList = () => {
     deleteAllMutation.mutate()
   }
 
+  const finalAllocationsTable = [
+    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Localización", "Nota", "Fase", "Preferencia"],
+    ...filteredAndSortedAssignments.map((allocation, index) => [
+      index + 1,
+      allocation.ci,
+      allocation.lastName,
+      allocation.name,
+      allocation.career,
+      allocation.location,
+      allocation.grade.toFixed(2),
+      allocation.phase,
+      allocation.preferenceOrder ?? "-"
+    ])
+  ]
+
+  const handleExportPDF = async () => {
+    try {
+      const path = await exportPDF({
+        subtitle: "Listado Final del Otorgamiento",
+        table: finalAllocationsTable,
+        columnWidths: [20, 50, "auto", "auto", 50, "auto", 40, 30, 60],
+        columnAlignments: [
+          "center",
+          "center",
+          "left",
+          "left",
+          "left",
+          "left",
+          "center",
+          "center",
+          "center"
+        ],
+        saveName: "Listado Final del Otorgamiento.pdf"
+      })
+      toast.success("Reporte descargado en: " + path)
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  }
+
   return {
     loadingAssignments,
     paginatedAssignments,
@@ -103,6 +148,7 @@ export const useFinalList = () => {
     sortDirection,
     filteredAndSortedAssignments,
     handleSort,
-    handleDeleteAllFromPhase
+    handleDeleteAllFromPhase,
+    handleExportPDF
   }
 }

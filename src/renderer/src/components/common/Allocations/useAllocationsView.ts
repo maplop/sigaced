@@ -9,6 +9,8 @@ import { handleAllocate } from "@renderer/utils/allocations"
 import { toast } from "sonner"
 import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
 import { PhaseType } from "@renderer/utils/types"
+import { exportPDF } from "@renderer/api/pdf"
+import { getPhaseName } from "@renderer/utils/getPhaseName"
 
 export const useAllocations = (phaseId: number) => {
   const { setCurrentPhase } = useAssignmentPhase()
@@ -157,6 +159,38 @@ export const useAllocations = (phaseId: number) => {
     deleteAllMutation.mutate(phaseId)
   }
 
+  const allocationsTable = [
+    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Localización", "Nota", "Preferencia"],
+    ...filteredAndSortedAssignments.map((allocation, index) => [
+      index + 1,
+      allocation.ci,
+      allocation.lastName,
+      allocation.name,
+      allocation.career,
+      allocation.location,
+      allocation.grade.toFixed(2),
+      allocation.preferenceOrder
+    ])
+  ]
+
+  const handleExportPDF = async () => {
+    try {
+      const path = await exportPDF({
+        subtitle: `Listado del ${getPhaseName(phaseId)}`,
+        table: allocationsTable,
+        columnWidths: [20, 60, "auto", "auto", "auto", "auto", 40, 70],
+        columnAlignments: ["center", "center", "left", "left", "left", "left", "center", "center"],
+        saveName: `Listado del ${getPhaseName(phaseId)}.pdf`
+      })
+      toast.success("Reporte descargado en: " + path)
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  }
+
   return {
     loadingAssignments,
     allocate,
@@ -177,6 +211,7 @@ export const useAllocations = (phaseId: number) => {
     isAssigned,
     showAlert,
     setShowAlert,
-    studentsWithoutRequests
+    studentsWithoutRequests,
+    handleExportPDF
   }
 }

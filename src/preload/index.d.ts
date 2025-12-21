@@ -20,7 +20,7 @@ declare global {
       //PDF
       generatePDF: (payload: {
         subtitle?: string
-        table: (string | number)[][]
+        table: (string | number | null)[][]
         columnWidths?: (number | string)[]
         columnAlignments?: ("left" | "center" | "right")[]
         saveName?: string

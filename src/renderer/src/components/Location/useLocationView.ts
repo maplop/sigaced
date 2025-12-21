@@ -5,6 +5,7 @@ import {
   editLocation,
   getAllLocations
 } from "@renderer/api/location"
+import { exportPDF } from "@renderer/api/pdf"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
@@ -182,6 +183,29 @@ export const useLocationView = () => {
     setIsDialogOpen(false)
   }
 
+  const loacationsTable = [
+    ["#", "Localización"],
+    ...filteredAndSortedLocations.map((location, index) => [index + 1, location.name])
+  ]
+
+  const handleExportPDF = async () => {
+    try {
+      const path = await exportPDF({
+        subtitle: "Listado de Localizaciones",
+        table: loacationsTable,
+        columnWidths: [20, "auto"],
+        columnAlignments: ["center", "left"],
+        saveName: "Listado de Localizaciones.pdf"
+      })
+      toast.success("Reporte descargado en: " + path)
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  }
+
   return {
     paginatedLocations,
     loadingLocations,
@@ -205,6 +229,7 @@ export const useLocationView = () => {
     handleSubmit,
     handleEdit,
     handleDelete,
-    handleDeleteAll
+    handleDeleteAll,
+    handleExportPDF
   }
 }

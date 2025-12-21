@@ -1,4 +1,4 @@
-import { Search, Trash2, UsersIcon } from "lucide-react"
+import { FileText, Search, Trash2, UsersIcon } from "lucide-react"
 import { Card, CardContent, CardHeader } from "../../ui/card"
 import { Input } from "../../ui/input"
 //import { ScrollArea } from "../../ui/scroll-area"
@@ -12,6 +12,7 @@ import { getAllSpots } from "@renderer/api/spot"
 import ConfirmDeleteDialog from "../ConfirmDeleteDialog"
 import { Button } from "@renderer/components/ui/button"
 import { useAuthContext } from "@renderer/context/AuthContext"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@renderer/components/ui/tooltip"
 
 
 interface ApplicantsViewProps {
@@ -47,7 +48,8 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
     addRequest,
     updateRequest,
     removeRequest,
-    resetForm
+    resetForm,
+    handleExportPDF
   } = useApplicantsView(phase)
 
   const { user } = useAuthContext()
@@ -98,35 +100,51 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
                 className="pl-10 max-w-sm"
               />
             </div>
-            {user?.role === 'admin' && (
-              <ConfirmDeleteDialog
-                onConfirm={() => {
-                  if (user?.role === 'admin') {
-                    handleDeleteAllFromPhase()
+
+            <div className="flex items-center gap-3">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    className="w-8 h-8 flex justify-center items-center bg-[#F1F5F9] rounded-sm cursor-pointer"
+                    onClick={() => handleExportPDF()}
+                  >
+                    <FileText size={16} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Exportar listado a PDF</p>
+                </TooltipContent>
+              </Tooltip>
+              {user?.role === 'admin' && (
+                <ConfirmDeleteDialog
+                  onConfirm={() => {
+                    if (user?.role === 'admin') {
+                      handleDeleteAllFromPhase()
+                    }
+                  }}
+                  title="Limpiar tabla"
+                  trigger={
+                    <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedStudents.length === 0}>
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                      Limpiar Tabla
+                    </Button>
                   }
-                }}
-                title="Limpiar tabla"
-                trigger={
-                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedStudents.length === 0}>
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                    Limpiar Tabla
-                  </Button>
-                }
-              >
-                <div className="space-y-2 text-center">
+                >
                   <div className="space-y-2 text-center">
-                    <p>
-                      ¿Seguro que deseas eliminar <strong>todos los aspirantes</strong> de esta fase?
-                    </p>
-                    <p>
-                      Esta acción también eliminará los <strong>registros asociados en fases posteriores</strong>
-                      de los mismos aspirantes.
-                    </p>
-                    <p>Esta operación no se puede deshacer.</p>
+                    <div className="space-y-2 text-center">
+                      <p>
+                        ¿Seguro que deseas eliminar <strong>todos los aspirantes</strong> de esta fase?
+                      </p>
+                      <p>
+                        Esta acción también eliminará los <strong>registros asociados en fases posteriores</strong>
+                        de los mismos aspirantes.
+                      </p>
+                      <p>Esta operación no se puede deshacer.</p>
+                    </div>
                   </div>
-                </div>
-              </ConfirmDeleteDialog>
-            )}
+                </ConfirmDeleteDialog>
+              )}
+            </div>
           </div>
 
           {/* Tabla */}

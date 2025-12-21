@@ -10,8 +10,6 @@ import CareerForm from "./CareerForm"
 import ConfirmDeleteDialog from "../common/ConfirmDeleteDialog"
 import { Button } from "../ui/button"
 import { useAuthContext } from "@renderer/context/AuthContext"
-import { exportPDF } from "@renderer/api/pdf"
-import { toast } from "sonner"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 
 const CareerView = () => {
@@ -38,42 +36,13 @@ const CareerView = () => {
     handleSubmit,
     handleEdit,
     handleDelete,
-    handleDeleteAll
+    handleDeleteAll,
+    handleExportPDF
   } = useCareerView()
 
   const { user } = useAuthContext()
 
-  const careersTable = [
-    ["#", "Carrera", "Abreviatura ", "Facultad"],
-    ...filteredAndSortedCareers.map((c, index) => [
-      index + 1,
-      c.fullName,
-      c.abbreviation,
-      c.faculty
-    ])
-  ]
 
-
-  const handleExportPDF = async () => {
-    try {
-      const path = await exportPDF({
-        subtitle: "Listado de Carreras",
-        table: careersTable,
-        columnWidths: [50, "auto", 200, 120],
-        columnAlignments: ["center", "left", "center", "center"],
-        saveName: "Listado de Carreras.pdf"
-      })
-      toast.success(
-        "Reporte descargado en: " + path
-      )
-    }
-    catch (error: any) {
-      console.log(error.message)
-      toast.error(error.message, {
-        style: { color: "var(--errorMessage)" }
-      })
-    }
-  }
 
 
   return (

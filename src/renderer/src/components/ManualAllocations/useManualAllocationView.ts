@@ -3,13 +3,15 @@ import {
   deleteAllAssignmentsFromPhase,
   getAssignmentsByPhase
 } from "@renderer/api/assignment"
+import { exportPDF } from "@renderer/api/pdf"
 import { getAllSpots } from "@renderer/api/spot"
 import { getAllStudents } from "@renderer/api/student"
+import { getPhaseName } from "@renderer/utils/getPhaseName"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
-import { AssignmentRow, SpotFull, Student } from "src/shared/types"
+import { AssignmentRow } from "src/shared/types"
 
 export const useManualAllocationView = (phaseId: number) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -184,6 +186,38 @@ export const useManualAllocationView = (phaseId: number) => {
     setIsDialogOpen(false)
   }
 
+  const manualAllocationsTable = [
+    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Localización", "Nota", "Preferencia"],
+    ...filteredAndSortedAssignments.map((allocation, index) => [
+      index + 1,
+      allocation.ci,
+      allocation.lastName,
+      allocation.name,
+      allocation.career,
+      allocation.location,
+      allocation.grade.toFixed(2),
+      allocation.preferenceOrder ?? "-"
+    ])
+  ]
+
+  const handleExportPDF = async () => {
+    try {
+      const path = await exportPDF({
+        subtitle: `Listado del ${getPhaseName(phaseId)}`,
+        table: manualAllocationsTable,
+        columnWidths: [20, 60, "auto", "auto", "auto", "auto", 40, 70],
+        columnAlignments: ["center", "center", "left", "left", "left", "left", "center", "center"],
+        saveName: `Listado del ${getPhaseName(phaseId)}.pdf`
+      })
+      toast.success("Reporte descargado en: " + path)
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  }
+
   return {
     isDialogOpen,
     setIsDialogOpen,
@@ -208,6 +242,7 @@ export const useManualAllocationView = (phaseId: number) => {
     formData,
     setFormData,
     handleSubmit,
-    resetForm
+    resetForm,
+    handleExportPDF
   }
 }
