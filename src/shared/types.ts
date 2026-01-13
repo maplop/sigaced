@@ -117,3 +117,20 @@ export interface TopCareer {
   totalRequests?: number
   totalAssignments?: number
 }
+
+export interface StudentRequestRow {
+  ci: string
+  last_name: string
+  name: string
+  grade: number | null
+  career: string
+  location: string
+  option_number: 1 | 2 | 3
+}
+
+export interface CareerClosingRow {
+  name: string
+  abbreviation: string
+  faculty: string
+  closing_grade: number | null
+}

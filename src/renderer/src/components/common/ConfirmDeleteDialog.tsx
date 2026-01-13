@@ -33,7 +33,7 @@ const ConfirmDeleteDialog = ({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       {trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
-      <AlertDialogContent className="sm:max-w-[425px]">
+      <AlertDialogContent className="sm:max-w-106.25">
         <AlertDialogHeader className="flex flex-col items-center text-center">
           <div className="flex justify-center items-center w-20 h-20 rounded-full bg-red-100 mb-2">
             <TriangleAlert className="h-12 w-12 text-red-500" />

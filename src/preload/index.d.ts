@@ -10,13 +10,23 @@ import {
   User,
   OperationResult,
   SpotFull,
-  AssignmentRow
+  AssignmentRow,
+  CareerClosingRow,
+  StudentRequestRow
 } from "src/shared/types"
 
 declare global {
   interface Window {
     electron: ElectronAPI
     api: {
+      //Reports
+      getStudentsAndRequest: () => Promise<StudentRequestRow[]>
+      getAssignedStudentsBySpot: () => Promise<StudentRequestRow[]>
+      getAssignedStudentsByLocation: () => Promise<Student[]>
+      getAssignedStudentsByCareer: () => Promise<Student[]>
+      getStudentsByMunicipality: () => Promise<Student[]>
+      getCareerClosing: () => Promise<CareerClosingRow[]>
+
       //PDF
       generatePDF: (payload: {
         subtitle?: string

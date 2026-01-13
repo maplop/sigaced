@@ -11,7 +11,7 @@ import {
 } from "@renderer/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@renderer/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@renderer/components/ui/avatar"
-import { ChartNoAxesCombinedIcon, ChevronDown, FileCheck, FileCheck2, GraduationCap, ListCheck, LogOut, MapPin, User, Users } from "lucide-react"
+import { ChartNoAxesCombinedIcon, ChevronDown, FileCheck, FileCheck2, FileText, GraduationCap, ListCheck, LogOut, MapPin, User, Users } from "lucide-react"
 import { useLocation } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
 import { useAuthContext } from "@renderer/context/AuthContext"
@@ -135,6 +135,19 @@ export function AppSidebar() {
                   <a href={ROUTES.FINAL_LIST}>
                     <ListCheck />
                     <span>Listado Final</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <Separator />
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={location.pathname === ROUTES.REPORTS}
+                  className="hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-900 dark:hover:text-gray-100 data-[active=true]:bg-gray-900 data-[active=true]:text-white dark:data-[active=true]:bg-gray-100 dark:data-[active=true]:text-gray-900"
+                >
+                  <a href={ROUTES.REPORTS}>
+                    <FileText />
+                    <span>Reportes PDF</span>
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>

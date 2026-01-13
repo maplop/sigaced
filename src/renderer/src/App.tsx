@@ -15,6 +15,7 @@ import { ROUTES } from './routes/routes'
 import { Toaster } from './components/ui/sonner'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import FinalList from './pages/FinalList'
+import Reports from './pages/Reports'
 
 const queryClient = new QueryClient()
 
@@ -22,7 +23,7 @@ function App(): React.JSX.Element {
 
   return (
     <QueryClientProvider client={queryClient} >
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <Routes>
           <Route path="/" element={<Navigate to={ROUTES.LOGIN} replace />} />
           <Route path={ROUTES.LOGIN} element={<Auth />} />
@@ -46,6 +47,8 @@ function App(): React.JSX.Element {
             </Route>
 
             <Route path={ROUTES.FINAL_LIST} element={<FinalList />} />
+
+            <Route path={ROUTES.REPORTS} element={<Reports />} />
 
             <Route path={ROUTES.MANAGE_USERS} element={<ManageUsersPage />} />
             <Route path={ROUTES.PROFILE} element={<ProfilePage />} />

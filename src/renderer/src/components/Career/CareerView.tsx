@@ -42,14 +42,10 @@ const CareerView = () => {
 
   const { user } = useAuthContext()
 
-
-
-
   return (
     <PageContainer>
       <div className="flex justify-between items-center">
         <PageTitle title="Gestionar carreras" subtitle="Agrega, edita y organiza tus carreras  de forma rápida." />
-
       </div>
       <ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">
         <Card>

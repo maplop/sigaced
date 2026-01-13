@@ -59,6 +59,14 @@ import {
 } from "./queries/statistics"
 import { OperationResult } from "src/shared/types"
 import { generatePDF } from "./pdf/generatePDF"
+import {
+  getCareerClosing,
+  getStudentsAndRequest,
+  getAssignedStudentsBySpot,
+  getAssignedStudentsByCareer,
+  getAssignedStudentsByLocation,
+  getStudentsByMunicipality
+} from "./queries/reports"
 
 function createWindow(): void {
   // Create the browser window.
@@ -117,6 +125,60 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+})
+
+// Estudiantes y solicitudes por ci
+ipcMain.handle("reports:getByRequestSpot", async (_event) => {
+  try {
+    return getStudentsAndRequest()
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+// Estudiantes asignados a un spot
+ipcMain.handle("reports:getByAssignedSpot", async (_event) => {
+  try {
+    return getAssignedStudentsBySpot()
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+// Estudiantes por ubicación
+ipcMain.handle("reports:getByLocation", async (_event) => {
+  try {
+    return getAssignedStudentsByLocation()
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+// Estudiantes por carrera
+ipcMain.handle("reports:getByCareer", async (_event) => {
+  try {
+    return getAssignedStudentsByCareer()
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+// Estudiantes por municipio
+ipcMain.handle("reports:getByMunicipality", async (_event) => {
+  try {
+    return getStudentsByMunicipality()
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+// Cierre de carreras
+ipcMain.handle("reports:getClosingGrades", async () => {
+  try {
+    return getCareerClosing()
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
 })
 
 // IPC handlers for PDf

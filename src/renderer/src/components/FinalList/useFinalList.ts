@@ -5,7 +5,6 @@ import { deleteAllAssignments, getAllAssignments } from "@renderer/api/assignmen
 import { AssignmentRow } from "src/shared/types"
 import { toast } from "sonner"
 import { exportPDF } from "@renderer/api/pdf"
-import { getPhaseName } from "@renderer/utils/getPhaseName"
 
 export const useFinalList = () => {
   const queryClient = useQueryClient()

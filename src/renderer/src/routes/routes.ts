@@ -11,5 +11,6 @@ export const ROUTES = {
   PLACES: "places",
   LOCATION: "/location",
   PROFILE: "/profile",
-  MANAGE_USERS: "/manage-users"
+  MANAGE_USERS: "/manage-users",
+  REPORTS: "/reports"
 }

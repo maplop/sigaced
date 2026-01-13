@@ -5,6 +5,14 @@ import { Student } from "src/shared/types"
 
 // Custom APIs for renderer
 const api = {
+  // Reports
+  getStudentsAndRequest: () => ipcRenderer.invoke("reports:getByRequestSpot"),
+  getAssignedStudentsBySpot: () => ipcRenderer.invoke("reports:getByAssignedSpot"),
+  getAssignedStudentsByLocation: () => ipcRenderer.invoke("reports:getByLocation"),
+  getAssignedStudentsByCareer: () => ipcRenderer.invoke("reports:getByCareer"),
+  getStudentsByMunicipality: () => ipcRenderer.invoke("reports:getByMunicipality"),
+  getCareerClosing: () => ipcRenderer.invoke("reports:getClosingGrades"),
+
   //PDF
   generatePDF: (payload) => ipcRenderer.invoke("pdf:generate", payload),
 
