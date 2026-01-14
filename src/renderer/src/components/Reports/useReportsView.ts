@@ -22,11 +22,11 @@ export const useReportsView = () => {
     ...(assignedStudentsBySpot?.map((assignedStudent, index) => [
       index + 1,
       assignedStudent.ci,
-      assignedStudent.last_name,
+      assignedStudent.lastName,
       assignedStudent.name,
       assignedStudent.career,
       assignedStudent.location,
-      assignedStudent.option_number,
+      assignedStudent.preferenceOrder,
       assignedStudent.grade?.toFixed(2) ?? "-"
     ]) ?? [])
   ]
@@ -165,6 +165,49 @@ export const useReportsView = () => {
     queryKey: [rqKeys.STUDENTS, rqKeys.SPOT, rqKeys.CAREERS, rqKeys.LOCATIONS]
   })
 
+  const studentsAndRequestTable = [
+    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Localización", "Preferencia", "Fase", "Nota"],
+    ...(studentsAndRequest?.map((studentAndRequest, index) => [
+      index + 1,
+      studentAndRequest.ci,
+      studentAndRequest.lastName,
+      studentAndRequest.name,
+      studentAndRequest.career,
+      studentAndRequest.location,
+      studentAndRequest.preferenceOrder,
+      studentAndRequest.phase,
+      studentAndRequest.grade?.toFixed(2) ?? "-"
+    ]) ?? [])
+  ]
+
+  const handleExportStudentsAndRequestPDF = async () => {
+    try {
+      const path = await exportPDF({
+        subtitle: "Estudiantes y Solicitudes",
+        table: studentsAndRequestTable,
+        columnWidths: [20, 50, "auto", "auto", "auto", "auto", 40, 30, 30],
+        columnAlignments: [
+          "center",
+          "center",
+          "left",
+          "left",
+          "left",
+          "left",
+          "center",
+          "center",
+          "center"
+        ],
+        saveName: "Estudiantes y Solicitudes.pdf"
+      })
+      toast.success("Reporte descargado en: " + path)
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message, {
+        style: { color: "var(--errorMessage)" }
+      })
+    }
+  }
+
   const { data: careerClosing, isLoading: isLoadingCareerClosing } = useQuery({
     queryFn: () => getCareerClosing(),
     queryKey: [rqKeys.CAREERS, rqKeys.SPOT, rqKeys.ASSIGNMENTS, rqKeys.STUDENTS]
@@ -207,12 +250,13 @@ export const useReportsView = () => {
     studentsByMunicipality,
     handleExportStudentsByMunicipalityPDF,
     studentsAndRequest,
+    handleExportStudentsAndRequestPDF,
+    careerClosing,
+    handleExportCareerClosingPDF,
     isLoadingAssignedStudentsBySpot,
     isLoadingAssignedStudentsByCareer,
     isLoadingAssignedStudentsByLocation,
     isLoadingStudentsByMunicipality,
-    isLoadingStudentsAndRequest,
-    careerClosing,
-    handleExportCareerClosingPDF
+    isLoadingStudentsAndRequest
   }
 }

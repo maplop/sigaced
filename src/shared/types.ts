@@ -120,12 +120,13 @@ export interface TopCareer {
 
 export interface StudentRequestRow {
   ci: string
-  last_name: string
+  lastName: string
   name: string
   grade: number | null
   career: string
   location: string
-  option_number: 1 | 2 | 3
+  phase: number
+  preferenceOrder: 1 | 2 | 3
 }
 
 export interface CareerClosingRow {

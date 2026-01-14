@@ -5,12 +5,13 @@ export function getStudentsAndRequest(): StudentRequestRow[] {
   const stmt = db.prepare(`
     SELECT
       s.ci,
-      s.last_name,
+      s.last_name AS lastName,
       s.name,
       s.grade,
       c.full_name AS career,
       l.name AS location,
-      r.preference_order AS option_number
+      sp.phase_id AS phase,
+      r.preference_order AS preferenceOrder
     FROM student s
     JOIN request r ON r.student_id = s.id
     JOIN spot sp ON sp.id = r.spot_id
@@ -19,7 +20,9 @@ export function getStudentsAndRequest(): StudentRequestRow[] {
     ORDER BY
       s.last_name,
       s.name,
+      sp.phase_id,
       r.preference_order
+      
   `)
 
   return stmt.all() as StudentRequestRow[]

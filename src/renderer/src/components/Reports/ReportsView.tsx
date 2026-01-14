@@ -18,6 +18,7 @@ const ReportsView = () => {
     careerClosing,
     handleExportCareerClosingPDF,
     studentsAndRequest,
+    handleExportStudentsAndRequestPDF,
     isLoadingAssignedStudentsBySpot,
     isLoadingAssignedStudentsByCareer,
     isLoadingAssignedStudentsByLocation,
@@ -39,7 +40,7 @@ const ReportsView = () => {
                 title="Aspirantes y Opciones"
                 description="Listado aspirantes junto a las opciones que seleccionaron"
                 icon={<Users className="h-5 w-5" />}
-                handleGenerateReport={() => { }}
+                handleGenerateReport={handleExportStudentsAndRequestPDF}
               />
               <ReportCard
                 title="Aspirantes por Localización"
