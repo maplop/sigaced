@@ -21,7 +21,7 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
 
       <DialogContent className="sm:max-w-3xl w-[95%] max-h-[90vh] p-4">
         <DialogHeader>
-          <DialogTitle>Infomación de la aplicación — GAPCED</DialogTitle>
+          <DialogTitle>Información de la aplicación — GAPCED</DialogTitle>
           <DialogDescription>
             Información general del sistema, fases de otorgamiento, datos gestionados y roles.
           </DialogDescription>
@@ -95,16 +95,14 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
                 </p>
 
                 <div className="mt-3">
-                  <strong>Reportes sugeridos:</strong>
+                  <strong>Reportes disponibles:</strong>
                   <ul className="mt-2 ml-5 list-disc text-sm leading-6">
-                    <li>Listado consolidado de plazas por carrera.</li>
-                    <li>Demanda por carrera (solicitudes totales).</li>
-                    <li>Relación aspirantes–plazas por ubicación.</li>
-                    <li>Aspirantes no asignados por fase.</li>
-                    <li>Plazas restantes por carrera/ubicación.</li>
-                    <li>Histórico de asignaciones por aspirante.</li>
-                    <li>Ranking general de aspirantes.</li>
-                    <li>Plazas creadas/modificadas por fase.</li>
+                    <li>Aspirantes y Solicitudes.</li>
+                    <li>Aspirantes por Ubicación.</li>
+                    <li>Aspirantes por Carrera.</li>
+                    <li>Aspirantes por Plaza.</li>
+                    <li>Aspirantes por Municipios.</li>
+                    <li>Nota de Corte (Cierre de carreras).</li>
                   </ul>
                 </div>
               </CardContent>
