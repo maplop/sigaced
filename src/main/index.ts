@@ -3,22 +3,22 @@ import { join } from "path"
 import { electronApp, optimizer, is } from "@electron-toolkit/utils"
 import icon from "../../resources/icon.png?asset"
 import {
-  addStudent,
-  getStudents,
-  updateStudent,
-  deleteStudent,
-  addStudentToPhase,
-  deleteAllStudentsFromPhase
-} from "./queries/student"
+  addApplicant,
+  getApplicants,
+  updateApplicant,
+  deleteApplicant,
+  addApplicantToPhase,
+  deleteAllApplicantsFromPhase
+} from "./queries/applicant"
 import {
-  getAssignments,
-  addAssignment,
-  updateAssignment,
-  deleteAssignmentForId,
-  getAssignmentsByPhase,
-  deleteAllAssignmentsFromPhase,
-  deleteAllAssignments
-} from "./queries/assignment"
+  getAllocations,
+  addAllocation,
+  updateAllocation,
+  deleteAllocationForId,
+  getAllocationsByPhase,
+  deleteAllAllocationsFromPhase,
+  deleteAllAllocations
+} from "./queries/allocation"
 import {
   getCareers,
   addCareer,
@@ -55,7 +55,7 @@ import {
   clearAllTables,
   getDashboardStats,
   getTopCareers,
-  getTopStudents
+  getTopApplicants
 } from "./queries/statistics"
 import { OperationResult } from "src/shared/types"
 import { generatePDF } from "./pdf/generatePDF"
@@ -66,11 +66,11 @@ import {
 } from "./seed/seedDatabase"
 import {
   getCareerClosing,
-  getStudentsAndRequest,
-  getAssignedStudentsBySpot,
-  getAssignedStudentsByCareer,
-  getAssignedStudentsByLocation,
-  getStudentsByMunicipality
+  getApplicantsAndRequest,
+  getAssignedApplicantsBySpot,
+  getAssignedApplicantsByCareer,
+  getAssignedApplicantsByLocation,
+  getApplicantsByMunicipality
 } from "./queries/reports"
 
 function createWindow(): void {
@@ -132,46 +132,46 @@ app.whenReady().then(() => {
   })
 })
 
-// Estudiantes y solicitudes por ci
+// Aspirantes y solicitudes por ci
 ipcMain.handle("reports:getByRequestSpot", async (_event) => {
   try {
-    return getStudentsAndRequest()
+    return getApplicantsAndRequest()
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-// Estudiantes asignados a un spot
+// Aspirantes otorgados a un spot
 ipcMain.handle("reports:getByAssignedSpot", async (_event) => {
   try {
-    return getAssignedStudentsBySpot()
+    return getAssignedApplicantsBySpot()
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-// Estudiantes por ubicación
+// Aspirantes por ubicación
 ipcMain.handle("reports:getByLocation", async (_event) => {
   try {
-    return getAssignedStudentsByLocation()
+    return getAssignedApplicantsByLocation()
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-// Estudiantes por carrera
+// Aspirantes por carrera
 ipcMain.handle("reports:getByCareer", async (_event) => {
   try {
-    return getAssignedStudentsByCareer()
+    return getAssignedApplicantsByCareer()
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-// Estudiantes por municipio
+// Aspirantes por municipio
 ipcMain.handle("reports:getByMunicipality", async (_event) => {
   try {
-    return getStudentsByMunicipality()
+    return getApplicantsByMunicipality()
   } catch (error: any) {
     return { success: false, error: error.message }
   }
@@ -205,9 +205,9 @@ ipcMain.handle("stats:getDashboardStats", async (_event, phaseId?: number) => {
   }
 })
 
-ipcMain.handle("stats:getTopStudents", async (_event, phaseId?: number) => {
+ipcMain.handle("stats:getTopApplicants", async (_event, phaseId?: number) => {
   try {
-    return getTopStudents(phaseId)
+    return getTopApplicants(phaseId)
   } catch (error: any) {
     return { success: false, error: error?.message ?? "Error desconocido" } as OperationResult
   }
@@ -231,9 +231,9 @@ ipcMain.handle("stats:clearAllTables", async (_event) => {
 })
 
 // IPC handlers for seed database
-ipcMain.handle("seed:populate", async (_event, studentCount?: number) => {
+ipcMain.handle("seed:populate", async (_event, applicantCount?: number) => {
   try {
-    const result = seedDatabase(studentCount || 100)
+    const result = seedDatabase(applicantCount || 100)
     return { success: true, result }
   } catch (error: any) {
     return { success: false, error: error.message }
@@ -258,31 +258,31 @@ ipcMain.handle("seed:validate", async (_event) => {
   }
 })
 
-// IPC handlers for student CRUD
+// IPC handlers for applicant CRUD
 // Crear aspirante con su fase y opcionalmente solicitudes
-ipcMain.handle("student:add", async (_event, student) => {
+ipcMain.handle("applicant:add", async (_event, applicant) => {
   try {
-    const id = addStudent(student)
+    const id = addApplicant(applicant)
     return { success: true, id }
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-// Obtener todos los estudiantes y solicitudes de una fase
-ipcMain.handle("student:getAll", async (_event, phaseId: number) => {
+// Obtener todos los aspirantes y solicitudes de una fase
+ipcMain.handle("applicant:getAll", async (_event, phaseId: number) => {
   try {
-    return getStudents(phaseId)
+    return getApplicants(phaseId)
   } catch (error) {
-    console.error("Error al obtener estudiantes:", error)
+    console.error("Error al obtener aspirantes:", error)
     return []
   }
 })
 
 // Editar aspirante y/o solicitudes en una fase
-ipcMain.handle("student:update", async (_event, student) => {
+ipcMain.handle("applicant:update", async (_event, applicant) => {
   try {
-    updateStudent(student)
+    updateApplicant(applicant)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
@@ -290,9 +290,9 @@ ipcMain.handle("student:update", async (_event, student) => {
 })
 
 // Eliminar completamente un aspirante
-ipcMain.handle("student:deleteStudent", async (_event, studentId: number) => {
+ipcMain.handle("applicant:deleteApplicant", async (_event, applicantId: number) => {
   try {
-    deleteStudent(studentId)
+    deleteApplicant(applicantId)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
@@ -300,9 +300,9 @@ ipcMain.handle("student:deleteStudent", async (_event, studentId: number) => {
 })
 
 // Agregar un aspirante existente a una fase específica
-ipcMain.handle("student:addStudentToPhase", async (_event, studentId: number, phaseId: number) => {
+ipcMain.handle("applicant:addApplicantToPhase", async (_event, applicantId: number, phaseId: number) => {
   try {
-    addStudentToPhase(studentId, phaseId)
+    addApplicantToPhase(applicantId, phaseId)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
@@ -310,78 +310,78 @@ ipcMain.handle("student:addStudentToPhase", async (_event, studentId: number, ph
 })
 
 // Eliminar todos los aspirantes de una fase (sin borrarlos completamente)
-ipcMain.handle("student:deleteAll", async (_event, phaseId: number) => {
+ipcMain.handle("applicant:deleteAll", async (_event, phaseId: number) => {
   try {
-    deleteAllStudentsFromPhase(phaseId)
+    deleteAllApplicantsFromPhase(phaseId)
     return { success: true }
   } catch (error: any) {
-    console.error("Error al eliminar todos los estudiantes de la fase:", error)
+    console.error("Error al eliminar todos los aspirantes de la fase:", error)
     return { success: false, error: error.message }
   }
 })
 
-// IPC handlers for assignment CRUD
-ipcMain.handle("assignment:addAssignment", async (_event, assignment) => {
+// IPC handlers for allocation CRUD
+ipcMain.handle("allocation:addAllocation", async (_event, allocation) => {
   try {
-    await addAssignment(assignment)
+    await addAllocation(allocation)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-ipcMain.handle("assignment:getAllAssignment", async () => {
+ipcMain.handle("allocation:getAllAllocation", async () => {
   try {
-    return await getAssignments()
+    return await getAllocations()
   } catch (error: any) {
-    console.error("Error al obtener asignaciones:", error)
+    console.error("Error al obtener otorgamientos:", error)
     return []
   }
 })
 
-ipcMain.handle("assignment:getAssignmentsByPhase", async (_event, phaseId: number) => {
+ipcMain.handle("allocation:getAllocationsByPhase", async (_event, phaseId: number) => {
   try {
-    return await getAssignmentsByPhase(phaseId)
+    return await getAllocationsByPhase(phaseId)
   } catch (error: any) {
-    console.error("Error al obtener otorgamientospor fase:", error)
+    console.error("Error al obtener otorgamientos por fase:", error)
     return []
   }
 })
 
-ipcMain.handle("assignment:updateAssignment", async (_event, assignment) => {
+ipcMain.handle("allocation:updateAllocation", async (_event, allocation) => {
   try {
-    await updateAssignment(assignment)
+    await updateAllocation(allocation)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-ipcMain.handle("assignment:deleteAssignmentForId", async (_event, id: number) => {
+ipcMain.handle("allocation:deleteAllocationForId", async (_event, id: number) => {
   try {
-    await deleteAssignmentForId(id)
+    await deleteAllocationForId(id)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
   }
 })
 
-ipcMain.handle("assignment:deleteAllFromPhase", async (_event, phaseId: number) => {
+ipcMain.handle("allocation:deleteAllFromPhase", async (_event, phaseId: number) => {
   try {
-    await deleteAllAssignmentsFromPhase(phaseId)
+    await deleteAllAllocationsFromPhase(phaseId)
     return { success: true }
   } catch (error: any) {
-    console.error("Error al eliminar todas los otorgamientos de la fase:", error)
+    console.error("Error al eliminar todos los otorgamientos de la fase:", error)
     return { success: false, error: error.message }
   }
 })
 
-ipcMain.handle("assignment:deleteAll", async (_event) => {
+ipcMain.handle("allocation:deleteAll", async (_event) => {
   try {
-    await deleteAllAssignments()
+    await deleteAllAllocations()
     return { success: true }
   } catch (error: any) {
-    console.error("Error al eliminar todas las asignaciones.", error)
+    console.error("Error al eliminar todos los otorgamientos.", error)
     return { success: false, error: error.message }
   }
 })
@@ -541,7 +541,7 @@ ipcMain.handle("location:deleteAll", async () => {
     await deleteAllLocations()
     return { success: true }
   } catch (error: any) {
-    console.error("Error al eliminar todas las localizaciones:", error)
+    console.error("Error al eliminar todas las ubicaciones:", error)
     return { success: false, error: error.message }
   }
 })

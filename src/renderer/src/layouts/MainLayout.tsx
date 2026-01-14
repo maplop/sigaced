@@ -27,7 +27,7 @@ const generateBreadcrumbs = (pathname: string): BreadcrumbData[] => {
     applicants: "Aspirantes",
     careers: "Carreras",
     places: "Plazas",
-    location: "Localización",
+    location: "Ubicación",
     profile: "Perfil",
     "manage-users": "Gestionar usuarios",
     "first-allocation": "Primer Otorgamiento",

@@ -1,32 +1,32 @@
-import type { Student, StudentRequestRow, CareerClosingRow } from "src/shared/types"
+import type { Applicant, ApplicantRequestRow, CareerClosingRow } from "src/shared/types"
 
-export const getStudentsAndRequest = async (): Promise<StudentRequestRow[]> => {
-  const data = await window.api.getStudentsAndRequest()
-  if (!data) throw new Error("No se pudieron obtener los estudiantes con sus solicitudes.")
+export const getApplicantsAndRequest = async (): Promise<ApplicantRequestRow[]> => {
+  const data = await window.api.getApplicantsAndRequest()
+  if (!data) throw new Error("No se pudieron obtener los aspirantes con sus solicitudes.")
   return data
 }
 
-export const getAssignedStudentsBySpot = async (): Promise<StudentRequestRow[]> => {
-  const data = await window.api.getAssignedStudentsBySpot()
-  if (!data) throw new Error("No se pudieron obtener los estudiantes asignados.")
+export const getAssignedApplicantsBySpot = async (): Promise<ApplicantRequestRow[]> => {
+  const data = await window.api.getAssignedApplicantsBySpot()
+  if (!data) throw new Error("No se pudieron obtener los aspirantes asignados.")
   return data
 }
 
-export const getAssignedStudentsByLocation = async (): Promise<Student[]> => {
-  const data = await window.api.getAssignedStudentsByLocation()
-  if (!data) throw new Error("No se pudieron obtener los estudiantes por ubicación.")
+export const getAssignedApplicantsByLocation = async (): Promise<Applicant[]> => {
+  const data = await window.api.getAssignedApplicantsByLocation()
+  if (!data) throw new Error("No se pudieron obtener los aspirantes por ubicación.")
   return data
 }
 
-export const getAssignedStudentsByCareer = async (): Promise<Student[]> => {
-  const data = await window.api.getAssignedStudentsByCareer()
-  if (!data) throw new Error("No se pudieron obtener los estudiantes por carrera.")
+export const getAssignedApplicantsByCareer = async (): Promise<Applicant[]> => {
+  const data = await window.api.getAssignedApplicantsByCareer()
+  if (!data) throw new Error("No se pudieron obtener los aspirantes por carrera.")
   return data
 }
 
-export const getStudentsByMunicipality = async (): Promise<Student[]> => {
-  const data = await window.api.getStudentsByMunicipality()
-  if (!data) throw new Error("No se pudieron obtener los estudiantes por municipio.")
+export const getApplicantsByMunicipality = async (): Promise<Applicant[]> => {
+  const data = await window.api.getApplicantsByMunicipality()
+  if (!data) throw new Error("No se pudieron obtener los aspirantes por municipio.")
   return data
 }
 

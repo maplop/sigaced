@@ -55,7 +55,7 @@ const LocationsTable = ({
                 <TableRow>
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50">#</TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("name")}>
-                    Localización {sortField === "name" && (sortDirection === "asc" ? "↑" : "↓")}
+                    Ubicación {sortField === "name" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="flex justify-end items-center mr-12">Acciones</TableHead>
                 </TableRow>
@@ -76,7 +76,7 @@ const LocationsTable = ({
                             </Button>
                             <ConfirmDeleteDialog
                               onConfirm={() => handleDelete(location.id)}
-                              title="Eliminar localización"
+                              title="Eliminar ubicación"
                               trigger={
                                 <Button variant="outline" size="sm">
                                   <Trash2 className="h-4 w-4 text-red-500" />
@@ -84,7 +84,7 @@ const LocationsTable = ({
                               }
                             >
                               <div className="space-y-2 text-center">
-                                <p>¿Deseas eliminar la localización <strong>{location.name}</strong>?</p>
+                                <p>¿Deseas eliminar la ubicación <strong>{location.name}</strong>?</p>
                                 <p>Esta acción no se puede deshacer.</p>
                               </div>
                             </ConfirmDeleteDialog>
@@ -98,7 +98,7 @@ const LocationsTable = ({
                 <TableBody>
                   <TableRow>
                     <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
-                      No se encontraron localizaciones.
+                      No se encontraron ubicaciones.
                     </TableCell>
                   </TableRow>
                 </TableBody>

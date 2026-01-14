@@ -15,7 +15,7 @@ const SkeletonTable = () => {
                 Carrera
               </TableHead>
               <TableHead className="cursor-pointer hover:bg-muted/50">
-                Localización
+                Ubicación
               </TableHead>
               <TableHead className="text-center cursor-pointer hover:bg-muted/50">
                 Plazas Disponibles

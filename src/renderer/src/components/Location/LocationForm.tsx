@@ -23,23 +23,23 @@ const LocationForm = ({ isDialogOpen, setIsDialogOpen, resetForm, editingLocatio
       <DialogTrigger asChild>
         <Button onClick={() => resetForm()}>
           <Plus className="mr-2 h-4 w-4" />
-          Nueva Localización
+          Nueva Ubicación
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{editingLocation ? "Editar Localización" : "Nueva Localización"}</DialogTitle>
+          <DialogTitle>{editingLocation ? "Editar Ubicación" : "Nueva Ubicación"}</DialogTitle>
           <DialogDescription>
-            {editingLocation ? "Modifica los datos de la localización" : "Completa la información de la nueva localización"}
+            {editingLocation ? "Modifica los datos de la ubicación" : "Completa la información de la nueva ubicación"}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="space-y-2 py-4">
-            <Label htmlFor="location">Localización</Label>
+            <Label htmlFor="location">Ubicación</Label>
             <Input
               id="location"
               name="location"
-              placeholder="Escriba el nombre de la localización"
+              placeholder="Escriba el nombre de la ubicación"
               value={formData.name}
               onChange={(e) => setLocationFormData((prev) => ({ ...prev, name: e.target.value }))}
               required

@@ -17,7 +17,7 @@ export interface SpotSeed {
   availableQuantity: number
 }
 
-export interface StudentSeed {
+export interface ApplicantSeed {
   ci: string
   name: string
   lastName: string
@@ -196,9 +196,9 @@ function generateRequestCount(): number {
   return 3
 }
 
-// Generar estudiantes (80-120 estudiantes)
-export function generateStudentsData(count: number = 100): StudentSeed[] {
-  const students: StudentSeed[] = []
+// Generar aspirantes (80-120 aspirantes)
+export function generateApplicantsData(count: number = 100): ApplicantSeed[] {
+  const applicants: ApplicantSeed[] = []
   const usedCIs = new Set<string>()
   
   for (let i = 0; i < count; i++) {
@@ -218,7 +218,7 @@ export function generateStudentsData(count: number = 100): StudentSeed[] {
     const municipality = municipalities[Math.floor(Math.random() * municipalities.length)]
     const requestCount = generateRequestCount()
     
-    students.push({
+    applicants.push({
       ci,
       name: firstName,
       lastName: fullLastName,
@@ -230,5 +230,5 @@ export function generateStudentsData(count: number = 100): StudentSeed[] {
   }
   
   // Ordenar por calificación descendente (como se procesan en el sistema)
-  return students.sort((a, b) => b.grade - a.grade)
+  return applicants.sort((a, b) => b.grade - a.grade)
 }

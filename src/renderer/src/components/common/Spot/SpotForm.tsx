@@ -110,7 +110,7 @@ const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, isDial
           </div>
 
           <div className="space-y-2 py-4">
-            <Label htmlFor="locationId">Localización</Label>
+            <Label htmlFor="locationId">Ubicación</Label>
             <Popover open={open.location} onOpenChange={handleOpenChange('location')}>
               <PopoverTrigger asChild>
                 <Button
@@ -122,19 +122,19 @@ const SpotForm = ({ careers, loadingCareers, locations, loadingLocations, isDial
                   {formData.locationId
                     ? locations?.find((location) => location.id === formData.locationId)?.name
                     : loadingLocations
-                      ? "Cargando localizaciones..."
-                      : "Seleccione una localización"}
+                      ? "Cargando ubicaciones..."
+                      : "Seleccione una ubicación"}
                   <ChevronsUpDown className="opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="min-w-[375px] p-0">
                 <Command>
-                  <CommandInput placeholder="Buscar localización..." className="h-9" />
+                  <CommandInput placeholder="Buscar ubicación..." className="h-9" />
                   <CommandList>
-                    <CommandEmpty>No se encontró ninguna localización.</CommandEmpty>
+                    <CommandEmpty>No se encontró ninguna ubicación.</CommandEmpty>
                     <CommandGroup>
                       {loadingLocations ? (
-                        <CommandItem disabled>Cargando localizaciones...</CommandItem>
+                        <CommandItem disabled>Cargando ubicaciones...</CommandItem>
                       ) : (
                         locations?.map((location) => (
                           <CommandItem

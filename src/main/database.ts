@@ -20,8 +20,8 @@ db.exec(`
   INSERT OR IGNORE INTO phase (id, name) VALUES
     (1, 'first'), (2, 'second'), (3, 'manual');
 
-  -- Estudiantes
-  CREATE TABLE IF NOT EXISTS student (
+  -- Aspirantes
+  CREATE TABLE IF NOT EXISTS applicant (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ci TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
@@ -32,13 +32,13 @@ db.exec(`
   );
 
   -- Historial de fases en las que participó el aspirante
-  CREATE TABLE IF NOT EXISTS student_phase (
+  CREATE TABLE IF NOT EXISTS applicant_phase (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    student_id INTEGER NOT NULL,
+    applicant_id INTEGER NOT NULL,
     phase_id INTEGER NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
+    FOREIGN KEY (applicant_id) REFERENCES applicant(id) ON DELETE CASCADE,
     FOREIGN KEY (phase_id) REFERENCES phase(id) ON DELETE CASCADE,
-    UNIQUE (student_id, phase_id)
+    UNIQUE (applicant_id, phase_id)
   );
 
   -- Carreras
@@ -71,23 +71,23 @@ db.exec(`
   -- Solicitudes por fase (máximo 3 por aspirante por fase)
   CREATE TABLE IF NOT EXISTS request (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    student_id INTEGER NOT NULL,
+    applicant_id INTEGER NOT NULL,
     spot_id INTEGER NOT NULL,
     preference_order INTEGER CHECK (preference_order BETWEEN 1 AND 3),
-    FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
+    FOREIGN KEY (applicant_id) REFERENCES applicant(id) ON DELETE CASCADE,
     FOREIGN KEY (spot_id) REFERENCES spot(id) ON DELETE CASCADE,
-    UNIQUE (student_id, spot_id)
+    UNIQUE (applicant_id, spot_id)
   );
 
-  -- Otorgamientosfinales
-  CREATE TABLE IF NOT EXISTS assignment (
+  -- Otorgamientos finales
+  CREATE TABLE IF NOT EXISTS allocation (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    student_id INTEGER NOT NULL,
+    applicant_id INTEGER NOT NULL,
     spot_id INTEGER NOT NULL,
-    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
+    allocated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (applicant_id) REFERENCES applicant(id) ON DELETE CASCADE,
     FOREIGN KEY (spot_id) REFERENCES spot(id) ON DELETE CASCADE,
-    UNIQUE (student_id)
+    UNIQUE (applicant_id)
   );
 
   -- Usuarios del sistema

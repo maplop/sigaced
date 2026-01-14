@@ -1,31 +1,31 @@
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
-import { deleteAllAssignments, getAllAssignments } from "@renderer/api/assignment"
-import { AssignmentRow } from "src/shared/types"
+import { deleteAllAllocations, getAllAllocations } from "@renderer/api/allocation"
+import { AllocationRow } from "src/shared/types"
 import { toast } from "sonner"
 import { exportPDF } from "@renderer/api/pdf"
 
 export const useFinalList = () => {
   const queryClient = useQueryClient()
 
-  const { data: assignments, isLoading: loadingAssignments } = useQuery({
-    queryKey: [rqKeys.ASSIGNMENTS],
-    queryFn: () => getAllAssignments()
+  const { data: allocations, isLoading: loadingAllocations } = useQuery({
+    queryKey: [rqKeys.ALLOCATIONS],
+    queryFn: () => getAllAllocations()
   })
 
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(10)
   const [searchTerm, setSearchTerm] = useState<string>("")
-  const [sortField, setSortField] = useState<keyof AssignmentRow | null>(null)
+  const [sortField, setSortField] = useState<keyof AllocationRow | null>(null)
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
 
-  const filteredAndSortedAssignments = useMemo(() => {
-    if (!assignments) return []
+  const filteredAndSortedAllocations = useMemo(() => {
+    if (!allocations) return []
 
     // Filtrado
-    const filtered = assignments.filter((assignment) =>
-      `${assignment.name} ${assignment.lastName} ${assignment.ci} ${assignment.career} ${assignment.location}`
+    const filtered = allocations.filter((allocation) =>
+      `${allocation.name} ${allocation.lastName} ${allocation.ci} ${allocation.career} ${allocation.location}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
     )
@@ -51,20 +51,20 @@ export const useFinalList = () => {
     }
 
     return filtered
-  }, [assignments, searchTerm, sortField, sortDirection])
+  }, [allocations, searchTerm, sortField, sortDirection])
 
   // Paginación
-  const paginatedAssignments: AssignmentRow[] = useMemo(() => {
+  const paginatedAllocations: AllocationRow[] = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
-    return filteredAndSortedAssignments.slice(startIndex, endIndex)
-  }, [filteredAndSortedAssignments, currentPage, itemsPerPage])
+    return filteredAndSortedAllocations.slice(startIndex, endIndex)
+  }, [filteredAndSortedAllocations, currentPage, itemsPerPage])
 
   const totalPages = useMemo(() => {
-    return Math.ceil(filteredAndSortedAssignments?.length / itemsPerPage)
-  }, [filteredAndSortedAssignments, itemsPerPage])
+    return Math.ceil(filteredAndSortedAllocations?.length / itemsPerPage)
+  }, [filteredAndSortedAllocations, itemsPerPage])
 
-  const handleSort = (field: keyof AssignmentRow) => {
+  const handleSort = (field: keyof AllocationRow) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
@@ -74,14 +74,14 @@ export const useFinalList = () => {
   }
 
   const deleteAllMutation = useMutation({
-    mutationFn: () => deleteAllAssignments(),
+    mutationFn: () => deleteAllAllocations(),
     onSuccess: () => {
-      toast.success("Todas los otorgamientos de la fase fueron eliminadas.")
-      queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS] })
+      toast.success("Todos los otorgamientos fueron eliminados.")
+      queryClient.invalidateQueries({ queryKey: [rqKeys.ALLOCATIONS] })
     },
     onError: (err: any) => {
       console.error(err)
-      const errorMessage = err instanceof Error ? err.message : "Error al eliminar asignaciones"
+      const errorMessage = err instanceof Error ? err.message : "Error al eliminar otorgamientos"
       toast.error(errorMessage, { style: { color: "var(--errorMessage)" } })
     }
   })
@@ -91,8 +91,8 @@ export const useFinalList = () => {
   }
 
   const finalAllocationsTable = [
-    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Localización", "Nota", "Fase", "Preferencia"],
-    ...filteredAndSortedAssignments.map((allocation, index) => [
+    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Ubicación", "Nota", "Fase", "Preferencia"],
+    ...filteredAndSortedAllocations.map((allocation, index) => [
       index + 1,
       allocation.ci,
       allocation.lastName,
@@ -134,8 +134,8 @@ export const useFinalList = () => {
   }
 
   return {
-    loadingAssignments,
-    paginatedAssignments,
+    loadingAllocations,
+    paginatedAllocations,
     currentPage,
     setCurrentPage,
     totalPages,
@@ -145,7 +145,7 @@ export const useFinalList = () => {
     setSearchTerm,
     sortField,
     sortDirection,
-    filteredAndSortedAssignments,
+    filteredAndSortedAllocations,
     handleSort,
     handleDeleteAllFromPhase,
     handleExportPDF

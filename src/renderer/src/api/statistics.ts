@@ -1,4 +1,4 @@
-import type { DashboardStats, TopStudent, TopCareer, OperationResult } from "src/shared/types"
+import type { DashboardStats, TopApplicant, TopCareer, OperationResult } from "src/shared/types"
 
 export const getDashboardStats = async (phaseId?: number): Promise<DashboardStats> => {
   const stats = await window.api.getDashboardStats(phaseId)
@@ -7,11 +7,11 @@ export const getDashboardStats = async (phaseId?: number): Promise<DashboardStat
   return stats
 }
 
-export const getTopStudents = async (phaseId?: number): Promise<TopStudent[]> => {
-  const topStudents = await window.api.getTopStudents(phaseId)
+export const getTopApplicants = async (phaseId?: number): Promise<TopApplicant[]> => {
+  const topApplicants = await window.api.getTopApplicants(phaseId)
 
-  if (!topStudents) throw new Error("No se pudieron obtener los estudiantes.")
-  return topStudents
+  if (!topApplicants) throw new Error("No se pudieron obtener los aspirantes.")
+  return topApplicants
 }
 
 export const getTopCareers = async (phaseId?: number): Promise<TopCareer[]> => {

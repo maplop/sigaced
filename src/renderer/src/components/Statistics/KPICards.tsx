@@ -11,7 +11,7 @@ export function KPICards({ stats, loadingStats }: KPICardsProps) {
   const kpis = [
     {
       title: "Aspirantes Registrados",
-      value: stats?.totalStudents?.toLocaleString() ?? 0,
+      value: stats?.totalApplicants?.toLocaleString() ?? 0,
       icon: Users,
       trend: "fase seleccionada",
     },
@@ -28,12 +28,12 @@ export function KPICards({ stats, loadingStats }: KPICardsProps) {
       trend: `${stats?.totalCareers ?? 0} carreras`,
     },
     {
-      title: "Plazas Asignadas",
-      value: stats?.assignedSpots?.toLocaleString() ?? 0,
+      title: "Plazas Otorgadas",
+      value: stats?.allocatedSpots?.toLocaleString() ?? 0,
       icon: CheckCircle,
       trend:
         stats && stats.totalSpots > 0
-          ? ((stats.assignedSpots / stats.totalSpots) * 100).toFixed(1) + "% del total"
+          ? ((stats.allocatedSpots / stats.totalSpots) * 100).toFixed(1) + "% del total"
           : "No disponible",
     },
     {

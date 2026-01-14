@@ -16,9 +16,9 @@ interface AllocationsViewProps {
 
 export default function AllocationsView({ phase }: AllocationsViewProps) {
   const {
-    loadingAssignments,
+    loadingAllocations,
     allocate,
-    paginatedAssignments,
+    paginatedAllocations,
     currentPage,
     setCurrentPage,
     totalPages,
@@ -28,14 +28,14 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
     setSearchTerm,
     sortField,
     sortDirection,
-    filteredAndSortedAssignments,
+    filteredAndSortedAllocations,
     handleSort,
     progress,
     handleDeleteAllFromPhase,
-    isAssigned,
+    isAllocated,
     showAlert,
     setShowAlert,
-    studentsWithoutRequests,
+    applicantsWithoutRequests,
     handleExportPDF
   } = useAllocations(phase)
 
@@ -48,7 +48,7 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
           <div className="w-fit p-0 bg-transparent shadow-none">
             <div className="flex items-center gap-2">
               <UsersIcon className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-foreground">Total de asignaciones: {filteredAndSortedAssignments.length} </span>
+              <span className="text-sm font-medium text-foreground">Total de otorgamientos: {filteredAndSortedAllocations.length} </span>
             </div>
           </div>
 
@@ -74,7 +74,7 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
                       allocate()
                     }
                   }}
-                  disabled={filteredAndSortedAssignments.length > 0}
+                  disabled={filteredAndSortedAllocations.length > 0}
                 >
                   <Play className="h-4 w-4" />
                   Otorgar
@@ -87,14 +87,14 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
                   title="Otorgamiento no permitido"
                   confirmText="Entendido"
                 >
-                  {studentsWithoutRequests.length === 1
-                    ? "Hay 1 estudiante sin solicitudes registradas."
-                    : `Hay ${studentsWithoutRequests.length} estudiantes sin solicitudes registradas.`}
+                  {applicantsWithoutRequests.length === 1
+                    ? "Hay 1 aspirante sin solicitudes registradas."
+                    : `Hay ${applicantsWithoutRequests.length} aspirantes sin solicitudes registradas.`}
 
                   <br /><br />
 
                   <p className="text-center text-sm text-muted-foreground">
-                    Cada estudiante debe tener al menos una solicitud registrada para poder
+                    Cada aspirante debe tener al menos una solicitud registrada para poder
                     proceder con el otorgamiento de plazas.
                     Por favor, revisa los datos antes de continuar.
                   </p>
@@ -104,10 +104,10 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
           </div>
         </CardHeader>
         <CardContent>
-          {isAssigned && (
+          {isAllocated && (
             <div className="mb-3.5">
               <div className="flex justify-between items-center text-muted-foreground mb-1">
-                <span>Asignando...</span>
+                <span>Otorgando...</span>
                 <span>{progress}%</span>
               </div>
               <Progress value={progress} className="w-full" />
@@ -133,7 +133,7 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
                 }}
                 title="Limpiar otorgamientos de la fase"
                 trigger={
-                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAssignments.length === 0}>
+                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAllocations.length === 0}>
                     <Trash2 className="h-4 w-4 text-red-500" />
                     Deshacer otorgamiento
                   </Button>
@@ -141,10 +141,10 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
               >
                 <div className="space-y-2 text-center">
                   <p>
-                    ¿Estás seguro de que deseas eliminar <strong>todas las asignaciones</strong> de esta fase?
+                    ¿Estás seguro de que deseas eliminar <strong>todos los otorgamientos</strong> de esta fase?
                   </p>
                   <p>
-                    Esta acción también eliminará automáticamente cualquier <strong>otorgamientorelacionada en fases posteriores</strong> que dependa de estas.
+                    Esta acción también eliminará automáticamente cualquier <strong>otorgamiento relacionado en fases posteriores</strong> que dependa de estos.
                   </p>
                   <p>
                     Esta operación <strong>no se puede deshacer</strong>.
@@ -157,9 +157,9 @@ export default function AllocationsView({ phase }: AllocationsViewProps) {
 
           {/* Tabla */}
           <AllocationsTable
-            loadingAssignments={loadingAssignments}
-            filteredAndSortedAssignments={filteredAndSortedAssignments}
-            paginatedAssignments={paginatedAssignments}
+            loadingAllocations={loadingAllocations}
+            filteredAndSortedAllocations={filteredAndSortedAllocations}
+            paginatedAllocations={paginatedAllocations}
             currentPage={currentPage}
             totalPages={totalPages}
             setCurrentPage={setCurrentPage}

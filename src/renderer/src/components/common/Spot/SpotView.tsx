@@ -93,7 +93,7 @@ const SpotView = ({ phase }: SpotViewProps) => {
               <div className="relative flex items-center space-x-2 w-full">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Buscar por carrera o localización..."
+                  placeholder="Buscar por carrera o ubicación..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 max-w-sm"

@@ -7,31 +7,31 @@ import { db } from "../database"
 // ESTADÍSTICAS GENERALES
 // =========================
 export function getDashboardStats(phaseId?: number) {
-  // Total de estudiantes que participaron en la fase
-  const totalStudents =
+  // Total de aspirantes que participaron en la fase
+  const totalApplicants =
     db
       .prepare(
         `
-      SELECT COUNT(DISTINCT s.id) AS total
-      FROM student s
-      LEFT JOIN student_phase sp ON sp.student_id = s.id
-      ${phaseId ? `WHERE sp.phase_id = ${phaseId}` : ""}
+      SELECT COUNT(DISTINCT a.id) AS total
+      FROM applicant a
+      LEFT JOIN applicant_phase ap ON ap.applicant_id = a.id
+      ${phaseId ? `WHERE ap.phase_id = ${phaseId}` : ""}
     `
       )
       .get().total || 0
 
-  // Promedio de calificaciones de los estudiantes
+  // Promedio de calificaciones de los aspirantes
   const avgGrade =
     db
       .prepare(
         `
     SELECT ROUND(AVG(grade), 2) AS average
     FROM (
-      SELECT DISTINCT s.id, s.grade
-      FROM student s
-      LEFT JOIN student_phase sp ON sp.student_id = s.id
-      ${phaseId ? `WHERE sp.phase_id = ${phaseId}` : ""}
-    ) AS unique_students
+      SELECT DISTINCT a.id, a.grade
+      FROM applicant a
+      LEFT JOIN applicant_phase ap ON ap.applicant_id = a.id
+      ${phaseId ? `WHERE ap.phase_id = ${phaseId}` : ""}
+    ) AS unique_applicants
   `
       )
       .get().average || 0
@@ -48,55 +48,55 @@ export function getDashboardStats(phaseId?: number) {
     )
     .get()
 
-  // Total de plazas asignadas
-  const assignedSpots =
+  // Total de plazas otorgadas
+  const allocatedSpots =
     db
       .prepare(
         `
-      SELECT COUNT(*) AS totalAssigned
-      FROM assignment a
-      LEFT JOIN spot sp ON sp.id = a.spot_id
+      SELECT COUNT(*) AS totalAllocated
+      FROM allocation alloc
+      LEFT JOIN spot sp ON sp.id = alloc.spot_id
       ${phaseId ? `WHERE sp.phase_id = ${phaseId}` : ""}
     `
       )
-      .get().totalAssigned || 0
+      .get().totalAllocated || 0
 
   // Plazas restantes
-  const remainingSpots = (spotData.totalSpots || 0) - assignedSpots
+  const remainingSpots = (spotData.totalSpots || 0) - allocatedSpots
 
   return {
-    totalStudents,
+    totalApplicants,
     avgGrade,
     totalSpots: spotData.totalSpots || 0,
     totalCareers: spotData.totalCareers || 0,
-    assignedSpots,
+    allocatedSpots,
     remainingSpots
   }
 }
 
 // =========================
-// TOP 5 ESTUDIANTES
+// TOP 5 ASPIRANTES
 // =========================
-export function getTopStudents(phaseId?: number) {
-  const phaseFilter = phaseId ? `WHERE sp.phase_id = ${phaseId}` : ""
+export function getTopApplicants(phaseId?: number) {
+  const phaseFilter = phaseId ? `WHERE ap.phase_id = ${phaseId}` : ""
 
   return db
     .prepare(
       `
       SELECT 
-        s.id,
-        s.name,
-        s.last_name AS lastName,
-        s.grade,
+        a.id,
+        a.name,
+        a.last_name AS lastName,
+        a.grade,
         c.full_name AS career
-      FROM student s
-      LEFT JOIN student_phase sp ON sp.student_id = s.id
-      LEFT JOIN assignment a ON a.student_id = s.id
-      LEFT JOIN spot st ON st.id = a.spot_id
+      FROM applicant a
+      LEFT JOIN applicant_phase ap ON ap.applicant_id = a.id
+      LEFT JOIN allocation alloc ON alloc.applicant_id = a.id
+      LEFT JOIN spot st ON st.id = alloc.spot_id
       LEFT JOIN career c ON c.id = st.career_id
       ${phaseFilter}
-      GROUP BY s.id
-      ORDER BY s.grade DESC
+      GROUP BY a.id
+      ORDER BY a.grade DESC
       LIMIT 5
     `
     )
@@ -114,18 +114,18 @@ export function getTopCareers(phaseId?: number) {
         `
       SELECT
         c.full_name AS career,
-        COUNT(a.id) AS totalAssignments,
+        COUNT(alloc.id) AS totalAllocations,
         IFNULL((
           SELECT SUM(s.available_quantity)
           FROM spot s
           WHERE s.career_id = c.id AND s.phase_id = 3
         ), 0) AS totalSpots
-      FROM assignment a
-      JOIN spot sp ON sp.id = a.spot_id
+      FROM allocation alloc
+      JOIN spot sp ON sp.id = alloc.spot_id
       JOIN career c ON c.id = sp.career_id
       WHERE sp.phase_id = 3
       GROUP BY c.id
-      ORDER BY totalAssignments DESC
+      ORDER BY totalAllocations DESC
       LIMIT 10
     `
       )
@@ -164,13 +164,13 @@ export function getTopCareers(phaseId?: number) {
  */
 export function clearAllTables() {
   const tablesToClear = [
-    "student",
-    "student_phase",
+    "applicant",
+    "applicant_phase",
     "career",
     "location",
     "spot",
     "request",
-    "assignment"
+    "allocation"
   ]
 
   const transaction = db.transaction(() => {

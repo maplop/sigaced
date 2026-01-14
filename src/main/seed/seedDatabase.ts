@@ -4,11 +4,11 @@ import {
   careersData,
   locationsData,
   spotsData,
-  generateStudentsData,
+  generateApplicantsData,
   type CareerSeed,
   type LocationSeed,
   type SpotSeed,
-  type StudentSeed
+  type ApplicantSeed
 } from "./seedData"
 
 const PHASE_ID = 1 // Fase primera
@@ -17,24 +17,24 @@ interface SeedResult {
   careers: number
   locations: number
   spots: number
-  students: number
-  studentPhases: number
+  applicants: number
+  applicantPhases: number
   requests: number
   errors: string[]
 }
 
 /**
  * Pobla la base de datos con datos de muestra para fase 1
- * @param studentCount Número de estudiantes a generar (default: 100)
+ * @param applicantCount Número de aspirantes a generar (default: 100)
  * @returns Resultado del proceso de población
  */
-export function seedDatabase(studentCount: number = 100): SeedResult {
+export function seedDatabase(applicantCount: number = 100): SeedResult {
   const result: SeedResult = {
     careers: 0,
     locations: 0,
     spots: 0,
-    students: 0,
-    studentPhases: 0,
+    applicants: 0,
+    applicantPhases: 0,
     requests: 0,
     errors: []
   }
@@ -93,7 +93,7 @@ export function seedDatabase(studentCount: number = 100): SeedResult {
 
         if (!careerId || !locationId) {
           result.errors.push(
-            `No se encontró carrera o ubicación para spot: ${spot.careerName} - ${spot.locationName}`
+            `No se encontró carrera o ubicación para la plaza: ${spot.careerName} - ${spot.locationName}`
           )
           continue
         }
@@ -106,54 +106,54 @@ export function seedDatabase(studentCount: number = 100): SeedResult {
         } catch (error: any) {
           if (!error.message.includes("UNIQUE constraint")) {
             result.errors.push(
-              `Error insertando spot ${spot.careerName} - ${spot.locationName}: ${error.message}`
+              `Error insertando la plaza ${spot.careerName} - ${spot.locationName}: ${error.message}`
             )
           }
         }
       }
 
-      // 4. Generar y insertar estudiantes
-      const studentsData = generateStudentsData(studentCount)
-      const studentMap = new Map<number, number>() // índice -> studentId
-      const insertStudent = db.prepare(`
-        INSERT INTO student (ci, name, last_name, grade, gender, municipality)
+      // 4. Generar y insertar aspirantes
+      const applicantsData = generateApplicantsData(applicantCount)
+      const applicantMap = new Map<number, number>() // índice -> applicantId
+      const insertApplicant = db.prepare(`
+        INSERT INTO applicant (ci, name, last_name, grade, gender, municipality)
         VALUES (?, ?, ?, ?, ?, ?)
       `)
 
-      for (let i = 0; i < studentsData.length; i++) {
-        const student = studentsData[i]
+      for (let i = 0; i < applicantsData.length; i++) {
+        const applicant = applicantsData[i]
         try {
-          const studentResult = insertStudent.run(
-            student.ci,
-            student.name,
-            student.lastName,
-            student.grade,
-            student.gender,
-            student.municipality
+          const applicantResult = insertApplicant.run(
+            applicant.ci,
+            applicant.name,
+            applicant.lastName,
+            applicant.grade,
+            applicant.gender,
+            applicant.municipality
           )
-          studentMap.set(i, studentResult.lastInsertRowid as number)
-          result.students++
+          applicantMap.set(i, applicantResult.lastInsertRowid as number)
+          result.applicants++
         } catch (error: any) {
           if (!error.message.includes("UNIQUE constraint")) {
-            result.errors.push(`Error insertando estudiante ${student.ci}: ${error.message}`)
+            result.errors.push(`Error insertando aspirante ${applicant.ci}: ${error.message}`)
           }
         }
       }
 
-      // 5. Insertar student_phase (todos en fase 1)
-      const insertStudentPhase = db.prepare(`
-        INSERT INTO student_phase (student_id, phase_id)
+      // 5. Insertar applicant_phase (todos en fase 1)
+      const insertApplicantPhase = db.prepare(`
+        INSERT INTO applicant_phase (applicant_id, phase_id)
         VALUES (?, ?)
       `)
 
-      for (const studentId of studentMap.values()) {
+      for (const applicantId of applicantMap.values()) {
         try {
-          insertStudentPhase.run(studentId, PHASE_ID)
-          result.studentPhases++
+          insertApplicantPhase.run(applicantId, PHASE_ID)
+          result.applicantPhases++
         } catch (error: any) {
           if (!error.message.includes("UNIQUE constraint")) {
             result.errors.push(
-              `Error insertando student_phase para estudiante ${studentId}: ${error.message}`
+              `Error insertando applicant_phase para aspirante ${applicantId}: ${error.message}`
             )
           }
         }
@@ -163,7 +163,7 @@ export function seedDatabase(studentCount: number = 100): SeedResult {
       // Necesitamos distribuir las solicitudes de manera realista
       const availableSpots = Array.from(spotMap.entries())
       const insertRequest = db.prepare(`
-        INSERT INTO request (student_id, spot_id, preference_order)
+        INSERT INTO request (applicant_id, spot_id, preference_order)
         VALUES (?, ?, ?)
       `)
 
@@ -183,17 +183,17 @@ export function seedDatabase(studentCount: number = 100): SeedResult {
       // Carreras más populares (para distribución realista de solicitudes)
       const popularCareers = ["Medicina", "Ingeniería Informática", "Derecho", "Contabilidad"]
 
-      for (let i = 0; i < studentsData.length; i++) {
-        const student = studentsData[i]
-        const studentId = studentMap.get(i)
+      for (let i = 0; i < applicantsData.length; i++) {
+        const applicant = applicantsData[i]
+        const applicantId = applicantMap.get(i)
 
-        if (!studentId) continue
+        if (!applicantId) continue
 
-        const requestCount = student.requestCount
+        const requestCount = applicant.requestCount
 
-        // Seleccionar spots para este estudiante
-        // Los estudiantes con mejores calificaciones tienden a solicitar carreras más populares
-        const studentSpots: Array<{ spotId: number; preferenceOrder: number }> = []
+        // Seleccionar spots para este aspirante
+        // Los aspirantes con mejores calificaciones tienden a solicitar carreras más populares
+        const applicantSpots: Array<{ spotId: number; preferenceOrder: number }> = []
         const usedSpotIds = new Set<number>()
 
         for (let pref = 1; pref <= requestCount; pref++) {
@@ -205,9 +205,9 @@ export function seedDatabase(studentCount: number = 100): SeedResult {
           const maxAttempts = 50
 
           while (!selectedSpot && attempts < maxAttempts) {
-            // Distribución: estudiantes con mejores calificaciones prefieren carreras populares
-            const isTopStudent = student.grade >= 80
-            const preferPopular = isTopStudent && Math.random() < 0.6
+            // Distribución: aspirantes con mejores calificaciones prefieren carreras populares
+            const isTopApplicant = applicant.grade >= 80
+            const preferPopular = isTopApplicant && Math.random() < 0.6
 
             let candidateSpots = preferPopular
               ? spotsWithInfo.filter((s) => popularCareers.includes(s.careerName))
@@ -238,22 +238,22 @@ export function seedDatabase(studentCount: number = 100): SeedResult {
           }
 
           if (selectedSpot) {
-            studentSpots.push({
+            applicantSpots.push({
               spotId: selectedSpot.spotId,
               preferenceOrder: pref
             })
           }
         }
 
-        // Insertar las solicitudes del estudiante
-        for (const req of studentSpots) {
+        // Insertar las solicitudes del aspirante
+        for (const req of applicantSpots) {
           try {
-            insertRequest.run(studentId, req.spotId, req.preferenceOrder)
+            insertRequest.run(applicantId, req.spotId, req.preferenceOrder)
             result.requests++
           } catch (error: any) {
             if (!error.message.includes("UNIQUE constraint")) {
               result.errors.push(
-                `Error insertando request para estudiante ${studentId}, spot ${req.spotId}: ${error.message}`
+                `Error insertando request para aspirante ${applicantId}, plaza ${req.spotId}: ${error.message}`
               )
             }
           }
@@ -276,16 +276,16 @@ export function seedDatabase(studentCount: number = 100): SeedResult {
 export function clearSeedTables(): void {
   const transaction = db.transaction(() => {
     db.prepare("DELETE FROM request").run()
-    db.prepare("DELETE FROM student_phase").run()
-    db.prepare("DELETE FROM assignment").run()
+    db.prepare("DELETE FROM applicant_phase").run()
+    db.prepare("DELETE FROM allocation").run()
     db.prepare("DELETE FROM spot").run()
-    db.prepare("DELETE FROM student").run()
+    db.prepare("DELETE FROM applicant").run()
     db.prepare("DELETE FROM location").run()
     db.prepare("DELETE FROM career").run()
 
     // Reiniciar autoincrementos
     db.prepare(
-      "DELETE FROM sqlite_sequence WHERE name IN ('career', 'location', 'spot', 'student', 'student_phase', 'request', 'assignment')"
+      "DELETE FROM sqlite_sequence WHERE name IN ('career', 'location', 'spot', 'applicant', 'applicant_phase', 'request', 'allocation')"
     ).run()
   })
 
@@ -304,42 +304,42 @@ export function validateSeedData(phaseId: number = PHASE_ID): {
   const errors: string[] = []
   const warnings: string[] = []
 
-  // Verificar que todos los estudiantes tienen al menos 1 solicitud
-  const studentsWithoutRequests = db
+  // Verificar que todos los aspirantes tienen al menos 1 solicitud
+  const applicantsWithoutRequests = db
     .prepare(
       `
     SELECT COUNT(*) as count
-    FROM student s
-    JOIN student_phase sp ON sp.student_id = s.id
-    WHERE sp.phase_id = ? AND s.id NOT IN (
-      SELECT DISTINCT student_id FROM request
+    FROM applicant a
+    JOIN applicant_phase ap ON ap.applicant_id = a.id
+    WHERE ap.phase_id = ? AND a.id NOT IN (
+      SELECT DISTINCT applicant_id FROM request
     )
   `
     )
     .get(phaseId) as { count: number }
 
-  if (studentsWithoutRequests.count > 0) {
-    errors.push(`${studentsWithoutRequests.count} estudiantes no tienen solicitudes`)
+  if (applicantsWithoutRequests.count > 0) {
+    errors.push(`${applicantsWithoutRequests.count} aspirantes no tienen solicitudes`)
   }
 
-  // Verificar que ningún estudiante tiene más de 3 solicitudes en fase 1
-  const studentsWithTooManyRequests = db
+  // Verificar que ningún aspirante tiene más de 3 solicitudes en fase 1
+  const applicantsWithTooManyRequests = db
     .prepare(
       `
-    SELECT s.id, s.ci, COUNT(r.id) as request_count
-    FROM student s
-    JOIN request r ON r.student_id = s.id
+    SELECT a.id, a.ci, COUNT(r.id) as request_count
+    FROM applicant a
+    JOIN request r ON r.applicant_id = a.id
     JOIN spot sp ON sp.id = r.spot_id
     WHERE sp.phase_id = ?
-    GROUP BY s.id
+    GROUP BY a.id
     HAVING request_count > 3
   `
     )
     .all(phaseId) as Array<{ id: number; ci: string; request_count: number }>
 
-  if (studentsWithTooManyRequests.length > 0) {
+  if (applicantsWithTooManyRequests.length > 0) {
     errors.push(
-      `${studentsWithTooManyRequests.length} estudiantes tienen más de 3 solicitudes: ${studentsWithTooManyRequests.map((s) => s.ci).join(", ")}`
+      `${applicantsWithTooManyRequests.length} aspirantes tienen más de 3 solicitudes: ${applicantsWithTooManyRequests.map((a) => a.ci).join(", ")}`
     )
   }
 
@@ -358,14 +358,14 @@ export function validateSeedData(phaseId: number = PHASE_ID): {
     errors.push(`${invalidPreferenceOrders.count} solicitudes tienen preference_order inválido`)
   }
 
-  // Verificar que hay más estudiantes que plazas (competencia realista)
-  const totalStudents = db
+  // Verificar que hay más aspirantes que plazas (competencia realista)
+  const totalApplicants = db
     .prepare(
       `
-    SELECT COUNT(DISTINCT s.id) as count
-    FROM student s
-    JOIN student_phase sp ON sp.student_id = s.id
-    WHERE sp.phase_id = ?
+    SELECT COUNT(DISTINCT a.id) as count
+    FROM applicant a
+    JOIN applicant_phase ap ON ap.applicant_id = a.id
+    WHERE ap.phase_id = ?
   `
     )
     .get(phaseId) as { count: number }
@@ -380,9 +380,9 @@ export function validateSeedData(phaseId: number = PHASE_ID): {
     )
     .get(phaseId) as { total: number }
 
-  if (totalSpots.total && totalStudents.count <= totalSpots.total) {
+  if (totalSpots.total && totalApplicants.count <= totalSpots.total) {
     warnings.push(
-      `Hay ${totalStudents.count} estudiantes y ${totalSpots.total} plazas. Para competencia realista, debería haber más estudiantes que plazas.`
+      `Hay ${totalApplicants.count} aspirantes y ${totalSpots.total} plazas. Para competencia realista, debería haber más aspirantes que plazas.`
     )
   }
 

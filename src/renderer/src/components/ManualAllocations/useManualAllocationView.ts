@@ -1,39 +1,39 @@
 import {
-  createAssignment,
-  deleteAllAssignmentsFromPhase,
-  getAssignmentsByPhase
-} from "@renderer/api/assignment"
+  createAllocation,
+  deleteAllAllocationsFromPhase,
+  getAllocationsByPhase
+} from "@renderer/api/allocation"
 import { exportPDF } from "@renderer/api/pdf"
 import { getAllSpots } from "@renderer/api/spot"
-import { getAllStudents } from "@renderer/api/student"
+import { getAllApplicants } from "@renderer/api/applicant"
 import { getPhaseName } from "@renderer/utils/getPhaseName"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
-import { AssignmentRow } from "src/shared/types"
+import { AllocationRow } from "src/shared/types"
 
 export const useManualAllocationView = (phaseId: number) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const queryClient = useQueryClient()
 
-  const { data: assignments, isLoading: loadingAssignments } = useQuery({
-    queryKey: [rqKeys.ASSIGNMENTS, phaseId],
-    queryFn: () => getAssignmentsByPhase(phaseId)
+  const { data: allocations, isLoading: loadingAllocations } = useQuery({
+    queryKey: [rqKeys.ALLOCATIONS, phaseId],
+    queryFn: () => getAllocationsByPhase(phaseId)
   })
 
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState<number>(10)
   const [searchTerm, setSearchTerm] = useState<string>("")
-  const [sortField, setSortField] = useState<keyof AssignmentRow | null>(null)
+  const [sortField, setSortField] = useState<keyof AllocationRow | null>(null)
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
 
-  const filteredAndSortedAssignments = useMemo(() => {
-    if (!assignments) return []
+  const filteredAndSortedAllocations = useMemo(() => {
+    if (!allocations) return []
 
     // Filtrado
-    const filtered = assignments.filter((assignment) =>
-      `${assignment.name} ${assignment.lastName} ${assignment.ci} ${assignment.career} ${assignment.location}`
+    const filtered = allocations.filter((allocation) =>
+      `${allocation.name} ${allocation.lastName} ${allocation.ci} ${allocation.career} ${allocation.location}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
     )
@@ -59,20 +59,20 @@ export const useManualAllocationView = (phaseId: number) => {
     }
 
     return filtered
-  }, [assignments, searchTerm, sortField, sortDirection])
+  }, [allocations, searchTerm, sortField, sortDirection])
 
   // Paginación
-  const paginatedAssignments: AssignmentRow[] = useMemo(() => {
+  const paginatedAllocations: AllocationRow[] = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
-    return filteredAndSortedAssignments.slice(startIndex, endIndex)
-  }, [filteredAndSortedAssignments, currentPage, itemsPerPage])
+    return filteredAndSortedAllocations.slice(startIndex, endIndex)
+  }, [filteredAndSortedAllocations, currentPage, itemsPerPage])
 
   const totalPages = useMemo(() => {
-    return Math.ceil(filteredAndSortedAssignments?.length / itemsPerPage)
-  }, [filteredAndSortedAssignments, itemsPerPage])
+    return Math.ceil(filteredAndSortedAllocations?.length / itemsPerPage)
+  }, [filteredAndSortedAllocations, itemsPerPage])
 
-  const handleSort = (field: keyof AssignmentRow) => {
+  const handleSort = (field: keyof AllocationRow) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
@@ -82,14 +82,14 @@ export const useManualAllocationView = (phaseId: number) => {
   }
 
   const deleteAllMutation = useMutation({
-    mutationFn: (phaseId: number) => deleteAllAssignmentsFromPhase(phaseId),
+    mutationFn: (phaseId: number) => deleteAllAllocationsFromPhase(phaseId),
     onSuccess: () => {
-      toast.success("Todas los otorgamientos de la fase fueron eliminadas.")
-      queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS, phaseId] })
+      toast.success("Todos los otorgamientos de la fase fueron eliminados.")
+      queryClient.invalidateQueries({ queryKey: [rqKeys.ALLOCATIONS, phaseId] })
     },
     onError: (err: any) => {
       console.error(err)
-      const errorMessage = err instanceof Error ? err.message : "Error al eliminar asignaciones"
+      const errorMessage = err instanceof Error ? err.message : "Error al eliminar otorgamientos"
       toast.error(errorMessage, { style: { color: "var(--errorMessage)" } })
     }
   })
@@ -98,9 +98,9 @@ export const useManualAllocationView = (phaseId: number) => {
     deleteAllMutation.mutate(phaseId)
   }
 
-  const { data: students, isLoading: loadingStudents } = useQuery({
-    queryKey: [rqKeys.STUDENTS],
-    queryFn: () => getAllStudents(phaseId)
+  const { data: applicants, isLoading: loadingApplicants } = useQuery({
+    queryKey: [rqKeys.APPLICANTS],
+    queryFn: () => getAllApplicants(phaseId)
   })
 
   const { data: spots, isLoading: loadingSpots } = useQuery({
@@ -109,52 +109,52 @@ export const useManualAllocationView = (phaseId: number) => {
   })
 
   const [formData, setFormData] = useState<{
-    studentId: number | null
+    applicantId: number | null
     spotId: number | null
   }>({
-    studentId: null,
+    applicantId: null,
     spotId: null
   })
 
-  const unassignedStudents = useMemo(() => {
-    if (!students || !assignments) return []
+  const unallocatedApplicants = useMemo(() => {
+    if (!applicants || !allocations) return []
 
-    // Paso 1: obtener IDs de estudiantes asignados
-    const assignedIds = new Set(assignments.map((a) => a.studentId))
+    // Paso 1: obtener IDs de aspirantes otorgados
+    const allocatedIds = new Set(allocations.map((a) => a.applicantId))
 
-    // Paso 2: filtrar estudiantes que NO están asignados
-    return students.filter((student) => !assignedIds.has(student.id))
-  }, [students, assignments])
+    // Paso 2: filtrar aspirantes que NO están otorgados
+    return applicants.filter((applicant) => !allocatedIds.has(applicant.id))
+  }, [applicants, allocations])
 
-  const assignedCount = useMemo(() => {
-    if (!assignments) return {}
-    return assignments.reduce((acc: Record<number, number>, a) => {
+  const allocatedCount = useMemo(() => {
+    if (!allocations) return {}
+    return allocations.reduce((acc: Record<number, number>, a) => {
       acc[a.spotId] = (acc[a.spotId] || 0) + 1
       return acc
     }, {})
-  }, [assignments])
+  }, [allocations])
 
   const spotsWithAvailable = useMemo(() => {
     if (!spots) return []
 
     return spots.map((spot) => {
-      const assigned = assignedCount[spot.spotId] || 0
-      const availableQuantityReal = Math.max(spot.availableQuantity - assigned, 0)
+      const allocated = allocatedCount[spot.spotId] || 0
+      const availableQuantityReal = Math.max(spot.availableQuantity - allocated, 0)
       return { ...spot, availableQuantityReal }
     })
-  }, [spots, assignedCount])
+  }, [spots, allocatedCount])
 
   const availableSpots = useMemo(() => {
     return spotsWithAvailable.filter((spot) => spot.availableQuantityReal > 0)
   }, [spotsWithAvailable])
 
-  const manualAssignMutation = useMutation({
-    mutationFn: async ({ studentId, spotId }: { studentId: number; spotId: number }) => {
-      await createAssignment({ studentId, spotId })
+  const manualAllocateMutation = useMutation({
+    mutationFn: async ({ applicantId, spotId }: { applicantId: number; spotId: number }) => {
+      await createAllocation({ applicantId, spotId })
     },
     onSuccess: () => {
       toast.success("Plaza otorgada al aspirante correctamente.")
-      queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS, phaseId] })
+      queryClient.invalidateQueries({ queryKey: [rqKeys.ALLOCATIONS, phaseId] })
     },
     onError: (err: any) => {
       console.error(err)
@@ -166,15 +166,15 @@ export const useManualAllocationView = (phaseId: number) => {
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault()
-    if (!formData.studentId || !formData.spotId) {
+    if (!formData.applicantId || !formData.spotId) {
       toast.error("Debe seleccionar un aspirante y una plaza.", {
         style: { color: "var(--errorMessage)" }
       })
       return
     }
 
-    manualAssignMutation.mutate({
-      studentId: formData.studentId,
+    manualAllocateMutation.mutate({
+      applicantId: formData.applicantId,
       spotId: formData.spotId
     })
 
@@ -182,13 +182,13 @@ export const useManualAllocationView = (phaseId: number) => {
   }
 
   const resetForm = () => {
-    setFormData({ studentId: null, spotId: null })
+    setFormData({ applicantId: null, spotId: null })
     setIsDialogOpen(false)
   }
 
   const manualAllocationsTable = [
-    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Localización", "Nota", "Preferencia"],
-    ...filteredAndSortedAssignments.map((allocation, index) => [
+    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Ubicación", "Nota", "Preferencia"],
+    ...filteredAndSortedAllocations.map((allocation, index) => [
       index + 1,
       allocation.ci,
       allocation.lastName,
@@ -221,9 +221,9 @@ export const useManualAllocationView = (phaseId: number) => {
   return {
     isDialogOpen,
     setIsDialogOpen,
-    paginatedAssignments,
-    filteredAndSortedAssignments,
-    loadingAssignments,
+    paginatedAllocations,
+    filteredAndSortedAllocations,
+    loadingAllocations,
     currentPage,
     setCurrentPage,
     itemsPerPage,
@@ -235,8 +235,8 @@ export const useManualAllocationView = (phaseId: number) => {
     handleSort,
     sortDirection,
     handleDeleteAllFromPhase,
-    unassignedStudents,
-    loadingStudents,
+    unallocatedApplicants,
+    loadingApplicants,
     availableSpots,
     loadingSpots,
     formData,

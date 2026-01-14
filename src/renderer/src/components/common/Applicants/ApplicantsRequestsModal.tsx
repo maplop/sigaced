@@ -2,15 +2,15 @@ import { Card, CardContent } from "@renderer/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@renderer/components/ui/dialog"
 import { Eye, FileText, User } from "lucide-react"
 import { useState } from "react"
-import { SpotFull, Student } from "src/shared/types"
+import { SpotFull, Applicant } from "src/shared/types"
 
 interface ApplicantsRequestsModalProps {
-  student: Student,
+  applicant: Applicant,
   spots: SpotFull[],
   loadingSpots: boolean
 }
 
-export function ApplicantsRequestsModal({ student, spots, loadingSpots }: ApplicantsRequestsModalProps) {
+export function ApplicantsRequestsModal({ applicant, spots, loadingSpots }: ApplicantsRequestsModalProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -24,12 +24,12 @@ export function ApplicantsRequestsModal({ student, spots, loadingSpots }: Applic
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="h-5 w-5" />
-            Solicitudes de {student.name} {student.lastName}
+            Solicitudes de {applicant.name} {applicant.lastName}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
-          {student.requests?.length === 0 ? (
+          {applicant.requests?.length === 0 ? (
             <Card>
               <CardContent className="p-6 text-center">
                 <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -38,7 +38,7 @@ export function ApplicantsRequestsModal({ student, spots, loadingSpots }: Applic
             </Card>
           ) : (
             <div className="space-y-2">
-              {student.requests?.map((request, index) => {
+              {applicant.requests?.map((request, index) => {
                 const spot = spots.find(s => s.spotId === request.spotId)
 
                 return (
@@ -61,7 +61,7 @@ export function ApplicantsRequestsModal({ student, spots, loadingSpots }: Applic
           )}
 
           {(() => {
-            const requestsCount = student.requests?.length ?? 0;
+            const requestsCount = applicant.requests?.length ?? 0;
             if (requestsCount > 0) {
               return (
                 <p className="text-xs text-muted-foreground text-center">

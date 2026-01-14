@@ -93,18 +93,18 @@ export const useLocationView = () => {
       }
       toast.success(
         editingLocation
-          ? "Localización actualizada correctamente."
-          : "Localización creada correctamente."
+          ? "Ubicación actualizada correctamente."
+          : "Ubicación creada correctamente."
       )
     },
     onError: (error) => {
-      console.error("Error procesando localización:", error)
+      console.error("Error procesando ubicación:", error)
       const errorMessage =
         error instanceof Error
           ? error.message
           : editingLocation
-            ? "Error al editar la localización."
-            : "Error al crear la localización"
+            ? "Error al editar la ubicación."
+            : "Error al crear la ubicación"
       toast.error(errorMessage, {
         style: {
           color: "var(--errorMessage)"
@@ -129,14 +129,14 @@ export const useLocationView = () => {
   const deleteMutation = useMutation({
     mutationFn: deleteLocation,
     onSuccess: () => {
-      toast.success("Localización eliminada correctamente.")
+      toast.success("Ubicación eliminada correctamente.")
       queryClient.invalidateQueries({ queryKey: [rqKeys.LOCATIONS] })
       resetForm()
     },
     onError: (error: unknown) => {
       console.error(error)
       const errorMessage =
-        error instanceof Error ? error.message : "Ocurrió un error al eliminar la localización."
+        error instanceof Error ? error.message : "Ocurrió un error al eliminar la ubicación."
       toast.error(errorMessage, {
         style: { color: "var(--errorMessage)" }
       })
@@ -151,7 +151,7 @@ export const useLocationView = () => {
     mutationFn: deleteAllLocations,
     onSuccess: () => {
       toast.success(
-        "Todas las localizaciones y sus datos asociados han sido eliminadas correctamente."
+        "Todas las ubicaciones y sus datos asociados han sido eliminadas correctamente."
       )
       queryClient.invalidateQueries({ queryKey: [rqKeys.LOCATIONS] })
       resetForm()
@@ -161,7 +161,7 @@ export const useLocationView = () => {
       const errorMessage =
         error instanceof Error
           ? error.message
-          : "Ocurrió un error al eliminar todas las localizaciones."
+          : "Ocurrió un error al eliminar todas las ubicaciones."
       toast.error(errorMessage, {
         style: { color: "var(--errorMessage)" }
       })
@@ -184,18 +184,18 @@ export const useLocationView = () => {
   }
 
   const loacationsTable = [
-    ["#", "Localización"],
+    ["#", "Ubicación"],
     ...filteredAndSortedLocations.map((location, index) => [index + 1, location.name])
   ]
 
   const handleExportPDF = async () => {
     try {
       const path = await exportPDF({
-        subtitle: "Listado de Localizaciones",
+        subtitle: "Listado de Ubicaciones",
         table: loacationsTable,
         columnWidths: [20, "auto"],
         columnAlignments: ["center", "left"],
-        saveName: "Listado de Localizaciones.pdf"
+        saveName: "Listado de Ubicaciones.pdf"
       })
       toast.success("Reporte descargado en: " + path)
     } catch (error: any) {

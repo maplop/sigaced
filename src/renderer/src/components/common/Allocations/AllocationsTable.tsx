@@ -5,28 +5,28 @@ import { Button } from "@renderer/components/ui/button"
 import { Badge } from "@renderer/components/ui/badge"
 import { Label } from "@renderer/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
-import { AssignmentRow } from "src/shared/types"
+import { AllocationRow } from "src/shared/types"
 
 
 export interface AllocationsTableProps {
-  loadingAssignments: boolean,
-  filteredAndSortedAssignments: AssignmentRow[]
-  paginatedAssignments: AssignmentRow[]
+  loadingAllocations: boolean,
+  filteredAndSortedAllocations: AllocationRow[]
+  paginatedAllocations: AllocationRow[]
   currentPage: number
   totalPages: number
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>
   itemsPerPage: number,
   setItemsPerPage: React.Dispatch<React.SetStateAction<number>>
-  sortField: keyof AssignmentRow | null
+  sortField: keyof AllocationRow | null
   sortDirection: "asc" | "desc"
-  handleSort: (field: keyof AssignmentRow) => void
+  handleSort: (field: keyof AllocationRow) => void
   phaseId?: number
 }
 
 const AllocationsTable = ({
-  loadingAssignments,
-  filteredAndSortedAssignments,
-  paginatedAssignments,
+  loadingAllocations,
+  filteredAndSortedAllocations,
+  paginatedAllocations,
   currentPage,
   totalPages,
   setCurrentPage,
@@ -44,7 +44,7 @@ const AllocationsTable = ({
 
   return (
     <>
-      {!loadingAssignments ? (
+      {!loadingAllocations ? (
         <div className="space-y-4">
           <div className="rounded-md border">
             <Table>
@@ -64,7 +64,7 @@ const AllocationsTable = ({
                     Carrera {sortField === "career" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("location")}>
-                    Localización {sortField === "location" && (sortDirection === "asc" ? "↑" : "↓")}
+                    Ubicación {sortField === "location" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("grade")}>
                     Nota {sortField === "grade" && (sortDirection === "asc" ? "↑" : "↓")}
@@ -76,31 +76,31 @@ const AllocationsTable = ({
                   )}
                 </TableRow>
               </TableHeader>
-              {filteredAndSortedAssignments.length !== 0 ? (
+              {filteredAndSortedAllocations.length !== 0 ? (
                 <TableBody>
-                  {paginatedAssignments.map((assignment, index) => (
-                    <TableRow key={assignment.id}>
+                  {paginatedAllocations.map((allocation, index) => (
+                    <TableRow key={allocation.id}>
                       <TableCell className="text-center">
                         {(currentPage - 1) * itemsPerPage + index + 1}
                       </TableCell>
-                      <TableCell className="text-center">{assignment.ci}</TableCell>
+                      <TableCell className="text-center">{allocation.ci}</TableCell>
                       <TableCell className="font-medium">
-                        {assignment.lastName}
+                        {allocation.lastName}
                       </TableCell>
                       <TableCell >
-                        {assignment.name}
+                        {allocation.name}
                       </TableCell>
                       <TableCell >
-                        {assignment.career}
+                        {allocation.career}
                       </TableCell>
                       <TableCell >
-                        {assignment.location}
+                        {allocation.location}
                       </TableCell>
                       <TableCell className="text-center">
-                        <Badge>{assignment.grade.toFixed(2)}</Badge>
+                        <Badge>{allocation.grade.toFixed(2)}</Badge>
                       </TableCell>
                       {phaseId !== 3 && (
-                        <TableCell className="text-center font-medium">{assignment.preferenceOrder}</TableCell>
+                        <TableCell className="text-center font-medium">{allocation.preferenceOrder}</TableCell>
                       )}
                     </TableRow>
                   ))}
@@ -109,7 +109,7 @@ const AllocationsTable = ({
                 <TableBody>
                   <TableRow>
                     <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
-                      No se encontraron asignaciones.
+                      No se encontraron otorgamientos.
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -124,7 +124,7 @@ const AllocationsTable = ({
                 variant={'outline'}
                 size="sm"
                 onClick={() => goToPage(currentPage - 1)}
-                disabled={filteredAndSortedAssignments.length === 0 || currentPage === 1}
+                disabled={filteredAndSortedAllocations.length === 0 || currentPage === 1}
               >
                 Anterior
               </Button>
@@ -137,7 +137,7 @@ const AllocationsTable = ({
                 variant={'outline'}
                 size="sm"
                 onClick={() => goToPage(currentPage + 1)}
-                disabled={filteredAndSortedAssignments.length === 0 || currentPage === totalPages}>
+                disabled={filteredAndSortedAllocations.length === 0 || currentPage === totalPages}>
                 Siguiente
               </Button>
             </div>

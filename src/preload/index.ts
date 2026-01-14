@@ -1,16 +1,16 @@
 import { contextBridge } from "electron"
 import { electronAPI } from "@electron-toolkit/preload"
 import { ipcRenderer } from "electron"
-import { Student } from "src/shared/types"
+import { Applicant } from "src/shared/types"
 
 // Custom APIs for renderer
 const api = {
   // Reports
-  getStudentsAndRequest: () => ipcRenderer.invoke("reports:getByRequestSpot"),
-  getAssignedStudentsBySpot: () => ipcRenderer.invoke("reports:getByAssignedSpot"),
-  getAssignedStudentsByLocation: () => ipcRenderer.invoke("reports:getByLocation"),
-  getAssignedStudentsByCareer: () => ipcRenderer.invoke("reports:getByCareer"),
-  getStudentsByMunicipality: () => ipcRenderer.invoke("reports:getByMunicipality"),
+  getApplicantsAndRequest: () => ipcRenderer.invoke("reports:getByRequestSpot"),
+  getAssignedApplicantsBySpot: () => ipcRenderer.invoke("reports:getByAssignedSpot"),
+  getAssignedApplicantsByLocation: () => ipcRenderer.invoke("reports:getByLocation"),
+  getAssignedApplicantsByCareer: () => ipcRenderer.invoke("reports:getByCareer"),
+  getApplicantsByMunicipality: () => ipcRenderer.invoke("reports:getByMunicipality"),
   getCareerClosing: () => ipcRenderer.invoke("reports:getClosingGrades"),
 
   //PDF
@@ -18,29 +18,29 @@ const api = {
 
   //Statistics
   getDashboardStats: (phaseId?: number) => ipcRenderer.invoke("stats:getDashboardStats", phaseId),
-  getTopStudents: (phaseId?: number) => ipcRenderer.invoke("stats:getTopStudents", phaseId),
+  getTopApplicants: (phaseId?: number) => ipcRenderer.invoke("stats:getTopApplicants", phaseId),
   getTopCareers: (phaseId?: number) => ipcRenderer.invoke("stats:getTopCareers", phaseId),
   clearAllTables: () => ipcRenderer.invoke("stats:clearAllTables"),
 
-  // Student
-  addStudent: (student: Student) => ipcRenderer.invoke("student:add", student),
-  getStudents: (phaseId: number) => ipcRenderer.invoke("student:getAll", phaseId),
-  updateStudent: (student: Student) => ipcRenderer.invoke("student:update", student),
-  deleteStudent: (studentId: number) => ipcRenderer.invoke("student:deleteStudent", studentId),
-  addStudentToPhase: (studentId: number, phaseId: number) =>
-    ipcRenderer.invoke("student:addStudentToPhase", studentId, phaseId),
-  deleteAllStudentsFromPhase: (phaseId: number) => ipcRenderer.invoke("student:deleteAll", phaseId),
+  // Applicant
+  addApplicant: (applicant: Applicant) => ipcRenderer.invoke("applicant:add", applicant),
+  getApplicants: (phaseId: number) => ipcRenderer.invoke("applicant:getAll", phaseId),
+  updateApplicant: (applicant: Applicant) => ipcRenderer.invoke("applicant:update", applicant),
+  deleteApplicant: (applicantId: number) => ipcRenderer.invoke("applicant:deleteApplicant", applicantId),
+  addApplicantToPhase: (applicantId: number, phaseId: number) =>
+    ipcRenderer.invoke("applicant:addApplicantToPhase", applicantId, phaseId),
+  deleteAllApplicantsFromPhase: (phaseId: number) => ipcRenderer.invoke("applicant:deleteAll", phaseId),
 
-  // Assignment
-  addAssignment: (assignment) => ipcRenderer.invoke("assignment:addAssignment", assignment),
-  getAssignments: () => ipcRenderer.invoke("assignment:getAllAssignment"),
-  getAssignmentsByPhase: (phaseId: number) =>
-    ipcRenderer.invoke("assignment:getAssignmentsByPhase", phaseId),
-  updateAssignment: (assignment) => ipcRenderer.invoke("assignment:updateAssignment", assignment),
-  deleteAssignmentForId: (id: number) => ipcRenderer.invoke("assignment:deleteAssignmentForId", id),
-  deleteAllAssignmentsFromPhase: (phaseId: number) =>
-    ipcRenderer.invoke("assignment:deleteAllFromPhase", phaseId),
-  deleteAllAssignments: () => ipcRenderer.invoke("assignment:deleteAll"),
+  // Allocation
+  addAllocation: (allocation) => ipcRenderer.invoke("allocation:addAllocation", allocation),
+  getAllAllocations: () => ipcRenderer.invoke("allocation:getAllAllocation"),
+  getAllocationsByPhase: (phaseId: number) =>
+    ipcRenderer.invoke("allocation:getAllocationsByPhase", phaseId),
+  updateAllocation: (allocation) => ipcRenderer.invoke("allocation:updateAllocation", allocation),
+  deleteAllocationForId: (id: number) => ipcRenderer.invoke("allocation:deleteAllocationForId", id),
+  deleteAllAllocationsFromPhase: (phaseId: number) =>
+    ipcRenderer.invoke("allocation:deleteAllFromPhase", phaseId),
+  deleteAllAllocations: () => ipcRenderer.invoke("allocation:deleteAll"),
 
   // Career
   addCareer: (career) => ipcRenderer.invoke("career:add", career),
@@ -78,7 +78,7 @@ const api = {
     ipcRenderer.invoke("user:changePassword", data),
 
   // Seed Database
-  seedDatabase: (studentCount?: number) => ipcRenderer.invoke("seed:populate", studentCount),
+  seedDatabase: (applicantCount?: number) => ipcRenderer.invoke("seed:populate", applicantCount),
   clearSeedTables: () => ipcRenderer.invoke("seed:clear"),
   validateSeedData: () => ipcRenderer.invoke("seed:validate")
 }

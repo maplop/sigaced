@@ -37,14 +37,14 @@ const ReportsView = () => {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 
               <ReportCard
-                title="Aspirantes y Opciones"
-                description="Listado aspirantes junto a las opciones que seleccionaron"
+                title="Aspirantes y Solicitudes"
+                description="Listado aspirantes junto a las solicitudes que seleccionaron"
                 icon={<Users className="h-5 w-5" />}
                 handleGenerateReport={handleExportStudentsAndRequestPDF}
               />
               <ReportCard
-                title="Aspirantes por Localización"
-                description="Listado de aspirantes agrupados por localización"
+                title="Aspirantes por Ubicación"
+                description="Listado de aspirantes agrupados por ubicación"
                 icon={<MapPin className="h-5 w-5" />}
                 handleGenerateReport={handleExportAssignedStudentsByLocationPDF}
               />

@@ -2,7 +2,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogDescription, 
 import { Button } from "@renderer/components/ui/button"
 import { Label } from "@renderer/components/ui/label"
 import { Check, ChevronsUpDown, Play } from "lucide-react"
-import { SpotFull, Student } from "src/shared/types"
+import { SpotFull, Applicant } from "src/shared/types"
 import { Badge } from "../ui/badge"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
@@ -15,18 +15,18 @@ type SpotWithAvailable = SpotFull & { availableQuantityReal: number }
 interface ApplicantsFormProps {
   isDialogOpen: boolean,
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  students: Student[],
-  loadingStudents: boolean,
+  applicants: Applicant[],
+  loadingApplicants: boolean,
   spots: SpotWithAvailable[],
   loadingSpots: boolean,
   resetForm: () => void,
   handleSubmit: (e: React.FormEvent) => void,
   formData: {
-    studentId: number | null
+    applicantId: number | null
     spotId: number | null
   },
   setFormData: React.Dispatch<React.SetStateAction<{
-    studentId: number | null
+    applicantId: number | null
     spotId: number | null
   }>>;
 }
@@ -34,8 +34,8 @@ interface ApplicantsFormProps {
 const AddManualAllocation = ({
   isDialogOpen,
   setIsDialogOpen,
-  students,
-  loadingStudents,
+  applicants,
+  loadingApplicants,
   spots,
   loadingSpots,
   handleSubmit,
@@ -62,12 +62,12 @@ const AddManualAllocation = ({
         <DialogHeader>
           <DialogTitle>Otorgamiento Manual de Plazas</DialogTitle>
           <DialogDescription>
-            Asigna manualmente un estudiante a una de las plazas disponible.
+            Asigna manualmente un aspirante a una de las plazas disponible.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="space-y-2 py-4">
-            <Label htmlFor="studentId">Aspirantes</Label>
+            <Label htmlFor="applicantId">Aspirantes</Label>
             <Popover open={open.applicant} onOpenChange={handleOpenChange('applicant')}>
               <PopoverTrigger asChild>
                 <Button
@@ -76,17 +76,17 @@ const AddManualAllocation = ({
                   aria-expanded={open.applicant}
                   className="w-full justify-between font-normal"
                 >
-                  {formData.studentId
+                  {formData.applicantId
                     ? (() => {
-                      const student = students?.find(s => s.id === formData.studentId)
-                      return student ? (
+                      const applicant = applicants?.find(a => a.id === formData.applicantId)
+                      return applicant ? (
                         <div className="flex justify-between items-center w-full">
-                          <div>{student.lastName} {student.name}</div>
-                          <Badge>{student.grade.toFixed(2)}</Badge>
+                          <div>{applicant.lastName} {applicant.name}</div>
+                          <Badge>{applicant.grade.toFixed(2)}</Badge>
                         </div>
                       ) : "Seleccione un aspirante..."
                     })()
-                    : loadingStudents
+                    : loadingApplicants
                       ? "Cargando aspirantes..."
                       : "Seleccione un aspirante"}
                   <ChevronsUpDown className="opacity-50" />
@@ -98,26 +98,26 @@ const AddManualAllocation = ({
                   <CommandList>
                     <CommandEmpty>No se encontró ningún aspirante.</CommandEmpty>
                     <CommandGroup>
-                      {loadingStudents ? (
+                      {loadingApplicants ? (
                         <CommandItem disabled>Cargando aspirantes...</CommandItem>
                       ) : (
-                        students?.map((student) => (
+                        applicants?.map((applicant) => (
                           <CommandItem
-                            key={student.id}
-                            value={`${student.lastName} ${student.name}`}
+                            key={applicant.id}
+                            value={`${applicant.lastName} ${applicant.name}`}
                             onSelect={() => {
-                              setFormData((prev) => ({ ...prev, studentId: student.id }))
+                              setFormData((prev) => ({ ...prev, applicantId: applicant.id }))
                               setOpen((prev) => ({ ...prev, applicant: false }))
                             }}
                           >
                             <div className="flex justify-between items-center w-full">
-                              <div>{student.lastName} {student.name}</div>
-                              <Badge>{student.grade.toFixed(2)}</Badge>
+                              <div>{applicant.lastName} {applicant.name}</div>
+                              <Badge>{applicant.grade.toFixed(2)}</Badge>
                             </div>
                             <Check
                               className={cn(
                                 "ml-auto",
-                                formData.studentId === student.id ? "opacity-100" : "opacity-0"
+                                formData.applicantId === applicant.id ? "opacity-100" : "opacity-0"
                               )}
                             />
                           </CommandItem>

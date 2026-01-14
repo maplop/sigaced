@@ -47,7 +47,7 @@ const LocationView = () => {
   return (
     <PageContainer>
       <div className="flex justify-between items-center">
-        <PageTitle title="Gestionar localizaciones" subtitle="Agrega, edita y organiza tus localizaciones  de forma rápida." />
+        <PageTitle title="Gestionar ubicaciones" subtitle="Agrega, edita y organiza tus ubicaciones  de forma rápida." />
       </div>
       <ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">
         <Card>
@@ -56,7 +56,7 @@ const LocationView = () => {
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium text-foreground">
-                  Total de localizaciones: {paginatedLocations.length}
+                  Total de ubicaciones: {paginatedLocations.length}
                 </span>
               </div>
             </div>
@@ -113,10 +113,10 @@ const LocationView = () => {
                     <div className="space-y-2 text-center">
                       <div className="space-y-2 text-center">
                         <p>
-                          ¿Seguro que deseas eliminar <strong>todas las localizaciones</strong> del sistema?
+                          ¿Seguro que deseas eliminar <strong>todas las ubicaciones</strong> del sistema?
                         </p>
                         <p>
-                          Esta acción también eliminará las <strong>plazas asociadas a dichas localizaciones</strong>
+                          Esta acción también eliminará las <strong>plazas asociadas a dichas ubicaciones</strong>
                           en todas las fases.
                         </p>
                         <p>

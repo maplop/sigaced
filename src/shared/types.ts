@@ -4,7 +4,7 @@ export interface Phase {
   name: string
 }
 
-export interface Student {
+export interface Applicant {
   id: number
   ci: string
   name: string
@@ -13,10 +13,10 @@ export interface Student {
   gender: "M" | "F"
   municipality: string
   phaseId: number
-  requests?: StudentRequest[]
+  requests?: ApplicantRequest[]
 }
 
-export interface StudentRequest {
+export interface ApplicantRequest {
   spotId: number
   preferenceOrder: 1 | 2 | 3
 }
@@ -54,22 +54,22 @@ export interface SpotFull {
 
 export interface Request {
   id: number
-  studentCi: string
+  applicantCi: string
   spotPhaseId: number
   preferenceOrder: number
 }
 
-export interface Assignment {
+export interface Allocation {
   id: number
-  studentId: number
+  applicantId: number
   spotId: number
-  assignedAt?: string
+  allocatedAt?: string
 }
 
-export interface AssignmentRow {
+export interface AllocationRow {
   id: number
   spotId: number
-  studentId: number
+  applicantId: number
   ci: string
   lastName: string
   name: string
@@ -96,15 +96,15 @@ export interface OperationResult {
 }
 
 export interface DashboardStats {
-  totalStudents: number
+  totalApplicants: number
   avgGrade: number
   totalSpots: number
   totalCareers: number
-  assignedSpots: number
+  allocatedSpots: number
   remainingSpots: number
 }
 
-export interface TopStudent {
+export interface TopApplicant {
   name: string
   lastName: string
   grade: number
@@ -115,10 +115,10 @@ export interface TopCareer {
   career: string
   totalSpots: number
   totalRequests?: number
-  totalAssignments?: number
+  totalAllocations?: number
 }
 
-export interface StudentRequestRow {
+export interface ApplicantRequestRow {
   ci: string
   lastName: string
   name: string

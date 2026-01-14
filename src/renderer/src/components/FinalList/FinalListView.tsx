@@ -12,8 +12,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 
 const FinalListView = () => {
   const {
-    loadingAssignments,
-    paginatedAssignments,
+    loadingAllocations,
+    paginatedAllocations,
     currentPage,
     setCurrentPage,
     totalPages,
@@ -23,7 +23,7 @@ const FinalListView = () => {
     setSearchTerm,
     sortField,
     sortDirection,
-    filteredAndSortedAssignments,
+    filteredAndSortedAllocations,
     handleSort,
     handleDeleteAllFromPhase,
     handleExportPDF
@@ -35,14 +35,14 @@ const FinalListView = () => {
     <PageContainer>
       <PageTitle
         title={'Listado Final del Otorgamiento'}
-        subtitle={'Aquí se muestran todos los estudiantes asignados en los diferentes otorgamientos.'} />
+        subtitle={'Aquí se muestran todos los aspirantes otorgados en los diferentes otorgamientos.'} />
       <div className="w-full">
         <Card>
           <CardHeader>
             <div className="w-fit p-0 bg-transparent shadow-none">
               <div className="flex items-center gap-2">
                 <UsersIcon className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium text-foreground">Total de asignaciones: {filteredAndSortedAssignments.length} </span>
+                <span className="text-sm font-medium text-foreground">Total de otorgamientos: {filteredAndSortedAllocations.length} </span>
               </div>
             </div>
           </CardHeader>
@@ -80,7 +80,7 @@ const FinalListView = () => {
                     }}
                     title="Limpiar otorgamientos de la fase"
                     trigger={
-                      <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAssignments.length === 0}>
+                      <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAllocations.length === 0}>
                         <Trash2 className="h-4 w-4 text-red-500" />
                         Deshacer otorgamiento
                       </Button>
@@ -88,10 +88,10 @@ const FinalListView = () => {
                   >
                     <div className="space-y-2 text-center">
                       <p>
-                        ¿Estás seguro de que deseas eliminar <strong>todas las asignaciones</strong> de esta fase?
+                        ¿Estás seguro de que deseas eliminar <strong>todos los otorgamientos</strong>?
                       </p>
                       <p>
-                        Esta acción también eliminará automáticamente cualquier <strong>otorgamientorelacionada en fases posteriores</strong> que dependa de estas.
+                        Esta acción eliminará todos los otorgamientos registrados en el sistema.
                       </p>
                       <p>
                         Esta operación <strong>no se puede deshacer</strong>.
@@ -102,9 +102,9 @@ const FinalListView = () => {
               </div>
             </div>
             <FinalListTable
-              loadingAssignments={loadingAssignments}
-              filteredAndSortedAssignments={filteredAndSortedAssignments}
-              paginatedAssignments={paginatedAssignments}
+              loadingAllocations={loadingAllocations}
+              filteredAndSortedAllocations={filteredAndSortedAllocations}
+              paginatedAllocations={paginatedAllocations}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               totalPages={totalPages}

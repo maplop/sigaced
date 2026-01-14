@@ -23,8 +23,8 @@ interface ApplicantsViewProps {
 export default function ApplicantsView({ phase }: ApplicantsViewProps) {
 
   const {
-    paginatedStudents,
-    loadingStudents,
+    paginatedApplicants,
+    loadingApplicants,
     currentPage,
     totalPages,
     setCurrentPage,
@@ -36,14 +36,14 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
     sortDirection,
     isDialogOpen,
     setIsDialogOpen,
-    editingStudent,
+    editingApplicant,
     formData,
     setFormData,
-    filteredAndSortedStudents,
+    filteredAndSortedApplicants,
     handleSort,
     handleSubmit,
     handleEdit,
-    handleDeleteStudent,
+    handleDeleteApplicant,
     handleDeleteAllFromPhase,
     addRequest,
     updateRequest,
@@ -70,14 +70,14 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
           <div className="w-fit p-0 bg-transparent shadow-none">
             <div className="flex items-center gap-2">
               <UsersIcon className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-foreground">Total de aspirantes: {filteredAndSortedStudents.length}</span>
+              <span className="text-sm font-medium text-foreground">Total de aspirantes: {filteredAndSortedApplicants.length}</span>
             </div>
           </div>
           <ApplicantsForm
             isDialogOpen={isDialogOpen}
             setIsDialogOpen={setIsDialogOpen}
             resetForm={resetForm}
-            editingStudent={editingStudent}
+            editingApplicant={editingApplicant}
             handleSubmit={handleSubmit}
             formData={formData}
             setFormData={setFormData}
@@ -124,7 +124,7 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
                   }}
                   title="Limpiar tabla"
                   trigger={
-                    <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedStudents.length === 0}>
+                    <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedApplicants.length === 0}>
                       <Trash2 className="h-4 w-4 text-red-500" />
                       Limpiar Tabla
                     </Button>
@@ -149,9 +149,9 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
 
           {/* Tabla */}
           <ApplicantsTable
-            loadingStudents={loadingStudents}
-            filteredAndSortedSpots={filteredAndSortedStudents}
-            paginatedStudents={paginatedStudents}
+            loadingApplicants={loadingApplicants}
+            filteredAndSortedSpots={filteredAndSortedApplicants}
+            paginatedApplicants={paginatedApplicants}
             totalPages={totalPages}
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
@@ -160,9 +160,9 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
             sortField={sortField}
             sortDirection={sortDirection}
             handleSort={handleSort}
-            handleDeleteStudent={handleDeleteStudent}
+            handleDeleteApplicant={handleDeleteApplicant}
             handleEdit={handleEdit}
-            filteredAndSortedStudents={filteredAndSortedStudents}
+            filteredAndSortedApplicants={filteredAndSortedApplicants}
             spots={spots ?? []}
             loadingSpots={loadingSpots}
             phaseId={phase}

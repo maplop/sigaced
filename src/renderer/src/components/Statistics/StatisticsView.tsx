@@ -12,8 +12,8 @@ const StatisticsView = () => {
     loadingStats,
     topCareers,
     loadingTopCareers,
-    topStudents,
-    loadingTopStudents,
+    topApplicants,
+    loadingTopApplicants,
     selectedPhase,
     handlePhaseSelector,
     clearAllTablesMutation
@@ -29,7 +29,7 @@ const StatisticsView = () => {
           <PhaseSelector selectedPhase={selectedPhase} handlePhaseSelector={handlePhaseSelector} />
           <KPICards stats={stats} loadingStats={loadingStats} />
           <div className="grid grid-cols-2 gap-4">
-            <TopStudents topStudents={topStudents} loadingTopStudents={loadingTopStudents} />
+            <TopStudents topApplicants={topApplicants} loadingTopApplicants={loadingTopApplicants} />
             <TopCareers topCareers={topCareers} loadingTopCareers={loadingTopCareers} />
           </div>
         </div>

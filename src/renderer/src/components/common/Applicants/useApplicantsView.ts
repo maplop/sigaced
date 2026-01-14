@@ -3,18 +3,18 @@ import { PhaseType } from "@renderer/utils/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import {
-  createStudent,
-  deleteAllStudentsFromPhase,
-  deleteStudent,
-  getAllStudents,
-  updateStudent
-} from "@renderer/api/student"
-import { Student } from "src/shared/types"
+  createApplicant,
+  deleteAllApplicantsFromPhase,
+  deleteApplicant,
+  getAllApplicants,
+  updateApplicant
+} from "@renderer/api/applicant"
+import { Applicant } from "src/shared/types"
 import { toast } from "sonner"
 import { getPhaseName } from "@renderer/utils/getPhaseName"
 import { exportPDF } from "@renderer/api/pdf"
 
-type SortableField = keyof Student | "requestsCount"
+type SortableField = keyof Applicant | "requestsCount"
 
 export const useApplicantsView = (phaseId: PhaseType) => {
   const queryClient = useQueryClient()
@@ -26,9 +26,9 @@ export const useApplicantsView = (phaseId: PhaseType) => {
   const [sortField, setSortField] = useState<SortableField | null>(null)
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null)
+  const [editingApplicant, setEditingApplicant] = useState<Applicant | null>(null)
 
-  const [formData, setFormData] = useState<Omit<Student, "id">>({
+  const [formData, setFormData] = useState<Omit<Applicant, "id">>({
     ci: "",
     name: "",
     lastName: "",
@@ -39,17 +39,17 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     requests: phaseId === 3 ? undefined : [{ spotId: 0, preferenceOrder: 1 as 1 }]
   })
 
-  const { data: students, isLoading: loadingStudents } = useQuery({
-    queryKey: [rqKeys.STUDENTS, phaseId],
-    queryFn: () => getAllStudents(phaseId)
+  const { data: applicants, isLoading: loadingApplicants } = useQuery({
+    queryKey: [rqKeys.APPLICANTS, phaseId],
+    queryFn: () => getAllApplicants(phaseId)
   })
 
   // Filtrado y ordenamiento
-  const filteredAndSortedStudents = useMemo(() => {
-    if (!students) return []
+  const filteredAndSortedApplicants = useMemo(() => {
+    if (!applicants) return []
 
-    const filtered = students.filter((student) =>
-      `${student.name} ${student.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+    const filtered = applicants.filter((applicant) =>
+      `${applicant.name} ${applicant.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
     if (sortField) {
@@ -80,17 +80,17 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     }
 
     return filtered
-  }, [students, searchTerm, sortField, sortDirection])
+  }, [applicants, searchTerm, sortField, sortDirection])
 
-  const paginatedStudents: Student[] = useMemo(() => {
+  const paginatedApplicants: Applicant[] = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
-    return filteredAndSortedStudents.slice(startIndex, endIndex)
-  }, [filteredAndSortedStudents, currentPage, itemsPerPage])
+    return filteredAndSortedApplicants.slice(startIndex, endIndex)
+  }, [filteredAndSortedApplicants, currentPage, itemsPerPage])
 
   const totalPages = useMemo(() => {
-    return Math.ceil(filteredAndSortedStudents.length / itemsPerPage)
-  }, [filteredAndSortedStudents, itemsPerPage])
+    return Math.ceil(filteredAndSortedApplicants.length / itemsPerPage)
+  }, [filteredAndSortedApplicants, itemsPerPage])
 
   const handleSort = (field: SortableField) => {
     if (sortField === field) {
@@ -101,35 +101,35 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     }
   }
 
-  const handleStudentSubmit = async (student: Omit<Student, "id">) => {
-    if (!editingStudent) {
-      return await createStudent(student)
+  const handleApplicantSubmit = async (applicant: Omit<Applicant, "id">) => {
+    if (!editingApplicant) {
+      return await createApplicant(applicant)
     } else {
-      return await updateStudent({ ...student, id: editingStudent.id })
+      return await updateApplicant({ ...applicant, id: editingApplicant.id })
     }
   }
 
   const mutation = useMutation({
-    mutationFn: handleStudentSubmit,
+    mutationFn: handleApplicantSubmit,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [rqKeys.STUDENTS] })
-      if (editingStudent) {
+      queryClient.invalidateQueries({ queryKey: [rqKeys.APPLICANTS] })
+      if (editingApplicant) {
         resetForm()
       } else {
         resetFormWithoutClosing()
       }
       toast.success(
-        editingStudent
+        editingApplicant
           ? "Datos del aspirante actualizados correctamente."
           : "Aspirante creado correctamente."
       )
     },
     onError: (error) => {
-      console.error("Error procesando estudante:", error)
+      console.error("Error procesando aspirante:", error)
       const errorMessage =
         error instanceof Error
           ? error.message
-          : editingStudent
+          : editingApplicant
             ? "Error al editar los datos del aspirante."
             : "Error al crear aspirante."
       toast.error(errorMessage, {
@@ -169,26 +169,26 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     mutation.mutate(formData)
   }
 
-  const handleEdit = (student: Student) => {
-    setEditingStudent(student)
+  const handleEdit = (applicant: Applicant) => {
+    setEditingApplicant(applicant)
     setFormData({
-      ci: student.ci,
-      name: student.name,
-      lastName: student.lastName,
-      grade: student.grade,
-      gender: student.gender,
-      municipality: student.municipality,
+      ci: applicant.ci,
+      name: applicant.name,
+      lastName: applicant.lastName,
+      grade: applicant.grade,
+      gender: applicant.gender,
+      municipality: applicant.municipality,
       phaseId: phaseId,
-      requests: student.requests
+      requests: applicant.requests
     })
     setIsDialogOpen(true)
   }
 
-  const deleteStudentMutation = useMutation({
-    mutationFn: deleteStudent,
+  const deleteApplicantMutation = useMutation({
+    mutationFn: deleteApplicant,
     onSuccess: () => {
       toast.success("Aspirante eliminado correctamente.")
-      queryClient.invalidateQueries({ queryKey: [rqKeys.STUDENTS] })
+      queryClient.invalidateQueries({ queryKey: [rqKeys.APPLICANTS] })
       resetForm()
     },
     onError: (error) => {
@@ -201,15 +201,15 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     }
   })
 
-  const handleDeleteStudent = (studentId: number) => {
-    deleteStudentMutation.mutate(studentId)
+  const handleDeleteApplicant = (applicantId: number) => {
+    deleteApplicantMutation.mutate(applicantId)
   }
 
   const deleteAllFromPhaseMutation = useMutation({
-    mutationFn: () => deleteAllStudentsFromPhase(phaseId),
+    mutationFn: () => deleteAllApplicantsFromPhase(phaseId),
     onSuccess: () => {
       toast.success("Todos los aspirantes de la fase fueron eliminados correctamente.")
-      queryClient.invalidateQueries({ queryKey: [rqKeys.STUDENTS, phaseId] })
+      queryClient.invalidateQueries({ queryKey: [rqKeys.APPLICANTS, phaseId] })
       resetForm()
     },
     onError: (error) => {
@@ -274,7 +274,7 @@ export const useApplicantsView = (phaseId: PhaseType) => {
       phaseId: phaseId,
       requests: phaseId === 3 ? undefined : [{ spotId: 0, preferenceOrder: 1 as 1 }]
     })
-    setEditingStudent(null)
+    setEditingApplicant(null)
     setIsDialogOpen(false)
   }
 
@@ -289,12 +289,12 @@ export const useApplicantsView = (phaseId: PhaseType) => {
       phaseId: phaseId,
       requests: phaseId === 3 ? undefined : [{ spotId: 0, preferenceOrder: 1 as 1 }]
     })
-    setEditingStudent(null)
+    setEditingApplicant(null)
   }
 
   const applicantsTable = [
     ["#", "CI", "Apellidos", "Nombre", "Nota", "Género", "Municipio"],
-    ...filteredAndSortedStudents.map((applicant, index) => [
+    ...filteredAndSortedApplicants.map((applicant, index) => [
       index + 1,
       applicant.ci,
       applicant.lastName,
@@ -324,8 +324,8 @@ export const useApplicantsView = (phaseId: PhaseType) => {
   }
 
   return {
-    paginatedStudents,
-    loadingStudents,
+    paginatedApplicants,
+    loadingApplicants,
     currentPage,
     totalPages,
     setCurrentPage,
@@ -337,14 +337,14 @@ export const useApplicantsView = (phaseId: PhaseType) => {
     sortDirection,
     isDialogOpen,
     setIsDialogOpen,
-    editingStudent,
+    editingApplicant,
     formData,
     setFormData,
-    filteredAndSortedStudents,
+    filteredAndSortedApplicants,
     handleSort,
     handleSubmit,
     handleEdit,
-    handleDeleteStudent,
+    handleDeleteApplicant,
     addRequest,
     updateRequest,
     removeRequest,

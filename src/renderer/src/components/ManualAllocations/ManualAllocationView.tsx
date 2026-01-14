@@ -19,9 +19,9 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
   const {
     isDialogOpen,
     setIsDialogOpen,
-    paginatedAssignments,
-    filteredAndSortedAssignments,
-    loadingAssignments,
+    paginatedAllocations,
+    filteredAndSortedAllocations,
+    loadingAllocations,
     currentPage,
     setCurrentPage,
     itemsPerPage,
@@ -33,8 +33,8 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
     handleSort,
     sortDirection,
     handleDeleteAllFromPhase,
-    unassignedStudents,
-    loadingStudents,
+    unallocatedApplicants,
+    loadingApplicants,
     availableSpots,
     loadingSpots,
     formData,
@@ -53,7 +53,7 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
           <div className="w-fit p-0 bg-transparent shadow-none">
             <div className="flex items-center gap-2">
               <UsersIcon className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-foreground">Total de asignaciones: {paginatedAssignments.length}  </span>
+              <span className="text-sm font-medium text-foreground">Total de otorgamientos: {paginatedAllocations.length}  </span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -74,8 +74,8 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
               <AddManualAllocation
                 isDialogOpen={isDialogOpen}
                 setIsDialogOpen={setIsDialogOpen}
-                students={unassignedStudents ?? []}
-                loadingStudents={loadingStudents}
+                applicants={unallocatedApplicants ?? []}
+                loadingApplicants={loadingApplicants}
                 spots={availableSpots ?? []}
                 loadingSpots={loadingSpots}
                 formData={formData}
@@ -107,7 +107,7 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
                 }
                 title="Limpiar otorgamientos de la fase"
                 trigger={
-                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAssignments.length === 0}>
+                  <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedAllocations.length === 0}>
                     <Trash2 className="h-4 w-4 text-red-500" />
                     Deshacer otorgamiento
                   </Button>
@@ -130,9 +130,9 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
 
           {/* Tabla */}
           <AllocationsTable
-            loadingAssignments={loadingAssignments}
-            filteredAndSortedAssignments={filteredAndSortedAssignments}
-            paginatedAssignments={paginatedAssignments}
+            loadingAllocations={loadingAllocations}
+            filteredAndSortedAllocations={filteredAndSortedAllocations}
+            paginatedAllocations={paginatedAllocations}
             currentPage={currentPage}
             totalPages={totalPages}
             setCurrentPage={setCurrentPage}

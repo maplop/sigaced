@@ -11,7 +11,7 @@ import ConfirmDeleteDialog from "@renderer/components/common/ConfirmDeleteDialog
 import { Badge } from "../../ui/badge"
 import { useMemo } from "react"
 import { rqKeys, phases } from "@renderer/utils/rqKeys"
-import { getAssignmentsByPhase } from "@renderer/api/assignment"
+import { getAllocationsByPhase } from "@renderer/api/allocation"
 import { useQuery } from "@tanstack/react-query"
 
 
@@ -52,28 +52,28 @@ const SpotsTable = ({
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
 
-  const { data: assignments } = useQuery({
-    queryKey: [rqKeys.ASSIGNMENTS, phaseId],
-    queryFn: () => getAssignmentsByPhase(phases.MANUAL)
+  const { data: allocations } = useQuery({
+    queryKey: [rqKeys.ALLOCATIONS, phaseId],
+    queryFn: () => getAllocationsByPhase(phases.MANUAL)
   })
 
-  const assignedCount = useMemo(() => {
-    if (!assignments) return {}
-    return assignments.reduce((acc: Record<number, number>, a: any) => {
+  const allocatedCount = useMemo(() => {
+    if (!allocations) return {}
+    return allocations.reduce((acc: Record<number, number>, a: any) => {
       acc[a.spotId] = (acc[a.spotId] || 0) + 1
       return acc
     }, {})
-  }, [assignments])
+  }, [allocations])
 
 
   const availableSpots = useMemo(() => {
     if (!filteredAndSortedSpots) return []
     return filteredAndSortedSpots.map((spot) => {
-      const assigned = assignedCount[spot.spotId] || 0
-      const availableQuantity = Math.max(spot.availableQuantity - assigned, 0)
+      const allocated = allocatedCount[spot.spotId] || 0
+      const availableQuantity = Math.max(spot.availableQuantity - allocated, 0)
       return { spotId: spot.spotId, availableQuantity }
     })
-  }, [filteredAndSortedSpots, assignedCount])
+  }, [filteredAndSortedSpots, allocatedCount])
 
 
   return (
@@ -89,7 +89,7 @@ const SpotsTable = ({
                     Carrera {sortField === "careerName" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("locationName")}>
-                    Localización {sortField === "locationName" && (sortDirection === "asc" ? "↑" : "↓")}
+                    Ubicación {sortField === "locationName" && (sortDirection === "asc" ? "↑" : "↓")}
                   </TableHead>
                   <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("availableQuantity")}>
                     Plazas Disponibles {sortField === 'availableQuantity' && (sortDirection === 'asc' ? "↑" : "↓")}

@@ -28,7 +28,7 @@ export const menuItems = [
     icon: GraduationCap
   },
   {
-    title: "Localización",
+    title: "Ubicación",
     url: ROUTES.LOCATION,
     icon: MapPin
   },

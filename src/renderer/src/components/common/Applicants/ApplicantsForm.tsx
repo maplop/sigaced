@@ -4,7 +4,7 @@ import { Label } from "@renderer/components/ui/label"
 import { Input } from "@renderer/components/ui/input"
 import { Check, ChevronsUpDown, Plus, X } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@renderer/components/ui/radio-group"
-import { SpotFull, Student } from "src/shared/types"
+import { SpotFull, Applicant } from "src/shared/types"
 import { Separator } from "@renderer/components/ui/separator"
 import { Popover, PopoverContent, PopoverTrigger } from "@renderer/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@renderer/components/ui/command"
@@ -15,13 +15,13 @@ interface ApplicantsFormProps {
   isDialogOpen: boolean,
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>,
   resetForm: () => void,
-  editingStudent: Student | null,
+  editingApplicant: Applicant | null,
   handleSubmit: (e: React.FormEvent) => void,
   addRequest: () => void
   updateRequest: (index: number, spotId: number) => void
   removeRequest: (index: number) => void
-  formData: Omit<Student, 'id'>,
-  setFormData: React.Dispatch<React.SetStateAction<Omit<Student, 'id'>>>;
+  formData: Omit<Applicant, 'id'>,
+  setFormData: React.Dispatch<React.SetStateAction<Omit<Applicant, 'id'>>>;
   spots: SpotFull[],
   loadingSpots: boolean,
   phaseId?: number
@@ -31,7 +31,7 @@ const ApplicantsForm = ({
   isDialogOpen,
   setIsDialogOpen,
   resetForm,
-  editingStudent,
+  editingApplicant,
   handleSubmit,
   addRequest,
   updateRequest,
@@ -78,9 +78,9 @@ const ApplicantsForm = ({
       </DialogTrigger>
       <DialogContent className={phaseId === 3 ? "w-auto" : "sm:max-w-[825px]"}>
         <DialogHeader>
-          <DialogTitle>{editingStudent ? "Editar Aspirante" : "Nuevo Aspirante"}</DialogTitle>
+          <DialogTitle>{editingApplicant ? "Editar Aspirante" : "Nuevo Aspirante"}</DialogTitle>
           <DialogDescription>
-            {editingStudent ? "Modifica los datos del aspirante" : "Completa la información del nuevo aspirante"}
+            {editingApplicant ? "Modifica los datos del aspirante" : "Completa la información del nuevo aspirante"}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -304,7 +304,7 @@ const ApplicantsForm = ({
             <Button type="button" variant="outline" onClick={resetForm}>
               Cancelar
             </Button>
-            <Button type="submit">{editingStudent ? "Actualizar" : "Crear"}</Button>
+            <Button type="submit">{editingApplicant ? "Actualizar" : "Crear"}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

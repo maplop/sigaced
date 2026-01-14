@@ -3,7 +3,7 @@ import {
   clearAllTables,
   getDashboardStats,
   getTopCareers,
-  getTopStudents
+  getTopApplicants
 } from "@renderer/api/statistics"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useState } from "react"
@@ -26,18 +26,18 @@ export const useStatisticsVew = () => {
   }
 
   const { data: stats, isLoading: loadingStats } = useQuery({
-    queryKey: [rqKeys.ASSIGNMENTS, rqKeys.SPOT, rqKeys.STUDENTS, phaseId],
+    queryKey: [rqKeys.ALLOCATIONS, rqKeys.SPOT, rqKeys.APPLICANTS, phaseId],
     queryFn: () => getDashboardStats(phaseId)
   })
 
   const { data: topCareers, isLoading: loadingTopCareers } = useQuery({
-    queryKey: [rqKeys.CAREERS, rqKeys.SPOT, rqKeys.STUDENTS, phaseId],
+    queryKey: [rqKeys.CAREERS, rqKeys.SPOT, rqKeys.APPLICANTS, phaseId],
     queryFn: () => getTopCareers(phaseId)
   })
 
-  const { data: topStudents, isLoading: loadingTopStudents } = useQuery({
-    queryKey: [rqKeys.STUDENTS, rqKeys.ASSIGNMENTS, phaseId],
-    queryFn: () => getTopStudents(phaseId)
+  const { data: topApplicants, isLoading: loadingTopApplicants } = useQuery({
+    queryKey: [rqKeys.APPLICANTS, rqKeys.ASSIGNMENTS, phaseId],
+    queryFn: () => getTopApplicants(phaseId)
   })
 
   // Mutation para limpiar todas las tablas
@@ -45,9 +45,9 @@ export const useStatisticsVew = () => {
     mutationFn: () => clearAllTables(),
     onSuccess: () => {
       // Refresca todas las queries relacionadas después de limpiar
-      queryClient.invalidateQueries({ queryKey: [rqKeys.ASSIGNMENTS] })
+      queryClient.invalidateQueries({ queryKey: [rqKeys.ALLOCATIONS] })
       queryClient.invalidateQueries({ queryKey: [rqKeys.SPOT] })
-      queryClient.invalidateQueries({ queryKey: [rqKeys.STUDENTS] })
+      queryClient.invalidateQueries({ queryKey: [rqKeys.APPLICANTS] })
       queryClient.invalidateQueries({ queryKey: [rqKeys.CAREERS] })
       setCurrentPhase(1)
       toast.success(
@@ -69,8 +69,8 @@ export const useStatisticsVew = () => {
     loadingStats,
     topCareers,
     loadingTopCareers,
-    topStudents,
-    loadingTopStudents,
+    topApplicants,
+    loadingTopApplicants,
     selectedPhase,
     handlePhaseSelector,
     clearAllTablesMutation

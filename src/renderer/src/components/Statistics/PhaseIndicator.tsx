@@ -62,11 +62,11 @@ export function PhaseIndicator({ clearAllTablesMutation }: PhaseIndicatorProps) 
             >
               <div className="space-y-2 text-center">
                 <p>
-                  ¿Estás seguro de que deseas <strong>reiniciar el proceso de asignación</strong>?
+                  ¿Estás seguro de que deseas <strong>reiniciar el proceso de otorgamiento</strong>?
                 </p>
                 <p>
                   Esta acción eliminará <strong>todos los aspirantes</strong> registrados en la fase actual,
-                  así como sus <strong>solicitudes y asignaciones</strong> asociadas.
+                  así como sus <strong>solicitudes y otorgamientos</strong> asociados.
                 </p>
                 <p>
                   También se eliminarán los <strong>registros vinculados en fases posteriores</strong> de esos mismos aspirantes.

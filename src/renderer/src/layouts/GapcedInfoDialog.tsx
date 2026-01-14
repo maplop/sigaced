@@ -50,10 +50,10 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
                     <strong>Carreras:</strong> nombre, abreviatura, facultad.
                   </li>
                   <li>
-                    <strong>Localizaciones:</strong> nombre del centro o sede.
+                    <strong>Ubicaciones:</strong> nombre del centro o sede.
                   </li>
                   <li>
-                    <strong>Plazas:</strong> combinación Carrera + Localización y número de cupos.
+                    <strong>Plazas:</strong> combinación Carrera + Ubicación y número de cupos.
                   </li>
                   <li>
                     <strong>Aspirantes:</strong> CI, nombre, apellidos, nota, municipio, género y hasta 3 opciones de plaza (mínimo 1,
@@ -90,7 +90,7 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
               <CardContent>
                 <h3 className="text-lg font-semibold">Visualización y exportes</h3>
                 <p className="mt-2 text-sm leading-6">
-                  Todos los registros (Carreras, Localizaciones, Plazas, Aspirantes, Otorgamientos) son visibles en tablas con búsqueda y
+                  Todos los registros (Carreras, Ubicaciones, Plazas, Aspirantes, Otorgamientos) son visibles en tablas con búsqueda y
                   filtros. Los listados y consultas relevantes pueden exportarse a PDF por fase o de forma consolidada.
                 </p>
 
@@ -99,9 +99,9 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
                   <ul className="mt-2 ml-5 list-disc text-sm leading-6">
                     <li>Listado consolidado de plazas por carrera.</li>
                     <li>Demanda por carrera (solicitudes totales).</li>
-                    <li>Relación aspirantes–plazas por localización.</li>
+                    <li>Relación aspirantes–plazas por ubicación.</li>
                     <li>Aspirantes no asignados por fase.</li>
-                    <li>Plazas restantes por carrera/localización.</li>
+                    <li>Plazas restantes por carrera/ubicación.</li>
                     <li>Histórico de asignaciones por aspirante.</li>
                     <li>Ranking general de aspirantes.</li>
                     <li>Plazas creadas/modificadas por fase.</li>

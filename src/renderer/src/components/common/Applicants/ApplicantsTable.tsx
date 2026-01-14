@@ -6,19 +6,19 @@ import { Edit, Trash2 } from "lucide-react"
 import { Badge } from "@renderer/components/ui/badge"
 import { Label } from "@renderer/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@renderer/components/ui/select"
-import { SpotFull, Student } from "src/shared/types"
+import { SpotFull, Applicant } from "src/shared/types"
 import ConfirmDeleteDialog from "../ConfirmDeleteDialog"
 import { ApplicantsRequestsModal } from "./ApplicantsRequestsModal"
 import { useQuery } from "@tanstack/react-query"
 import { rqKeys } from "@renderer/utils/rqKeys"
-import { getAssignmentsByPhase } from "@renderer/api/assignment"
+import { getAllocationsByPhase } from "@renderer/api/allocation"
 
-type SortableField = keyof Student | "requestsCount"
+type SortableField = keyof Applicant | "requestsCount"
 
 export interface ApplicantsTableProps {
-  loadingStudents: boolean,
-  filteredAndSortedSpots: Student[]
-  paginatedStudents: Student[]
+  loadingApplicants: boolean,
+  filteredAndSortedSpots: Applicant[]
+  paginatedApplicants: Applicant[]
   currentPage: number
   totalPages: number
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>
@@ -27,18 +27,18 @@ export interface ApplicantsTableProps {
   sortField: SortableField | null
   sortDirection: "asc" | "desc"
   handleSort: (field: SortableField) => void
-  handleEdit: (student: Student) => void
-  handleDeleteStudent: (studentId: number) => void
-  filteredAndSortedStudents: Student[],
+  handleEdit: (applicant: Applicant) => void
+  handleDeleteApplicant: (applicantId: number) => void
+  filteredAndSortedApplicants: Applicant[],
   spots: SpotFull[],
   loadingSpots: boolean,
   phaseId?: number
 }
 
 const ApplicantsTable = ({
-  loadingStudents,
+  loadingApplicants,
   filteredAndSortedSpots,
-  paginatedStudents,
+  paginatedApplicants,
   currentPage,
   totalPages,
   setCurrentPage,
@@ -47,7 +47,7 @@ const ApplicantsTable = ({
   sortField,
   sortDirection,
   handleSort,
-  handleDeleteStudent,
+  handleDeleteApplicant,
   handleEdit,
   spots,
   loadingSpots,
@@ -58,13 +58,13 @@ const ApplicantsTable = ({
   }
 
   const { data: assignments, isLoading: loadingAssignments } = useQuery({
-    queryKey: [rqKeys.ASSIGNMENTS, 3],
+    queryKey: [rqKeys.ALLOCATIONS, 3],
     queryFn: () => getAssignmentsByPhase(3)
   })
 
   return (
     <>
-      {!loadingStudents ? (
+      {!loadingApplicants ? (
         <div className="space-y-4">
           <div className="rounded-md border">
             <Table>
@@ -104,46 +104,46 @@ const ApplicantsTable = ({
               </TableHeader>
               {filteredAndSortedSpots.length !== 0 ? (
                 <TableBody>
-                  {paginatedStudents.map((student, index) => (
-                    <TableRow key={student.id}>
+                  {paginatedApplicants.map((applicant, index) => (
+                    <TableRow key={applicant.id}>
                       <TableCell className="text-center">
                         {(currentPage - 1) * itemsPerPage + index + 1}
                       </TableCell>
-                      <TableCell className="text-center">{student.ci}</TableCell>
+                      <TableCell className="text-center">{applicant.ci}</TableCell>
                       <TableCell className="font-medium">
-                        {student.lastName}
+                        {applicant.lastName}
                       </TableCell>
                       <TableCell>
-                        {student.name}
+                        {applicant.name}
                       </TableCell>
                       <TableCell className="text-center">
-                        <Badge>{student.grade.toFixed(2)}</Badge>
+                        <Badge>{applicant.grade.toFixed(2)}</Badge>
                       </TableCell>
                       <TableCell className="text-center">
-                        <Badge variant={student.gender === 'F' ? 'secondary' : 'outline'}>
-                          {student.gender === 'F' ? 'Femenino' : 'Masculino'}
+                        <Badge variant={applicant.gender === 'F' ? 'secondary' : 'outline'}>
+                          {applicant.gender === 'F' ? 'Femenino' : 'Masculino'}
                         </Badge>
                       </TableCell>
-                      <TableCell>{student.municipality}</TableCell>
+                      <TableCell>{applicant.municipality}</TableCell>
                       {phaseId === 3 && (
                         <TableCell className="text-center">
-                          {loadingAssignments
+                          {loadingAllocations
                             ? "Cargando..."
-                            : assignments?.some(a => a.ci === student.ci)
-                              ? <Badge className="bg-green-100 text-green-700 font-bold">Asignado</Badge>
+                            : allocations?.some(a => a.ci === applicant.ci)
+                              ? <Badge className="bg-green-100 text-green-700 font-bold">Otorgado</Badge>
                               : <Badge className="bg-yellow-100 text-yellow-700 font-bold">Pendiente</Badge>}
                         </TableCell>
                       )}
                       {phaseId !== 3 && (
                         <TableCell className="text-center font-medium">
                           {(() => {
-                            const requestsCount = student.requests?.length ?? 0;
+                            const requestsCount = applicant.requests?.length ?? 0;
 
                             if (requestsCount > 0) {
                               return (
                                 <div className="flex justify-center items-center gap-2">
                                   <span>{requestsCount}</span>
-                                  <ApplicantsRequestsModal student={student} spots={spots ?? []} loadingSpots={loadingSpots} />
+                                  <ApplicantsRequestsModal applicant={applicant} spots={spots ?? []} loadingSpots={loadingSpots} />
                                 </div>
                               );
                             }
@@ -153,11 +153,11 @@ const ApplicantsTable = ({
                       )}
                       <TableCell>
                         <div className="flex justify-center space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => handleEdit(student)}>
+                          <Button variant="outline" size="sm" onClick={() => handleEdit(applicant)}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <ConfirmDeleteDialog
-                            onConfirm={() => handleDeleteStudent(student.id)}
+                            onConfirm={() => handleDeleteApplicant(applicant.id)}
                             title="Eliminar aspirante"
                             trigger={
                               <Button variant="outline" size="sm">
@@ -167,7 +167,7 @@ const ApplicantsTable = ({
                           >
                             <div className="space-y-2 text-center">
                               <p>
-                                ¿Deseas eliminar al aspirante <strong>{student.name} {student.lastName}</strong> con CI <strong>{student.ci}</strong>?
+                                ¿Deseas eliminar al aspirante <strong>{applicant.name} {applicant.lastName}</strong> con CI <strong>{applicant.ci}</strong>?
                               </p>
                               <p>Esta acción solo eliminará al aspirante de la fase actual y se eliminarán todas las solicitudes relacionadas con este aspirante en esta fase. Esta acción no se puede deshacer.</p>
                             </div>

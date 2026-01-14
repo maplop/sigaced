@@ -62,7 +62,7 @@ export function TopCareers({ topCareers, loadingTopCareers }: TopCareersProps) {
 
           <div className="space-y-3">
             {topCareers.map((career, index) => {
-              const total = career.totalRequests ?? career.totalAssignments ?? 0;
+              const total = career.totalRequests ?? career.totalAllocations ?? 0;
 
               const percentage = (total / career.totalSpots) * 100
               return (

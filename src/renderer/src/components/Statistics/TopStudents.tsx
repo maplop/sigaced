@@ -2,21 +2,21 @@ import { Trophy } from "lucide-react"
 import { Card } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Skeleton } from "../ui/skeleton"
-import { TopStudent } from "src/shared/types"
+import { TopApplicant } from "src/shared/types"
 
 interface TopStudentsProps {
-  topStudents?: TopStudent[]
-  loadingTopStudents: boolean
+  topApplicants?: TopApplicant[]
+  loadingTopApplicants: boolean
 }
 
-export function TopStudents({ topStudents, loadingTopStudents }: TopStudentsProps) {
+export function TopStudents({ topApplicants, loadingTopApplicants }: TopStudentsProps) {
 
-  if (loadingTopStudents) {
+  if (loadingTopApplicants) {
     return (
       <Card className="p-6">
         <div className="mb-4 flex items-center gap-2">
           <Trophy className="h-5 w-5 text-orange-500" />
-          <h3 className="text-lg font-semibold text-foreground">Top 5 Estudiantes</h3>
+          <h3 className="text-lg font-semibold text-foreground">Top 5 Aspirantes</h3>
         </div>
         <div className="space-y-3">
           {Array(5)
@@ -38,18 +38,18 @@ export function TopStudents({ topStudents, loadingTopStudents }: TopStudentsProp
     )
   }
 
-  if (!topStudents || topStudents.length === 0) {
+  if (!topApplicants || topApplicants.length === 0) {
     return (
       <Card className="p-6">
         <div className="mb-4 flex items-center gap-2">
           <Trophy className="h-5 w-5 text-orange-500" />
 
-          <h3 className="text-lg font-semibold text-foreground">Top 5 Estudiantes</h3>
+          <h3 className="text-lg font-semibold text-foreground">Top 5 Aspirantes</h3>
         </div>
 
         <div className="flex flex-col justify-center items-center text-center min-h-[250px]">
           <p className="text-sm text-muted-foreground font-medium">
-            No hay estudiantes registrados
+            No hay aspirantes registrados
           </p>
         </div>
       </Card>
@@ -62,28 +62,28 @@ export function TopStudents({ topStudents, loadingTopStudents }: TopStudentsProp
         <div>
           <div className="mb-4 flex items-center gap-2">
             <Trophy className="h-5 w-5 text-orange-500" />
-            <h3 className="text-lg font-semibold text-foreground">Top 5 Estudiantes</h3>
+            <h3 className="text-lg font-semibold text-foreground">Top 5 Aspirantes</h3>
           </div>
           <div className="space-y-3">
-            {topStudents.map((student, index) => (
-              <div key={student.name} className="flex items-center justify-between rounded-lg border border-border p-3">
+            {topApplicants?.map((applicant, index) => (
+              <div key={applicant.name} className="flex items-center justify-between rounded-lg border border-border p-3">
                 <div className="flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
                     {index + 1}
                   </div>
                   <div>
-                    <p className="font-medium text-foreground">{student.lastName} {student.name}</p>
-                    {student.career ? (
-                      <p className="text-xs font-medium text-gray-900">{student.career}</p>
+                    <p className="font-medium text-foreground">{applicant.lastName} {applicant.name}</p>
+                    {applicant.career ? (
+                      <p className="text-xs font-medium text-gray-900">{applicant.career}</p>
                     ) : (
                       <p className="text-xs italic text-gray-500">
-                        Pendiente a asignación
+                        Pendiente a otorgamiento
                       </p>
                     )}
                   </div>
                 </div>
                 <Badge className="text-white">
-                  {student.grade.toFixed(2)}
+                  {applicant.grade.toFixed(2)}
                 </Badge>
               </div>
             ))}

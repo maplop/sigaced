@@ -1,44 +1,44 @@
 import { exportPDF } from "@renderer/api/pdf"
 import {
-  getAssignedStudentsByCareer,
-  getAssignedStudentsByLocation,
-  getAssignedStudentsBySpot,
+  getAssignedApplicantsByCareer,
+  getAssignedApplicantsByLocation,
+  getAssignedApplicantsBySpot,
   getCareerClosing,
-  getStudentsAndRequest,
-  getStudentsByMunicipality
+  getApplicantsAndRequest,
+  getApplicantsByMunicipality
 } from "@renderer/api/reports"
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 export const useReportsView = () => {
-  const { data: assignedStudentsBySpot, isLoading: isLoadingAssignedStudentsBySpot } = useQuery({
-    queryFn: () => getAssignedStudentsBySpot(),
-    queryKey: [rqKeys.ASSIGNMENTS, rqKeys.STUDENTS, rqKeys.SPOT, rqKeys.CAREERS, rqKeys.LOCATIONS]
+  const { data: assignedApplicantsBySpot, isLoading: isLoadingAssignedApplicantsBySpot } = useQuery({
+    queryFn: () => getAssignedApplicantsBySpot(),
+    queryKey: [rqKeys.ALLOCATIONS, rqKeys.APPLICANTS, rqKeys.SPOT, rqKeys.CAREERS, rqKeys.LOCATIONS]
   })
 
-  const assignedStudentsBySpotTable = [
-    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Localización", "Preferencia", "Nota"],
-    ...(assignedStudentsBySpot?.map((assignedStudent, index) => [
+  const assignedApplicantsBySpotTable = [
+    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Ubicación", "Preferencia", "Nota"],
+    ...(assignedApplicantsBySpot?.map((assignedApplicant, index) => [
       index + 1,
-      assignedStudent.ci,
-      assignedStudent.lastName,
-      assignedStudent.name,
-      assignedStudent.career,
-      assignedStudent.location,
-      assignedStudent.preferenceOrder,
-      assignedStudent.grade?.toFixed(2) ?? "-"
+      assignedApplicant.ci,
+      assignedApplicant.lastName,
+      assignedApplicant.name,
+      assignedApplicant.career,
+      assignedApplicant.location,
+      assignedApplicant.preferenceOrder,
+      assignedApplicant.grade?.toFixed(2) ?? "-"
     ]) ?? [])
   ]
 
-  const handleExportAssignedStudentsBySpotPDF = async () => {
+  const handleExportAssignedApplicantsBySpotPDF = async () => {
     try {
       const path = await exportPDF({
-        subtitle: "Estudiantes por Plaza",
-        table: assignedStudentsBySpotTable,
+        subtitle: "Aspirantes por Plaza",
+        table: assignedApplicantsBySpotTable,
         columnWidths: [20, 50, "auto", "auto", "auto", "auto", 40, 30],
         columnAlignments: ["center", "left", "left", "left", "left", "left", "center", "center"],
-        saveName: "Estudiantes por Plaza.pdf"
+        saveName: "Aspirantes por Plaza.pdf"
       })
       toast.success("Reporte descargado en: " + path)
     } catch (error: any) {
@@ -49,34 +49,34 @@ export const useReportsView = () => {
     }
   }
 
-  const { data: assignedStudentsByCareer, isLoading: isLoadingAssignedStudentsByCareer } = useQuery(
+  const { data: assignedApplicantsByCareer, isLoading: isLoadingAssignedApplicantsByCareer } = useQuery(
     {
-      queryFn: () => getAssignedStudentsByCareer(),
-      queryKey: [rqKeys.ASSIGNMENTS, rqKeys.CAREERS, rqKeys.STUDENTS]
+      queryFn: () => getAssignedApplicantsByCareer(),
+      queryKey: [rqKeys.ALLOCATIONS, rqKeys.CAREERS, rqKeys.APPLICANTS]
     }
   )
 
-  const assignedStudentsByCareerTable = [
+  const assignedApplicantsByCareerTable = [
     ["#", "CI", "Apellidos", "Nombre", "Nota", "Sexo", "Municipio"],
-    ...(assignedStudentsByCareer?.map((assignedStudent, index) => [
+    ...(assignedApplicantsByCareer?.map((assignedApplicant, index) => [
       index + 1,
-      assignedStudent.ci,
-      assignedStudent.lastName,
-      assignedStudent.name,
-      assignedStudent.grade?.toFixed(2) ?? "-",
-      assignedStudent.gender,
-      assignedStudent.municipality
+      assignedApplicant.ci,
+      assignedApplicant.lastName,
+      assignedApplicant.name,
+      assignedApplicant.grade?.toFixed(2) ?? "-",
+      assignedApplicant.gender,
+      assignedApplicant.municipality
     ]) ?? [])
   ]
 
-  const handleExportAssignedStudentsByCareerPDF = async () => {
+  const handleExportAssignedApplicantsByCareerPDF = async () => {
     try {
       const path = await exportPDF({
-        subtitle: "Estudiantes por Carrera",
-        table: assignedStudentsByCareerTable,
+        subtitle: "Aspirantes por Carrera",
+        table: assignedApplicantsByCareerTable,
         columnWidths: [20, 70, "auto", "auto", 40, 30, "auto"],
         columnAlignments: ["center", "center", "left", "left", "center", "center", "left"],
-        saveName: "Estudiantes por Carrera.pdf"
+        saveName: "Aspirantes por Carrera.pdf"
       })
       toast.success("Reporte descargado en: " + path)
     } catch (error: any) {
@@ -87,33 +87,33 @@ export const useReportsView = () => {
     }
   }
 
-  const { data: assignedStudentsByLocation, isLoading: isLoadingAssignedStudentsByLocation } =
+  const { data: assignedApplicantsByLocation, isLoading: isLoadingAssignedApplicantsByLocation } =
     useQuery({
-      queryFn: () => getAssignedStudentsByLocation(),
-      queryKey: [rqKeys.ASSIGNMENTS, rqKeys.LOCATIONS, rqKeys.STUDENTS]
+      queryFn: () => getAssignedApplicantsByLocation(),
+      queryKey: [rqKeys.ASSIGNMENTS, rqKeys.LOCATIONS, rqKeys.APPLICANTS]
     })
 
-  const assignedStudentsByLocationTable = [
+  const assignedApplicantsByLocationTable = [
     ["#", "CI", "Apellidos", "Nombre", "Nota", "Sexo", "Municipio"],
-    ...(assignedStudentsByLocation?.map((assignedStudent, index) => [
+    ...(assignedApplicantsByLocation?.map((assignedApplicant, index) => [
       index + 1,
-      assignedStudent.ci,
-      assignedStudent.lastName,
-      assignedStudent.name,
-      assignedStudent.grade?.toFixed(2) ?? "-",
-      assignedStudent.gender,
-      assignedStudent.municipality
+      assignedApplicant.ci,
+      assignedApplicant.lastName,
+      assignedApplicant.name,
+      assignedApplicant.grade?.toFixed(2) ?? "-",
+      assignedApplicant.gender,
+      assignedApplicant.municipality
     ]) ?? [])
   ]
 
-  const handleExportAssignedStudentsByLocationPDF = async () => {
+  const handleExportAssignedApplicantsByLocationPDF = async () => {
     try {
       const path = await exportPDF({
-        subtitle: "Estudiantes por Carrera",
-        table: assignedStudentsByLocationTable,
+        subtitle: "Aspirantes por Ubicación",
+        table: assignedApplicantsByLocationTable,
         columnWidths: [20, 70, "auto", "auto", 40, 30, "auto"],
         columnAlignments: ["center", "center", "left", "left", "center", "center", "left"],
-        saveName: "Estudiantes por Localización.pdf"
+        saveName: "Aspirantes por Ubicación.pdf"
       })
       toast.success("Reporte descargado en: " + path)
     } catch (error: any) {
@@ -124,32 +124,32 @@ export const useReportsView = () => {
     }
   }
 
-  const { data: studentsByMunicipality, isLoading: isLoadingStudentsByMunicipality } = useQuery({
-    queryFn: () => getStudentsByMunicipality(),
-    queryKey: [rqKeys.ASSIGNMENTS, rqKeys.STUDENTS]
+  const { data: applicantsByMunicipality, isLoading: isLoadingApplicantsByMunicipality } = useQuery({
+    queryFn: () => getApplicantsByMunicipality(),
+    queryKey: [rqKeys.ALLOCATIONS, rqKeys.APPLICANTS]
   })
 
-  const assignedStudentsByMunicipalityTable = [
+  const assignedApplicantsByMunicipalityTable = [
     ["#", "CI", "Apellidos", "Nombre", "Nota", "Sexo", "Municipio"],
-    ...(studentsByMunicipality?.map((assignedStudent, index) => [
+    ...(applicantsByMunicipality?.map((assignedApplicant, index) => [
       index + 1,
-      assignedStudent.ci,
-      assignedStudent.lastName,
-      assignedStudent.name,
-      assignedStudent.grade?.toFixed(2) ?? "-",
-      assignedStudent.gender,
-      assignedStudent.municipality
+      assignedApplicant.ci,
+      assignedApplicant.lastName,
+      assignedApplicant.name,
+      assignedApplicant.grade?.toFixed(2) ?? "-",
+      assignedApplicant.gender,
+      assignedApplicant.municipality
     ]) ?? [])
   ]
 
-  const handleExportStudentsByMunicipalityPDF = async () => {
+  const handleExportApplicantsByMunicipalityPDF = async () => {
     try {
       const path = await exportPDF({
-        subtitle: "Estudiantes por Carrera",
-        table: assignedStudentsByMunicipalityTable,
+        subtitle: "Aspirantes por Municipio",
+        table: assignedApplicantsByMunicipalityTable,
         columnWidths: [20, 70, "auto", "auto", 40, 30, "auto"],
         columnAlignments: ["center", "center", "left", "left", "center", "center", "left"],
-        saveName: "Estudiantes por Municipio.pdf"
+        saveName: "Aspirantes por Municipio.pdf"
       })
       toast.success("Reporte descargado en: " + path)
     } catch (error: any) {
@@ -160,31 +160,31 @@ export const useReportsView = () => {
     }
   }
 
-  const { data: studentsAndRequest, isLoading: isLoadingStudentsAndRequest } = useQuery({
-    queryFn: () => getStudentsAndRequest(),
-    queryKey: [rqKeys.STUDENTS, rqKeys.SPOT, rqKeys.CAREERS, rqKeys.LOCATIONS]
+  const { data: applicantsAndRequest, isLoading: isLoadingApplicantsAndRequest } = useQuery({
+    queryFn: () => getApplicantsAndRequest(),
+    queryKey: [rqKeys.APPLICANTS, rqKeys.SPOT, rqKeys.CAREERS, rqKeys.LOCATIONS]
   })
 
-  const studentsAndRequestTable = [
-    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Localización", "Preferencia", "Fase", "Nota"],
-    ...(studentsAndRequest?.map((studentAndRequest, index) => [
+  const applicantsAndRequestTable = [
+    ["#", "CI", "Apellidos", "Nombre", "Carrera", "Ubicación", "Preferencia", "Fase", "Nota"],
+    ...(applicantsAndRequest?.map((applicantAndRequest, index) => [
       index + 1,
-      studentAndRequest.ci,
-      studentAndRequest.lastName,
-      studentAndRequest.name,
-      studentAndRequest.career,
-      studentAndRequest.location,
-      studentAndRequest.preferenceOrder,
-      studentAndRequest.phase,
-      studentAndRequest.grade?.toFixed(2) ?? "-"
+      applicantAndRequest.ci,
+      applicantAndRequest.lastName,
+      applicantAndRequest.name,
+      applicantAndRequest.career,
+      applicantAndRequest.location,
+      applicantAndRequest.preferenceOrder,
+      applicantAndRequest.phase,
+      applicantAndRequest.grade?.toFixed(2) ?? "-"
     ]) ?? [])
   ]
 
-  const handleExportStudentsAndRequestPDF = async () => {
+  const handleExportApplicantsAndRequestPDF = async () => {
     try {
       const path = await exportPDF({
-        subtitle: "Estudiantes y Solicitudes",
-        table: studentsAndRequestTable,
+        subtitle: "Aspirantes y Solicitudes",
+        table: applicantsAndRequestTable,
         columnWidths: [20, 50, "auto", "auto", "auto", "auto", 40, 30, 30],
         columnAlignments: [
           "center",
@@ -197,7 +197,7 @@ export const useReportsView = () => {
           "center",
           "center"
         ],
-        saveName: "Estudiantes y Solicitudes.pdf"
+        saveName: "Aspirantes y Solicitudes.pdf"
       })
       toast.success("Reporte descargado en: " + path)
     } catch (error: any) {
@@ -210,7 +210,7 @@ export const useReportsView = () => {
 
   const { data: careerClosing, isLoading: isLoadingCareerClosing } = useQuery({
     queryFn: () => getCareerClosing(),
-    queryKey: [rqKeys.CAREERS, rqKeys.SPOT, rqKeys.ASSIGNMENTS, rqKeys.STUDENTS]
+    queryKey: [rqKeys.CAREERS, rqKeys.SPOT, rqKeys.ALLOCATIONS, rqKeys.APPLICANTS]
   })
 
   const careerClosingTable = [
@@ -241,22 +241,22 @@ export const useReportsView = () => {
   }
 
   return {
-    assignedStudentsBySpot,
-    handleExportAssignedStudentsBySpotPDF,
-    assignedStudentsByCareer,
-    handleExportAssignedStudentsByCareerPDF,
-    assignedStudentsByLocation,
-    handleExportAssignedStudentsByLocationPDF,
-    studentsByMunicipality,
-    handleExportStudentsByMunicipalityPDF,
-    studentsAndRequest,
-    handleExportStudentsAndRequestPDF,
+    assignedApplicantsBySpot,
+    handleExportAssignedApplicantsBySpotPDF,
+    assignedApplicantsByCareer,
+    handleExportAssignedApplicantsByCareerPDF,
+    assignedApplicantsByLocation,
+    handleExportAssignedApplicantsByLocationPDF,
+    applicantsByMunicipality,
+    handleExportApplicantsByMunicipalityPDF,
+    applicantsAndRequest,
+    handleExportApplicantsAndRequestPDF,
     careerClosing,
     handleExportCareerClosingPDF,
-    isLoadingAssignedStudentsBySpot,
-    isLoadingAssignedStudentsByCareer,
-    isLoadingAssignedStudentsByLocation,
-    isLoadingStudentsByMunicipality,
-    isLoadingStudentsAndRequest
+    isLoadingAssignedApplicantsBySpot,
+    isLoadingAssignedApplicantsByCareer,
+    isLoadingAssignedApplicantsByLocation,
+    isLoadingApplicantsByMunicipality,
+    isLoadingApplicantsAndRequest
   }
 }

@@ -52,7 +52,7 @@ export const useSpotView = (phaseId: PhaseType) => {
   const filteredAndSortedSpots = useMemo(() => {
     if (!data) return []
 
-    // Filtro: busca término en carrera, localización o fase
+    // Filtro: busca término en carrera, ubicación o fase
     const filtered = data.filter((spot) => {
       const term = searchTerm.toLowerCase()
       return (
@@ -219,7 +219,7 @@ export const useSpotView = (phaseId: PhaseType) => {
   }
 
   const spotsTable = [
-    ["#", "Carrera", "Localización", "Cantidad"],
+    ["#", "Carrera", "Ubicación", "Cantidad"],
     ...filteredAndSortedSpots.map((spot, index) => [
       index + 1,
       spot.careerName,

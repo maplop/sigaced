@@ -103,8 +103,8 @@ export const useCareerView = () => {
         error instanceof Error
           ? error.message
           : editingCareer
-            ? "Error al editar carrera."
-            : "Error al crear carrera."
+            ? "Error al editar la carrera."
+            : "Error al crear la carrera."
       toast.error(errorMessage, {
         style: {
           color: "var(--errorMessage)"

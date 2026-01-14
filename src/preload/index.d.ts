@@ -1,7 +1,7 @@
 import { ElectronAPI } from "@electron-toolkit/preload"
 import {
-  Student,
-  Assignment,
+  Applicant,
+  Allocation,
   Career,
   Spot,
   Request,
@@ -10,9 +10,12 @@ import {
   User,
   OperationResult,
   SpotFull,
-  AssignmentRow,
+  AllocationRow,
   CareerClosingRow,
-  StudentRequestRow
+  ApplicantRequestRow,
+  DashboardStats,
+  TopApplicant,
+  TopCareer
 } from "src/shared/types"
 
 declare global {
@@ -20,11 +23,11 @@ declare global {
     electron: ElectronAPI
     api: {
       //Reports
-      getStudentsAndRequest: () => Promise<StudentRequestRow[]>
-      getAssignedStudentsBySpot: () => Promise<StudentRequestRow[]>
-      getAssignedStudentsByLocation: () => Promise<Student[]>
-      getAssignedStudentsByCareer: () => Promise<Student[]>
-      getStudentsByMunicipality: () => Promise<Student[]>
+      getApplicantsAndRequest: () => Promise<ApplicantRequestRow[]>
+      getAssignedApplicantsBySpot: () => Promise<ApplicantRequestRow[]>
+      getAssignedApplicantsByLocation: () => Promise<Applicant[]>
+      getAssignedApplicantsByCareer: () => Promise<Applicant[]>
+      getApplicantsByMunicipality: () => Promise<Applicant[]>
       getCareerClosing: () => Promise<CareerClosingRow[]>
 
       //PDF
@@ -38,28 +41,28 @@ declare global {
 
       // Statistics
       getDashboardStats: (phaseId?: number) => Promise<DashboardStats>
-      getTopStudents: (phaseId?: number) => Promise<TopStudent[]>
+      getTopApplicants: (phaseId?: number) => Promise<TopApplicant[]>
       getTopCareers: (phaseId?: number) => Promise<TopCareer[]>
       clearAllTables: () => Promise<OperationResult>
 
-      // Students
-      addStudent: (
-        student: Omit<Student, "id">
+      // Applicants
+      addApplicant: (
+        applicant: Omit<Applicant, "id">
       ) => Promise<{ success: boolean; id?: number; error?: string }>
-      getStudents: (phaseId: number) => Promise<Student[]>
-      updateStudent: (student: Student) => Promise<OperationResult>
-      deleteStudent: (studentId: number) => Promise<OperationResult>
-      addStudentToPhase: (studentId: number, phaseId: number) => Promise<OperationResult>
-      deleteAllStudentsFromPhase: (phaseId: number) => Promise<OperationResult>
+      getApplicants: (phaseId: number) => Promise<Applicant[]>
+      updateApplicant: (applicant: Applicant) => Promise<OperationResult>
+      deleteApplicant: (applicantId: number) => Promise<OperationResult>
+      addApplicantToPhase: (applicantId: number, phaseId: number) => Promise<OperationResult>
+      deleteAllApplicantsFromPhase: (phaseId: number) => Promise<OperationResult>
 
-      // Assignments
-      addAssignment: (assignment: Omit<Assignment, "id">) => Promise<OperationResult>
-      getAssignments: () => Promise<AssignmentRow[]>
-      getAssignmentsByPhase: (phaseId: number) => Promise<AssignmentRow[]>
-      updateAssignment: (assignment: Assignment) => Promise<OperationResult>
-      deleteAssignmentForId: (id: number) => Promise<OperationResult>
-      deleteAllAssignmentsFromPhase: (phaseId: number) => Promise<OperationResult>
-      deleteAllAssignments: () => Promise<OperationResult>
+      // Allocations
+      addAllocation: (allocation: Omit<Allocation, "id">) => Promise<OperationResult>
+      getAllAllocations: () => Promise<AllocationRow[]>
+      getAllocationsByPhase: (phaseId: number) => Promise<AllocationRow[]>
+      updateAllocation: (allocation: Allocation) => Promise<OperationResult>
+      deleteAllocationForId: (id: number) => Promise<OperationResult>
+      deleteAllAllocationsFromPhase: (phaseId: number) => Promise<OperationResult>
+      deleteAllAllocations: () => Promise<OperationResult>
 
       // Careers
       addCareer: (career: Omit<Career, "id">) => Promise<OperationResult>
@@ -96,14 +99,14 @@ declare global {
       changeUserPassword: (data: { id: string; newPassword: string }) => Promise<OperationResult>
 
       // Seed Database
-      seedDatabase: (studentCount?: number) => Promise<{
+      seedDatabase: (applicantCount?: number) => Promise<{
         success: boolean
         result?: {
           careers: number
           locations: number
           spots: number
-          students: number
-          studentPhases: number
+          applicants: number
+          applicantPhases: number
           requests: number
           errors: string[]
         }
