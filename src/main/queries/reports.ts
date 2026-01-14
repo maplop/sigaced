@@ -28,19 +28,19 @@ export function getStudentsAndRequest(): StudentRequestRow[] {
 export function getAssignedStudentsByLocation(): Student[] {
   const stmt = db.prepare(`
     SELECT DISTINCT
+      s.id,
       s.ci,
-      s.last_name,
       s.name,
+      s.last_name AS lastName,
       s.grade,
       s.gender,
       s.municipality,
-      l.name AS location
+      sp.phase_id AS phaseId
     FROM student s
     JOIN assignment a ON a.student_id = s.id
     JOIN spot sp ON sp.id = a.spot_id
     JOIN location l ON l.id = sp.location_id
     ORDER BY
-      l.name,
       s.last_name,
       s.name
   `)
@@ -51,19 +51,19 @@ export function getAssignedStudentsByLocation(): Student[] {
 export function getAssignedStudentsByCareer(): Student[] {
   const stmt = db.prepare(`
     SELECT DISTINCT
+      s.id,
       s.ci,
-      s.last_name,
       s.name,
+      s.last_name AS lastName,
       s.grade,
       s.gender,
       s.municipality,
-      c.full_name AS career
+      sp.phase_id AS phaseId
     FROM student s
     JOIN assignment a ON a.student_id = s.id
     JOIN spot sp ON sp.id = a.spot_id
     JOIN career c ON c.id = sp.career_id
     ORDER BY
-      c.full_name,
       s.last_name,
       s.name
   `)
@@ -99,15 +99,19 @@ export function getAssignedStudentsBySpot(): StudentRequestRow[] {
 
 export function getStudentsByMunicipality(): Student[] {
   const stmt = db.prepare(`
-    SELECT
+    SELECT DISTINCT
+      s.id,
       s.ci,
-      s.last_name,
       s.name,
+      s.last_name AS lastName,
       s.grade,
-      s.gender
-    FROM student s
-    ORDER BY
+      s.gender,
       s.municipality,
+      sp.phase_id AS phaseId
+    FROM student s
+    JOIN assignment a ON a.student_id = s.id
+    JOIN spot sp ON sp.id = a.spot_id
+    ORDER BY
       s.last_name,
       s.name
   `)
@@ -119,8 +123,6 @@ export function getCareerClosing(): CareerClosingRow[] {
   const stmt = db.prepare(`
     SELECT
       c.full_name AS name,
-      c.abbreviation,
-      c.faculty,
       MIN(s.grade) AS closing_grade
     FROM career c
     JOIN spot sp ON sp.career_id = c.id

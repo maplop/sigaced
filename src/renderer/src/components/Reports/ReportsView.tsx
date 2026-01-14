@@ -10,8 +10,13 @@ const ReportsView = () => {
     assignedStudentsBySpot,
     handleExportAssignedStudentsBySpotPDF,
     assignedStudentsByCareer,
+    handleExportAssignedStudentsByCareerPDF,
     assignedStudentsByLocation,
+    handleExportAssignedStudentsByLocationPDF,
     studentsByMunicipality,
+    handleExportStudentsByMunicipalityPDF,
+    careerClosing,
+    handleExportCareerClosingPDF,
     studentsAndRequest,
     isLoadingAssignedStudentsBySpot,
     isLoadingAssignedStudentsByCareer,
@@ -24,7 +29,7 @@ const ReportsView = () => {
   return (
     <PageContainer>
       <div className="flex flex-col gap-8">
-        <PageTitle title="Centro de Reportes" subtitle="Accede a todos los reportes del sistema organizados por categoría. Selecciona el reporte que necesitas generar." />
+        <PageTitle title="Centro de Reportes" subtitle="Accede a todos los reportes del sistema organizados por categoría. Los reportes se generan sobre los aspirantes a los cuales se les haya asignado una plaza. Selecciona el reporte que necesitas generar." />
         <div className="grid gap-8">
           {/* Sección Aspirantes */}
           <section>
@@ -40,13 +45,13 @@ const ReportsView = () => {
                 title="Aspirantes por Localización"
                 description="Listado de aspirantes agrupados por localización"
                 icon={<MapPin className="h-5 w-5" />}
-                handleGenerateReport={() => { }}
+                handleGenerateReport={handleExportAssignedStudentsByLocationPDF}
               />
               <ReportCard
                 title="Aspirantes por Carrera"
                 description="Listado de aspirantes agrupados por carrera"
                 icon={<GraduationCap className="h-5 w-5" />}
-                handleGenerateReport={() => { }}
+                handleGenerateReport={handleExportAssignedStudentsByCareerPDF}
               />
               <ReportCard
                 title="Aspirantes por Plaza"
@@ -58,13 +63,13 @@ const ReportsView = () => {
                 title="Aspirantes por Municipios"
                 description="Listado de aspirantes agrupados por municipios"
                 icon={<Map className="h-5 w-5" />}
-                handleGenerateReport={() => { }}
+                handleGenerateReport={handleExportStudentsByMunicipalityPDF}
               />
               <ReportCard
                 title="Nota de Corte"
                 description="Nota mínima con la que se otorgó una carrera"
                 icon={<ChartNoAxesColumnDecreasing className="h-5 w-5" />}
-                handleGenerateReport={() => { }}
+                handleGenerateReport={handleExportCareerClosingPDF}
               />
             </div>
           </section>

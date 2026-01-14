@@ -130,7 +130,5 @@ export interface StudentRequestRow {
 
 export interface CareerClosingRow {
   name: string
-  abbreviation: string
-  faculty: string
   closing_grade: number | null
 }
