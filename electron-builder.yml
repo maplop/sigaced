@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: sigaced
+productName: GAPCED
 directories:
   buildResources: build
 files:

@@ -60,6 +60,11 @@ import {
 import { OperationResult } from "src/shared/types"
 import { generatePDF } from "./pdf/generatePDF"
 import {
+  seedDatabase,
+  clearSeedTables,
+  validateSeedData
+} from "./seed/seedDatabase"
+import {
   getCareerClosing,
   getStudentsAndRequest,
   getAssignedStudentsBySpot,
@@ -220,6 +225,34 @@ ipcMain.handle("stats:clearAllTables", async (_event) => {
   try {
     clearAllTables()
     return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+// IPC handlers for seed database
+ipcMain.handle("seed:populate", async (_event, studentCount?: number) => {
+  try {
+    const result = seedDatabase(studentCount || 100)
+    return { success: true, result }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("seed:clear", async (_event) => {
+  try {
+    clearSeedTables()
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("seed:validate", async (_event) => {
+  try {
+    const validation = validateSeedData()
+    return { success: true, validation }
   } catch (error: any) {
     return { success: false, error: error.message }
   }

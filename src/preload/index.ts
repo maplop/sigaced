@@ -75,7 +75,12 @@ const api = {
   updateUser: (user) => ipcRenderer.invoke("user:update", user),
   deleteUser: (id: string) => ipcRenderer.invoke("user:delete", id),
   changeUserPassword: (data: { id: string; newPassword: string }) =>
-    ipcRenderer.invoke("user:changePassword", data)
+    ipcRenderer.invoke("user:changePassword", data),
+
+  // Seed Database
+  seedDatabase: (studentCount?: number) => ipcRenderer.invoke("seed:populate", studentCount),
+  clearSeedTables: () => ipcRenderer.invoke("seed:clear"),
+  validateSeedData: () => ipcRenderer.invoke("seed:validate")
 }
 
 // Expose APIs

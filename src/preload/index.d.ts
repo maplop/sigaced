@@ -94,6 +94,31 @@ declare global {
       updateUser: (user: Omit<User, "createdAt">) => Promise<OperationResult>
       deleteUser: (id: string) => Promise<OperationResult>
       changeUserPassword: (data: { id: string; newPassword: string }) => Promise<OperationResult>
+
+      // Seed Database
+      seedDatabase: (studentCount?: number) => Promise<{
+        success: boolean
+        result?: {
+          careers: number
+          locations: number
+          spots: number
+          students: number
+          studentPhases: number
+          requests: number
+          errors: string[]
+        }
+        error?: string
+      }>
+      clearSeedTables: () => Promise<OperationResult>
+      validateSeedData: () => Promise<{
+        success: boolean
+        validation?: {
+          valid: boolean
+          errors: string[]
+          warnings: string[]
+        }
+        error?: string
+      }>
     }
   }
 }
