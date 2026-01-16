@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 
@@ -6,9 +7,12 @@ interface ReportCardProps {
   description: string
   icon: React.ReactNode
   handleGenerateReport: () => void
+  isLoading?: boolean
+  isDisabled?: boolean
 }
 
-export function ReportCard({ title, description, icon, handleGenerateReport }: ReportCardProps) {
+export function ReportCard({ title, description, icon, handleGenerateReport, isLoading = false, isDisabled = false }: ReportCardProps) {
+  const disabled = isLoading || isDisabled
 
   return (
     <Card className="group border hover:border-primary/20 transition-colors">
@@ -24,7 +28,21 @@ export function ReportCard({ title, description, icon, handleGenerateReport }: R
         </div>
       </CardHeader>
       <CardContent>
-        <Button variant="outline" className="w-full" onClick={handleGenerateReport}>Generar Reporte</Button>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={handleGenerateReport}
+          disabled={disabled}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Cargando...
+            </>
+          ) : (
+            "Generar Reporte"
+          )}
+        </Button>
       </CardContent>
     </Card>
   )

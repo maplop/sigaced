@@ -1,4 +1,4 @@
-import type { Applicant, ApplicantRequestRow, CareerClosingRow } from "src/shared/types"
+import type { ApplicantRequestRow, CareerClosingRow } from "src/shared/types"
 
 export const getApplicantsAndRequest = async (): Promise<ApplicantRequestRow[]> => {
   const data = await window.api.getApplicantsAndRequest()
@@ -12,19 +12,19 @@ export const getAssignedApplicantsBySpot = async (): Promise<ApplicantRequestRow
   return data
 }
 
-export const getAssignedApplicantsByLocation = async (): Promise<Applicant[]> => {
+export const getAssignedApplicantsByLocation = async (): Promise<ApplicantRequestRow[]> => {
   const data = await window.api.getAssignedApplicantsByLocation()
   if (!data) throw new Error("No se pudieron obtener los aspirantes por ubicación.")
   return data
 }
 
-export const getAssignedApplicantsByCareer = async (): Promise<Applicant[]> => {
+export const getAssignedApplicantsByCareer = async (): Promise<ApplicantRequestRow[]> => {
   const data = await window.api.getAssignedApplicantsByCareer()
   if (!data) throw new Error("No se pudieron obtener los aspirantes por carrera.")
   return data
 }
 
-export const getApplicantsByMunicipality = async (): Promise<Applicant[]> => {
+export const getApplicantsByMunicipality = async (): Promise<ApplicantRequestRow[]> => {
   const data = await window.api.getApplicantsByMunicipality()
   if (!data) throw new Error("No se pudieron obtener los aspirantes por municipio.")
   return data

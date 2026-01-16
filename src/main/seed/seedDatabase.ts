@@ -51,8 +51,12 @@ export function seedDatabase(applicantCount: number = 100): SeedResult {
 
       for (const career of careersData) {
         try {
-          const result = insertCareer.run(career.fullName, career.abbreviation, career.faculty)
-          careerMap.set(career.fullName, result.lastInsertRowid as number)
+          const insertResult = insertCareer.run(
+            career.fullName,
+            career.abbreviation,
+            career.faculty
+          )
+          careerMap.set(career.fullName, insertResult.lastInsertRowid as number)
           result.careers++
         } catch (error: any) {
           if (!error.message.includes("UNIQUE constraint")) {
@@ -70,8 +74,8 @@ export function seedDatabase(applicantCount: number = 100): SeedResult {
 
       for (const location of locationsData) {
         try {
-          const result = insertLocation.run(location.name)
-          locationMap.set(location.name, result.lastInsertRowid as number)
+          const insertResult = insertLocation.run(location.name)
+          locationMap.set(location.name, insertResult.lastInsertRowid as number)
           result.locations++
         } catch (error: any) {
           if (!error.message.includes("UNIQUE constraint")) {

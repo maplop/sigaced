@@ -1,5 +1,5 @@
 import { db } from "../database"
-import { CareerClosingRow, Applicant, ApplicantRequestRow } from "src/shared/types"
+import { CareerClosingRow, ApplicantRequestRow } from "src/shared/types"
 
 export function getApplicantsAndRequest(): ApplicantRequestRow[] {
   const stmt = db.prepare(`
@@ -28,62 +28,20 @@ export function getApplicantsAndRequest(): ApplicantRequestRow[] {
   return stmt.all() as ApplicantRequestRow[]
 }
 
-export function getAssignedApplicantsByLocation(): Applicant[] {
-  const stmt = db.prepare(`
-    SELECT DISTINCT
-      a.id,
-      a.ci,
-      a.name,
-      a.last_name AS lastName,
-      a.grade,
-      a.gender,
-      a.municipality,
-      sp.phase_id AS phaseId
-    FROM applicant a
-    JOIN allocation alloc ON alloc.applicant_id = a.id
-    JOIN spot sp ON sp.id = alloc.spot_id
-    JOIN location l ON l.id = sp.location_id
-    ORDER BY
-      a.last_name,
-      a.name
-  `)
-
-  return stmt.all() as Applicant[]
-}
-
-export function getAssignedApplicantsByCareer(): Applicant[] {
-  const stmt = db.prepare(`
-    SELECT DISTINCT
-      a.id,
-      a.ci,
-      a.name,
-      a.last_name AS lastName,
-      a.grade,
-      a.gender,
-      a.municipality,
-      sp.phase_id AS phaseId
-    FROM applicant a
-    JOIN allocation alloc ON alloc.applicant_id = a.id
-    JOIN spot sp ON sp.id = alloc.spot_id
-    JOIN career c ON c.id = sp.career_id
-    ORDER BY
-      a.last_name,
-      a.name
-  `)
-
-  return stmt.all() as Applicant[]
-}
-
-export function getAssignedApplicantsBySpot(): ApplicantRequestRow[] {
+export function getAssignedApplicantsByLocation(): ApplicantRequestRow[] {
   const stmt = db.prepare(`
     SELECT
+      a.id,
       a.ci,
-      a.last_name,
+      a.last_name AS lastName,
       a.name,
       a.grade,
+      a.gender,
+      a.municipality,
       c.full_name AS career,
       l.name AS location,
-      r.preference_order AS option_number
+      sp.phase_id AS phase,
+      r.preference_order AS preferenceOrder
     FROM applicant a
     JOIN allocation alloc ON alloc.applicant_id = a.id
     JOIN spot sp ON sp.id = alloc.spot_id
@@ -91,8 +49,6 @@ export function getAssignedApplicantsBySpot(): ApplicantRequestRow[] {
     JOIN location l ON l.id = sp.location_id
     JOIN request r ON r.applicant_id = a.id AND r.spot_id = sp.id
     ORDER BY
-      c.full_name,
-      l.name,
       a.last_name,
       a.name
   `)
@@ -100,26 +56,88 @@ export function getAssignedApplicantsBySpot(): ApplicantRequestRow[] {
   return stmt.all() as ApplicantRequestRow[]
 }
 
-export function getApplicantsByMunicipality(): Applicant[] {
+export function getAssignedApplicantsByCareer(): ApplicantRequestRow[] {
   const stmt = db.prepare(`
-    SELECT DISTINCT
+    SELECT
       a.id,
       a.ci,
-      a.name,
       a.last_name AS lastName,
+      a.name,
       a.grade,
       a.gender,
       a.municipality,
-      sp.phase_id AS phaseId
+      c.full_name AS career,
+      l.name AS location,
+      sp.phase_id AS phase,
+      r.preference_order AS preferenceOrder
     FROM applicant a
     JOIN allocation alloc ON alloc.applicant_id = a.id
     JOIN spot sp ON sp.id = alloc.spot_id
+    JOIN career c ON c.id = sp.career_id
+    JOIN location l ON l.id = sp.location_id
+    JOIN request r ON r.applicant_id = a.id AND r.spot_id = sp.id
     ORDER BY
       a.last_name,
       a.name
   `)
 
-  return stmt.all() as Applicant[]
+  return stmt.all() as ApplicantRequestRow[]
+}
+
+export function getAssignedApplicantsBySpot(): ApplicantRequestRow[] {
+  const stmt = db.prepare(`
+    SELECT
+      a.id,
+      a.ci,
+      a.last_name AS lastName,
+      a.name,
+      a.grade,
+      a.gender,
+      a.municipality,
+      c.full_name AS career,
+      l.name AS location,
+      sp.phase_id AS phase,
+      r.preference_order AS preferenceOrder
+    FROM applicant a
+    JOIN allocation alloc ON alloc.applicant_id = a.id
+    JOIN spot sp ON sp.id = alloc.spot_id
+    JOIN career c ON c.id = sp.career_id
+    JOIN location l ON l.id = sp.location_id
+    JOIN request r ON r.applicant_id = a.id AND r.spot_id = sp.id
+    ORDER BY
+      a.last_name,
+      a.name
+  `)
+
+  return stmt.all() as ApplicantRequestRow[]
+}
+
+export function getApplicantsByMunicipality(): ApplicantRequestRow[] {
+  const stmt = db.prepare(`
+    SELECT
+      a.id,
+      a.ci,
+      a.last_name AS lastName,
+      a.name,
+      a.grade,
+      a.gender,
+      a.municipality,
+      c.full_name AS career,
+      l.name AS location,
+      sp.phase_id AS phase,
+      r.preference_order AS preferenceOrder
+    FROM applicant a
+    JOIN allocation alloc ON alloc.applicant_id = a.id
+    JOIN spot sp ON sp.id = alloc.spot_id
+    JOIN career c ON c.id = sp.career_id
+    JOIN location l ON l.id = sp.location_id
+    JOIN request r ON r.applicant_id = a.id AND r.spot_id = sp.id
+    ORDER BY
+      a.last_name,
+      a.name
+  `)
+
+  return stmt.all() as ApplicantRequestRow[]
 }
 
 export function getCareerClosing(): CareerClosingRow[] {

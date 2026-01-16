@@ -7,23 +7,24 @@ import { useReportsView } from "./useReportsView"
 const ReportsView = () => {
 
   const {
-    assignedStudentsBySpot,
-    handleExportAssignedStudentsBySpotPDF,
-    assignedStudentsByCareer,
-    handleExportAssignedStudentsByCareerPDF,
-    assignedStudentsByLocation,
-    handleExportAssignedStudentsByLocationPDF,
-    studentsByMunicipality,
-    handleExportStudentsByMunicipalityPDF,
+    assignedApplicantsBySpot,
+    handleExportAssignedApplicantsBySpotPDF,
+    assignedApplicantsByCareer,
+    handleExportAssignedApplicantsByCareerPDF,
+    assignedApplicantsByLocation,
+    handleExportAssignedApplicantsByLocationPDF,
+    applicantsByMunicipality,
+    handleExportApplicantsByMunicipalityPDF,
     careerClosing,
     handleExportCareerClosingPDF,
-    studentsAndRequest,
-    handleExportStudentsAndRequestPDF,
-    isLoadingAssignedStudentsBySpot,
-    isLoadingAssignedStudentsByCareer,
-    isLoadingAssignedStudentsByLocation,
-    isLoadingStudentsByMunicipality,
-    isLoadingStudentsAndRequest
+    applicantsAndRequest,
+    handleExportApplicantsAndRequestPDF,
+    isLoadingAssignedApplicantsBySpot,
+    isLoadingAssignedApplicantsByCareer,
+    isLoadingAssignedApplicantsByLocation,
+    isLoadingApplicantsByMunicipality,
+    isLoadingApplicantsAndRequest,
+    isLoadingCareerClosing
   } = useReportsView();
 
 
@@ -38,39 +39,51 @@ const ReportsView = () => {
 
               <ReportCard
                 title="Aspirantes y Solicitudes"
-                description="Listado aspirantes junto a las solicitudes que seleccionaron"
+                description="Listado de todos los aspirantes con sus solicitudes en las diferentes fases"
                 icon={<Users className="h-5 w-5" />}
-                handleGenerateReport={handleExportStudentsAndRequestPDF}
+                handleGenerateReport={handleExportApplicantsAndRequestPDF}
+                isLoading={isLoadingApplicantsAndRequest}
+                isDisabled={isLoadingApplicantsAndRequest || !applicantsAndRequest || applicantsAndRequest.length === 0}
               />
               <ReportCard
                 title="Aspirantes por Ubicación"
-                description="Listado de aspirantes agrupados por ubicación"
+                description="Listado de aspirantes con plazas asignadas, agrupados por ubicación"
                 icon={<MapPin className="h-5 w-5" />}
-                handleGenerateReport={handleExportAssignedStudentsByLocationPDF}
+                handleGenerateReport={handleExportAssignedApplicantsByLocationPDF}
+                isLoading={isLoadingAssignedApplicantsByLocation}
+                isDisabled={isLoadingAssignedApplicantsByLocation || !assignedApplicantsByLocation || assignedApplicantsByLocation.length === 0}
               />
               <ReportCard
                 title="Aspirantes por Carrera"
-                description="Listado de aspirantes agrupados por carrera"
+                description="Listado de aspirantes con plazas asignadas, agrupados por carrera"
                 icon={<GraduationCap className="h-5 w-5" />}
-                handleGenerateReport={handleExportAssignedStudentsByCareerPDF}
+                handleGenerateReport={handleExportAssignedApplicantsByCareerPDF}
+                isLoading={isLoadingAssignedApplicantsByCareer}
+                isDisabled={isLoadingAssignedApplicantsByCareer || !assignedApplicantsByCareer || assignedApplicantsByCareer.length === 0}
               />
               <ReportCard
                 title="Aspirantes por Plaza"
-                description="Listado de aspirantes agrupados por plaza"
+                description="Listado de aspirantes con plazas asignadas, agrupados por plaza"
                 icon={<School className="h-5 w-5" />}
-                handleGenerateReport={handleExportAssignedStudentsBySpotPDF}
+                handleGenerateReport={handleExportAssignedApplicantsBySpotPDF}
+                isLoading={isLoadingAssignedApplicantsBySpot}
+                isDisabled={isLoadingAssignedApplicantsBySpot || !assignedApplicantsBySpot || assignedApplicantsBySpot.length === 0}
               />
               <ReportCard
                 title="Aspirantes por Municipios"
-                description="Listado de aspirantes agrupados por municipios"
+                description="Listado de aspirantes con plazas asignadas, agrupados por municipios"
                 icon={<Map className="h-5 w-5" />}
-                handleGenerateReport={handleExportStudentsByMunicipalityPDF}
+                handleGenerateReport={handleExportApplicantsByMunicipalityPDF}
+                isLoading={isLoadingApplicantsByMunicipality}
+                isDisabled={isLoadingApplicantsByMunicipality || !applicantsByMunicipality || applicantsByMunicipality.length === 0}
               />
               <ReportCard
                 title="Nota de Corte"
-                description="Nota mínima con la que se otorgó una carrera"
+                description="Nota de corte por carrera basada en las plazas asignadas"
                 icon={<ChartNoAxesColumnDecreasing className="h-5 w-5" />}
                 handleGenerateReport={handleExportCareerClosingPDF}
+                isLoading={isLoadingCareerClosing}
+                isDisabled={isLoadingCareerClosing || !careerClosing || careerClosing.length === 0}
               />
             </div>
           </section>

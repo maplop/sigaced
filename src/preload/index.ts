@@ -15,6 +15,9 @@ const api = {
 
   //PDF
   generatePDF: (payload) => ipcRenderer.invoke("pdf:generate", payload),
+  createZip: (sourceDir: string, zipName?: string) =>
+    ipcRenderer.invoke("pdf:createZip", sourceDir, zipName),
+  selectFolder: () => ipcRenderer.invoke("app:selectFolder"),
 
   //Statistics
   getDashboardStats: (phaseId?: number) => ipcRenderer.invoke("stats:getDashboardStats", phaseId),
@@ -26,10 +29,12 @@ const api = {
   addApplicant: (applicant: Applicant) => ipcRenderer.invoke("applicant:add", applicant),
   getApplicants: (phaseId: number) => ipcRenderer.invoke("applicant:getAll", phaseId),
   updateApplicant: (applicant: Applicant) => ipcRenderer.invoke("applicant:update", applicant),
-  deleteApplicant: (applicantId: number) => ipcRenderer.invoke("applicant:deleteApplicant", applicantId),
+  deleteApplicant: (applicantId: number) =>
+    ipcRenderer.invoke("applicant:deleteApplicant", applicantId),
   addApplicantToPhase: (applicantId: number, phaseId: number) =>
     ipcRenderer.invoke("applicant:addApplicantToPhase", applicantId, phaseId),
-  deleteAllApplicantsFromPhase: (phaseId: number) => ipcRenderer.invoke("applicant:deleteAll", phaseId),
+  deleteAllApplicantsFromPhase: (phaseId: number) =>
+    ipcRenderer.invoke("applicant:deleteAll", phaseId),
 
   // Allocation
   addAllocation: (allocation) => ipcRenderer.invoke("allocation:addAllocation", allocation),

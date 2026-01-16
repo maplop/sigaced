@@ -16,6 +16,7 @@ interface GeneratePDFPayload {
   columnWidths?: (number | string)[]
   columnAlignments?: ("left" | "center" | "right")[]
   saveName?: string
+  outputDir?: string
 }
 
 export async function generatePDF({
@@ -23,7 +24,8 @@ export async function generatePDF({
   table,
   columnWidths = [],
   columnAlignments = [],
-  saveName = "documento.pdf"
+  saveName = "documento.pdf",
+  outputDir
 }: GeneratePDFPayload) {
   const MARGIN = 50
   const PAGE_WIDTH = 595
@@ -113,7 +115,16 @@ export async function generatePDF({
   }
 
   const pdfBytes = await pdfDoc.save()
-  let outputPath = path.join(app.getPath("documents"), saveName)
+  
+  // Determinar el directorio de salida
+  const baseDir = outputDir || app.getPath("documents")
+  
+  // Crear directorio si no existe
+  if (!fs.existsSync(baseDir)) {
+    fs.mkdirSync(baseDir, { recursive: true })
+  }
+  
+  let outputPath = path.join(baseDir, saveName)
   outputPath = getUniqueFilePath(outputPath)
   fs.writeFileSync(outputPath, pdfBytes)
 

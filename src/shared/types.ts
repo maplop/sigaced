@@ -119,10 +119,13 @@ export interface TopCareer {
 }
 
 export interface ApplicantRequestRow {
+  id: number
   ci: string
   lastName: string
   name: string
   grade: number | null
+  gender: "M" | "F"
+  municipality: string
   career: string
   location: string
   phase: number

@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron"
+import { app, shell, BrowserWindow, ipcMain, dialog } from "electron"
 import { join } from "path"
 import { electronApp, optimizer, is } from "@electron-toolkit/utils"
 import icon from "../../resources/icon.png?asset"
@@ -59,6 +59,7 @@ import {
 } from "./queries/statistics"
 import { OperationResult } from "src/shared/types"
 import { generatePDF } from "./pdf/generatePDF"
+import { createZipFromDirectory } from "./pdf/createZip"
 import {
   seedDatabase,
   clearSeedTables,
@@ -191,6 +192,36 @@ ipcMain.handle("pdf:generate", async (_event, payload) => {
   try {
     const filePath = await generatePDF(payload)
     return { success: true, path: filePath }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("pdf:createZip", async (_event, sourceDir: string, zipName?: string) => {
+  try {
+    const zipPath = await createZipFromDirectory(sourceDir, zipName)
+    return { success: true, path: zipPath }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+})
+
+ipcMain.handle("app:selectFolder", async (_event) => {
+  try {
+    const result = await dialog.showOpenDialog({
+      properties: ["openDirectory"],
+      title: "Seleccionar carpeta para guardar los PDFs"
+    })
+
+    if (result.canceled) {
+      return { success: false, canceled: true, error: "Selección cancelada por el usuario" }
+    }
+
+    if (result.filePaths && result.filePaths.length > 0) {
+      return { success: true, path: result.filePaths[0] }
+    }
+
+    return { success: false, error: "No se seleccionó ninguna carpeta" }
   } catch (error: any) {
     return { success: false, error: error.message }
   }

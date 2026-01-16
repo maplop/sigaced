@@ -25,9 +25,9 @@ declare global {
       //Reports
       getApplicantsAndRequest: () => Promise<ApplicantRequestRow[]>
       getAssignedApplicantsBySpot: () => Promise<ApplicantRequestRow[]>
-      getAssignedApplicantsByLocation: () => Promise<Applicant[]>
-      getAssignedApplicantsByCareer: () => Promise<Applicant[]>
-      getApplicantsByMunicipality: () => Promise<Applicant[]>
+      getAssignedApplicantsByLocation: () => Promise<ApplicantRequestRow[]>
+      getAssignedApplicantsByCareer: () => Promise<ApplicantRequestRow[]>
+      getApplicantsByMunicipality: () => Promise<ApplicantRequestRow[]>
       getCareerClosing: () => Promise<CareerClosingRow[]>
 
       //PDF
@@ -37,7 +37,18 @@ declare global {
         columnWidths?: (number | string)[]
         columnAlignments?: ("left" | "center" | "right")[]
         saveName?: string
+        outputDir?: string
       }) => Promise<{ success: boolean; path?: string; error?: string }>
+      createZip: (
+        sourceDir: string,
+        zipName?: string
+      ) => Promise<{ success: boolean; path?: string; error?: string }>
+      selectFolder: () => Promise<{
+        success: boolean
+        path?: string
+        canceled?: boolean
+        error?: string
+      }>
 
       // Statistics
       getDashboardStats: (phaseId?: number) => Promise<DashboardStats>
