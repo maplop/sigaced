@@ -23,7 +23,7 @@ const Auth = () => {
           <GraduationCap className="w-8 h-8 text-white" />
         </div>
         <div className='flex flex-col justify-between'>
-          <div className="text-2xl font-bold leading-none text-[#0F172B]">GAPCED</div>
+          <div className="text-2xl font-bold leading-none text-[#0F172B]">GOPCED</div>
           <div className="text-sm leading-4 text-gray-600">Gestión de Otorgamiento de Plazas del Curso por Encuentro y a Distancia</div>
         </div>
       </div>

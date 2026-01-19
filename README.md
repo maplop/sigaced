@@ -1,12 +1,12 @@
-# GAPCED
+# GOPCED
 
 **Gestión de Otorgamiento de Plazas del Curso por Encuentro y a Distancia**
 
-GAPCED es una aplicación de escritorio desarrollada con Electron, React y TypeScript que automatiza el proceso de asignación de plazas universitarias para las modalidades de Curso por Encuentro y Curso a Distancia.
+GOPCED es una aplicación de escritorio desarrollada con Electron, React y TypeScript que automatiza el proceso de otorgamiento de plazas universitarias para las modalidades de Curso por Encuentro y Curso a Distancia.
 
-El sistema fue desarrollado para la **Universidad Central "Marta Abreu" de Las Villas** y gestiona todo el flujo desde el registro de aspirantes hasta la asignación final de plazas, pasando por tres fases de otorgamiento automático y manual.
+El sistema fue desarrollado para la **Universidad Central "Marta Abreu" de Las Villas** y gestiona todo el flujo desde el registro de aspirantes hasta la otorgamiento final de plazas, pasando por tres fases de otorgamiento automático y manual.
 
-El sistema gestiona todo el flujo desde el registro de aspirantes hasta la asignación final de plazas, pasando por tres fases de otorgamiento automático y manual.
+El sistema gestiona todo el flujo desde el registro de aspirantes hasta la otorgamiento final de plazas, pasando por tres fases de otorgamiento automático y manual.
 
 ## Características Principales
 
@@ -20,12 +20,12 @@ El sistema gestiona todo el flujo desde el registro de aspirantes hasta la asign
 
 ### Proceso de Otorgamiento
 
-El sistema implementa un proceso de asignación en **3 fases**:
+El sistema implementa un proceso de otorgamiento en **3 fases**:
 
 1. **Primera Fase - Otorgamiento Automático Inicial**
    - Todos los aspirantes con al menos una solicitud y un máximo de tres, se ordenan por nota (descendente)
-   - Asignación automática según disponibilidad y preferencia
-   - Los aspirantes no asignados pasan a la siguiente fase
+   - Otorgamiento automático según disponibilidad y preferencia
+   - Los aspirantes sin plaza otorgada pasan a la siguiente fase
 
 2. **Segunda Fase - Otorgamiento Automático Complementario**
    - Se ofertan las plazas restantes de la primera fase
@@ -33,13 +33,13 @@ El sistema implementa un proceso de asignación en **3 fases**:
    - La institución puede añadir o editar plazas
 
 3. **Tercera Fase - Otorgamiento Manual**
-   - Asignación manual a aspirantes ordenados por nota
+   - Otorgamiento manual a aspirantes ordenados por nota
    - El operador selecciona la plaza disponible adecuada
    - Finaliza el proceso de otorgamiento
 
 ### Estadísticas y Reportes
 
-- **Dashboard**: Métricas en tiempo real del proceso de asignación
+- **Dashboard**: Métricas en tiempo real del proceso de otorgamiento
 - **Top Estudiantes**: Ranking de los mejores estudiantes
 - **Top Carreras**: Carreras más solicitadas
 - **Reportes**: Exportación a PDF de listados y consultas
@@ -49,7 +49,7 @@ El sistema implementa un proceso de asignación en **3 fases**:
 
 - Exportación de listados consolidados
 - Reportes por carrera, ubicación, municipio
-- Listados de asignaciones por fase
+- Listados de otorgamientos por fase
 - Histórico de otorgamientos
 
 ## Requisitos Previos
@@ -276,7 +276,7 @@ Esto genera los archivos compilados en `out/` sin empaquetarlos.
 
 - Configurar plazas por carrera y ubicación
 - Definir cantidad de cupos por fase
-- Las plazas no asignadas pasan automáticamente a la siguiente fase
+- Los cupos no otorgados pasan automáticamente a la siguiente fase
 
 ### Gestión de Aspirantes
 
@@ -285,11 +285,11 @@ Esto genera los archivos compilados en `out/` sin empaquetarlos.
 - Configuración de hasta 3 solicitudes por fase
 - Ordenamiento automático por calificación
 
-### Proceso de Asignación
+### Proceso de Otorgamiento
 
-- **Asignación Automática**: Basada en calificación y preferencias
+- **Otorgamiento automático**: Basada en calificación y preferencias
 - **Seguimiento de Fases**: Control del flujo entre fases
-- **Asignación Manual**: Para la fase final
+- **Otorgamiento manual**: Para la fase final
 - **Validaciones**: Verificación de constraints y reglas de negocio
 
 ### Reportes y Estadísticas
@@ -299,9 +299,9 @@ Esto genera los archivos compilados en `out/` sin empaquetarlos.
 - Top 10 carreras más solicitadas
 - Reportes exportables a PDF:
   - Listado de aspirantes y solicitudes
-  - Asignaciones por carrera
-  - Asignaciones por ubicación
-  - Asignaciones por municipio
+  - Otorgamientos por carrera
+  - Otorgamientos por ubicación
+  - Otorgamientos por municipio
   - Cierre de carreras (nota mínima)
 
 ### Autenticación y Usuarios

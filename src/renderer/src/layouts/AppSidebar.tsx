@@ -18,7 +18,7 @@ import { useAuthContext } from "@renderer/context/AuthContext"
 import { Separator } from "@renderer/components/ui/separator"
 import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
 import { useState } from "react"
-import GAPCEDInfoDialog from "./GapcedInfoDialog"
+import GopcedInfoDialog from "./GopcedInfoDialog"
 
 const menuItems = [
   {
@@ -72,11 +72,11 @@ export function AppSidebar() {
                 <GraduationCap className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="text-lg truncate font-bold">GAPCED</span>
+                <span className="text-lg truncate font-bold">GOPCED</span>
               </div>
             </div>
 
-            <GAPCEDInfoDialog open={openInfo} onOpenChange={setOpenInfo} />
+            <GopcedInfoDialog open={openInfo} onOpenChange={setOpenInfo} />
           </div>
         </SidebarMenu>
       </SidebarHeader>

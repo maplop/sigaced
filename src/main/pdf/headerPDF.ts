@@ -20,7 +20,7 @@ export async function headerPDF({ page, pdfDoc, startY, marginLeft }: HeaderPDFO
   const HEADER_TITLE = `UNIVERSIDAD CENTRAL "MARTA ABERU" DE LAS VILLAS`
   const HEADER_IMAGE = path.join(process.cwd(), "resources/uclv.png")
   const SUB_TEXT =
-    "GAPCED — Gestión de Otorgamiento de Plazas del Curso por Encuentro y a Distancia"
+    "GOPCED — Gestión de Otorgamiento de Plazas del Curso por Encuentro y a Distancia"
   const DATE = formattedDate
 
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica)

@@ -8,7 +8,7 @@ export const getApplicantsAndRequest = async (): Promise<ApplicantRequestRow[]> 
 
 export const getAssignedApplicantsBySpot = async (): Promise<ApplicantRequestRow[]> => {
   const data = await window.api.getAssignedApplicantsBySpot()
-  if (!data) throw new Error("No se pudieron obtener los aspirantes asignados.")
+  if (!data) throw new Error("No se pudieron obtener los aspirantes con plaza otorgada.")
   return data
 }
 

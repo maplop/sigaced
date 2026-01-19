@@ -1,7 +1,7 @@
 {
   "name": "sigaced",
   "version": "1.0.0",
-  "description": "GAPCED - Gestión de Otorgamiento de Plazas del Curso por Encuentro y a Distancia",
+  "description": "GOPCED - Gestión de Otorgamiento de Plazas del Curso por Encuentro y a Distancia",
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",

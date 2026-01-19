@@ -62,7 +62,7 @@ const AddManualAllocation = ({
         <DialogHeader>
           <DialogTitle>Otorgamiento Manual de Plazas</DialogTitle>
           <DialogDescription>
-            Asigna manualmente un aspirante a una de las plazas disponible.
+            Otorga manualmente una plaza a un aspirante entre las disponibles.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>

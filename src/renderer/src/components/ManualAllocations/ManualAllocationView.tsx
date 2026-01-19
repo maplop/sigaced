@@ -115,10 +115,10 @@ export default function ManualAllocationView({ phase }: AllocationsViewProps) {
               >
                 <div className="space-y-2 text-center">
                   <p>
-                    ¿Estás seguro de que deseas eliminar <strong>todas las asignaciones</strong> de esta fase?
+                    ¿Estás seguro de que deseas eliminar <strong>todos los otorgamientos</strong> de esta fase?
                   </p>
                   <p>
-                    Esta acción también eliminará automáticamente cualquier <strong>otorgamientorelacionada en fases posteriores</strong> que dependa de estas.
+                    Esta acción también eliminará automáticamente cualquier <strong>otorgamiento relacionado en fases posteriores</strong> que dependa de estas.
                   </p>
                   <p>
                     Esta operación <strong>no se puede deshacer</strong>.

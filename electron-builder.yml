@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: GAPCED
+productName: GOPCED
 directories:
   buildResources: build
 files:

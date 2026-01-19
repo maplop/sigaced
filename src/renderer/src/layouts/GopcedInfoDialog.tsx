@@ -5,12 +5,12 @@ import { Separator } from "@renderer/components/ui/separator";
 import { ScrollArea } from "@renderer/components/ui/scroll-area";
 import { Info } from "lucide-react";
 
-type GAPCEDInfoDialogProps = {
+type GopcedInfoDialogProps = {
   open: boolean;
   onOpenChange: (value: boolean) => void;
 };
 
-export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialogProps) {
+export default function GopcedInfoDialog({ open, onOpenChange }: GopcedInfoDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
@@ -21,7 +21,7 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
 
       <DialogContent className="sm:max-w-3xl w-[95%] max-h-[90vh] p-4">
         <DialogHeader>
-          <DialogTitle>Información de la aplicación — GAPCED</DialogTitle>
+          <DialogTitle>Información de la aplicación — GOPCED</DialogTitle>
           <DialogDescription>
             Información general del sistema, fases de otorgamiento, datos gestionados y roles.
           </DialogDescription>
@@ -33,10 +33,10 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
           <div className="space-y-6">
             <Card>
               <CardContent>
-                <h3 className="text-lg font-semibold">Qué es GAPCED</h3>
+                <h3 className="text-lg font-semibold">Qué es GOPCED</h3>
                 <p className="mt-2 text-sm leading-6">
-                  GAPCED (Gestión de Otorgamiento de Plazas del Curso por Encuentro y a Distancia) es un sistema desarrollado para
-                  la Universidad Central “Marta Abreu” de Las Villas que automatiza el proceso de asignación de plazas para las
+                  GOPCED (Gestión de Otorgamiento de Plazas del Curso por Encuentro y a Distancia) es un sistema desarrollado para
+                  la Universidad Central "Marta Abreu" de Las Villas que automatiza el proceso de otorgamiento de plazas para las
                   modalidades Curso por Encuentro y Curso a Distancia.
                 </p>
               </CardContent>
@@ -70,7 +70,7 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
                 <div className="mt-3 space-y-3 text-sm leading-6">
                   <div>
                     <strong>Primera fase — Otorgamiento automático inicial:</strong>
-                    <p className="mt-1">Todos los aspirantes con al menos una solicitud se ordenan por nota (descendente) y se asignan plazas según disponibilidad y preferencia.</p>
+                    <p className="mt-1">Todos los aspirantes con al menos una solicitud se ordenan por nota (descendente) y se otorgan plazas según disponibilidad y preferencia.</p>
                   </div>
 
                   <div>
@@ -80,7 +80,7 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
 
                   <div>
                     <strong>Tercera fase — Otorgamiento manual:</strong>
-                    <p className="mt-1">Asignación manual a aspirantes ordenados por nota; el operador selecciona la plaza disponible adecuada. Finaliza el proceso.</p>
+                    <p className="mt-1">Otorgamiento manual a aspirantes ordenados por nota; el operador selecciona la plaza disponible adecuada. Finaliza el proceso.</p>
                   </div>
                 </div>
               </CardContent>
@@ -113,7 +113,7 @@ export default function GAPCEDInfoDialog({ open, onOpenChange }: GAPCEDInfoDialo
                 <h3 className="text-lg font-semibold">Dashboard y métricas</h3>
                 <p className="mt-2 text-sm leading-6">
                   Panel con indicadores por fase: fase actual, top 5 aspirantes, top 10 carreras más demandadas (todas las opciones 1–3
-                  consideradas), total aspirantes, promedio de notas, plazas disponibles, plazas asignadas y plazas restantes.
+                  consideradas), total aspirantes, promedio de notas, plazas disponibles, plazas otorgadas y plazas restantes.
                 </p>
               </CardContent>
             </Card>

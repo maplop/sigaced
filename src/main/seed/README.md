@@ -1,6 +1,6 @@
 # Población de Datos de Muestra (Seed Database)
 
-Este módulo permite poblar la base de datos con datos de muestra para facilitar las pruebas y el desarrollo del sistema GAPCED.
+Este módulo permite poblar la base de datos con datos de muestra para facilitar las pruebas y el desarrollo del sistema GOPCED.
 
 ## Descripción
 

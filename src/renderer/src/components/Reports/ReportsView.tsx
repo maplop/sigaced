@@ -31,7 +31,7 @@ const ReportsView = () => {
   return (
     <PageContainer>
       <div className="flex flex-col gap-8">
-        <PageTitle title="Centro de Reportes" subtitle="Accede a todos los reportes del sistema organizados por categoría. Los reportes se generan sobre los aspirantes a los cuales se les haya asignado una plaza. Selecciona el reporte que necesitas generar." />
+        <PageTitle title="Centro de Reportes" subtitle="Herramienta de acceso a reportes que permite visualizar y analizar la información del sistema de manera estructurada." />
         <div className="grid gap-8">
           {/* Sección Aspirantes */}
           <section>
@@ -47,7 +47,7 @@ const ReportsView = () => {
               />
               <ReportCard
                 title="Aspirantes por Ubicación"
-                description="Listado de aspirantes con plazas asignadas, agrupados por ubicación"
+                description="Listado de aspirantes con plazas otorgadas, agrupados por ubicación"
                 icon={<MapPin className="h-5 w-5" />}
                 handleGenerateReport={handleExportAssignedApplicantsByLocationPDF}
                 isLoading={isLoadingAssignedApplicantsByLocation}
@@ -55,7 +55,7 @@ const ReportsView = () => {
               />
               <ReportCard
                 title="Aspirantes por Carrera"
-                description="Listado de aspirantes con plazas asignadas, agrupados por carrera"
+                description="Listado de aspirantes con plazas otorgadas, agrupados por carrera"
                 icon={<GraduationCap className="h-5 w-5" />}
                 handleGenerateReport={handleExportAssignedApplicantsByCareerPDF}
                 isLoading={isLoadingAssignedApplicantsByCareer}
@@ -63,7 +63,7 @@ const ReportsView = () => {
               />
               <ReportCard
                 title="Aspirantes por Plaza"
-                description="Listado de aspirantes con plazas asignadas, agrupados por plaza"
+                description="Listado de aspirantes con plazas otorgadas, agrupados por plaza"
                 icon={<School className="h-5 w-5" />}
                 handleGenerateReport={handleExportAssignedApplicantsBySpotPDF}
                 isLoading={isLoadingAssignedApplicantsBySpot}
@@ -71,7 +71,7 @@ const ReportsView = () => {
               />
               <ReportCard
                 title="Aspirantes por Municipios"
-                description="Listado de aspirantes con plazas asignadas, agrupados por municipios"
+                description="Listado de aspirantes con plazas otorgadas, agrupados por municipios"
                 icon={<Map className="h-5 w-5" />}
                 handleGenerateReport={handleExportApplicantsByMunicipalityPDF}
                 isLoading={isLoadingApplicantsByMunicipality}
@@ -79,7 +79,7 @@ const ReportsView = () => {
               />
               <ReportCard
                 title="Nota de Corte"
-                description="Nota de corte por carrera basada en las plazas asignadas"
+                description="Nota de corte por carrera basada en las plazas otorgadas"
                 icon={<ChartNoAxesColumnDecreasing className="h-5 w-5" />}
                 handleGenerateReport={handleExportCareerClosingPDF}
                 isLoading={isLoadingCareerClosing}

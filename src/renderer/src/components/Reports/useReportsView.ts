@@ -28,7 +28,7 @@ export const useReportsView = () => {
   const handleExportAssignedApplicantsBySpotPDF = async () => {
     try {
       if (!assignedApplicantsBySpot || assignedApplicantsBySpot.length === 0) {
-        toast.error("No hay aspirantes asignados para exportar")
+        toast.error("No hay aspirantes con plaza otorgada para exportar")
         return
       }
 
@@ -125,7 +125,7 @@ export const useReportsView = () => {
   const handleExportAssignedApplicantsByCareerPDF = async () => {
     try {
       if (!assignedApplicantsByCareer || assignedApplicantsByCareer.length === 0) {
-        toast.error("No hay aspirantes asignados para exportar")
+        toast.error("No hay aspirantes con plaza otorgada para exportar")
         return
       }
 
@@ -232,7 +232,7 @@ export const useReportsView = () => {
   const handleExportAssignedApplicantsByLocationPDF = async () => {
     try {
       if (!assignedApplicantsByLocation || assignedApplicantsByLocation.length === 0) {
-        toast.error("No hay aspirantes asignados para exportar")
+        toast.error("No hay aspirantes con plaza otorgada para exportar")
         return
       }
 
@@ -340,7 +340,7 @@ export const useReportsView = () => {
   const handleExportApplicantsByMunicipalityPDF = async () => {
     try {
       if (!applicantsByMunicipality || applicantsByMunicipality.length === 0) {
-        toast.error("No hay aspirantes asignados para exportar")
+        toast.error("No hay aspirantes con plaza otorgada para exportar")
         return
       }
 
