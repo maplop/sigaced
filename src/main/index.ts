@@ -55,7 +55,8 @@ import {
   clearAllTables,
   getDashboardStats,
   getTopCareers,
-  getTopApplicants
+  getTopApplicants,
+  getInferredCurrentPhase
 } from "./queries/statistics"
 import { OperationResult } from "src/shared/types"
 import { generatePDF } from "./pdf/generatePDF"
@@ -133,7 +134,7 @@ app.whenReady().then(() => {
   })
 })
 
-// Aspirantes y solicitudes por ci
+// Aspirantes y solicitudes por CI
 ipcMain.handle("reports:getByRequestSpot", async (_event) => {
   try {
     return getApplicantsAndRequest()
@@ -252,6 +253,14 @@ ipcMain.handle("stats:getTopCareers", async (_event, phaseId?: number) => {
   }
 })
 
+ipcMain.handle("stats:getInferredCurrentPhase", async () => {
+  try {
+    return getInferredCurrentPhase()
+  } catch (error: any) {
+    return 1
+  }
+})
+
 ipcMain.handle("stats:clearAllTables", async (_event) => {
   try {
     clearAllTables()
@@ -271,6 +280,8 @@ ipcMain.handle("seed:populate", async (_event, applicantCount?: number) => {
   }
 })
 
+// Nota: clearSeedTables no actualiza currentPhase. Si se invoca desde el renderer,
+// el caller debe invocar setCurrentPhase(1) en onSuccess para mantener la referencia en localStorage.
 ipcMain.handle("seed:clear", async (_event) => {
   try {
     clearSeedTables()

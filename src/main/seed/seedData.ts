@@ -27,32 +27,23 @@ export interface ApplicantSeed {
   requestCount: number // 1-3 solicitudes
 }
 
-// Carreras (12-15 carreras de diferentes facultades)
+// Carreras: nombre completo, abreviatura = disciplina/especialidad (p. ej. "Ingeniería X" → "X"), facultad.
 export const careersData: CareerSeed[] = [
-  // Facultad de Ciencias de la Salud
-  { fullName: "Medicina", abbreviation: "MED", faculty: "Ciencias de la Salud" },
-  { fullName: "Enfermería", abbreviation: "ENF", faculty: "Ciencias de la Salud" },
-  { fullName: "Farmacia", abbreviation: "FAR", faculty: "Ciencias de la Salud" },
-  
-  // Facultad de Ingeniería
-  { fullName: "Ingeniería Informática", abbreviation: "INF", faculty: "Ingeniería" },
-  { fullName: "Ingeniería Civil", abbreviation: "CIV", faculty: "Ingeniería" },
-  { fullName: "Ingeniería Industrial", abbreviation: "IND", faculty: "Ingeniería" },
-  { fullName: "Ingeniería Eléctrica", abbreviation: "ELE", faculty: "Ingeniería" },
-  
-  // Facultad de Ciencias Económicas
-  { fullName: "Contabilidad", abbreviation: "CON", faculty: "Ciencias Económicas" },
-  { fullName: "Administración de Empresas", abbreviation: "ADE", faculty: "Ciencias Económicas" },
-  { fullName: "Economía", abbreviation: "ECO", faculty: "Ciencias Económicas" },
-  
-  // Facultad de Humanidades
-  { fullName: "Derecho", abbreviation: "DER", faculty: "Humanidades" },
-  { fullName: "Psicología", abbreviation: "PSI", faculty: "Humanidades" },
-  { fullName: "Educación", abbreviation: "EDU", faculty: "Humanidades" },
-  
-  // Facultad de Ciencias
-  { fullName: "Matemáticas", abbreviation: "MAT", faculty: "Ciencias" },
-  { fullName: "Biología", abbreviation: "BIO", faculty: "Ciencias" },
+  { fullName: "Medicina", abbreviation: "Medicina", faculty: "Ciencias de la Salud" },
+  { fullName: "Enfermería", abbreviation: "Enfermería", faculty: "Ciencias de la Salud" },
+  { fullName: "Farmacia", abbreviation: "Farmacia", faculty: "Ciencias de la Salud" },
+  { fullName: "Ingeniería Informática", abbreviation: "Informática", faculty: "MFC" },
+  { fullName: "Ingeniería Civil", abbreviation: "Civil", faculty: "Ingeniería" },
+  { fullName: "Ingeniería Industrial", abbreviation: "Industrial", faculty: "Ingeniería" },
+  { fullName: "Ingeniería Eléctrica", abbreviation: "Eléctrica", faculty: "Ingeniería" },
+  { fullName: "Contabilidad", abbreviation: "Contabilidad", faculty: "Ciencias Económicas" },
+  { fullName: "Administración de Empresas", abbreviation: "Administración", faculty: "Ciencias Económicas" },
+  { fullName: "Economía", abbreviation: "Economía", faculty: "Ciencias Económicas" },
+  { fullName: "Derecho", abbreviation: "Derecho", faculty: "Humanidades" },
+  { fullName: "Psicología", abbreviation: "Psicología", faculty: "Humanidades" },
+  { fullName: "Educación", abbreviation: "Educación", faculty: "Humanidades" },
+  { fullName: "Matemáticas", abbreviation: "Matemáticas", faculty: "Ciencias" },
+  { fullName: "Biología", abbreviation: "Biología", faculty: "Ciencias" },
 ]
 
 // Ubicaciones (4-6 sedes)
@@ -157,34 +148,20 @@ const municipalities = [
   "Bayamo", "Ciego de Ávila"
 ]
 
-// Generar CIs únicos
+// Generar CIs únicos de 11 dígitos numéricos
 function generateCI(index: number): string {
-  // Generar CI de 8-11 dígitos, asegurando unicidad
-  const base = 10000000 + index
+  const base = 10000000000 + index
   return base.toString()
 }
 
-// Generar calificación con distribución normal
+// Generar calificación entre 60 y 100 (promedio del aspirante)
 function generateGrade(index: number, total: number): number {
-  // Distribución aproximada: 10% excelentes, 20% muy buenos, 40% buenos, 20% regulares, 10% bajas
   const percentile = index / total
-  
-  if (percentile < 0.1) {
-    // Top 10%: 85-100
-    return Math.round(85 + Math.random() * 15)
-  } else if (percentile < 0.3) {
-    // Siguiente 20%: 75-84
-    return Math.round(75 + Math.random() * 9)
-  } else if (percentile < 0.7) {
-    // Siguiente 40%: 65-74
-    return Math.round(65 + Math.random() * 9)
-  } else if (percentile < 0.9) {
-    // Siguiente 20%: 55-64
-    return Math.round(55 + Math.random() * 9)
-  } else {
-    // Último 10%: 45-54
-    return Math.round(45 + Math.random() * 9)
-  }
+  if (percentile < 0.1) return Math.round(90 + Math.random() * 10)
+  if (percentile < 0.3) return Math.round(80 + Math.random() * 9)
+  if (percentile < 0.7) return Math.round(70 + Math.random() * 9)
+  if (percentile < 0.9) return Math.round(60 + Math.random() * 9)
+  return Math.round(60 + Math.random() * 5)
 }
 
 // Generar número de solicitudes (1-3)

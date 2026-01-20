@@ -54,6 +54,7 @@ declare global {
       getDashboardStats: (phaseId?: number) => Promise<DashboardStats>
       getTopApplicants: (phaseId?: number) => Promise<TopApplicant[]>
       getTopCareers: (phaseId?: number) => Promise<TopCareer[]>
+      getInferredCurrentPhase: () => Promise<1 | 2 | 3>
       clearAllTables: () => Promise<OperationResult>
 
       // Applicants

@@ -142,9 +142,9 @@ export const useAllocations = (phaseId: number) => {
 
   const deleteAllMutation = useMutation({
     mutationFn: (phaseId: number) => deleteAllAllocationsFromPhase(phaseId),
-    onSuccess: () => {
-      const prevPhase = phaseId > 1 ? ((phaseId - 1) as PhaseType) : 1
-      setCurrentPhase(prevPhase)
+    onSuccess: async () => {
+      const inferred = await window.api.getInferredCurrentPhase()
+      setCurrentPhase(inferred)
       toast.success("Todos los otorgamientos de la fase fueron eliminados.")
       queryClient.invalidateQueries({ queryKey: [rqKeys.ALLOCATIONS, phaseId] })
     },

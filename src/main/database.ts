@@ -26,7 +26,7 @@ db.exec(`
     ci TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     last_name TEXT NOT NULL,
-    grade REAL CHECK (grade BETWEEN 0 AND 100),
+    grade REAL CHECK (grade BETWEEN 60 AND 100),
     gender TEXT CHECK (gender IN ('M', 'F')),
     municipality TEXT
   );

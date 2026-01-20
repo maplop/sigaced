@@ -9,7 +9,7 @@ const ManualAllocationsView = () => {
   return (
     <AllocationsSectionWrapper
       title="Otorgamiento Manual"
-      subtitle="Gestión de plazas y otorgamientos del otorgamiento manual."
+      subtitle="Gestión de plazas y otorgamientos de la tercera fase."
       tabs={[
         {
           label: "Plazas",

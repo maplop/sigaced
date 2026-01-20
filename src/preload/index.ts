@@ -23,6 +23,7 @@ const api = {
   getDashboardStats: (phaseId?: number) => ipcRenderer.invoke("stats:getDashboardStats", phaseId),
   getTopApplicants: (phaseId?: number) => ipcRenderer.invoke("stats:getTopApplicants", phaseId),
   getTopCareers: (phaseId?: number) => ipcRenderer.invoke("stats:getTopCareers", phaseId),
+  getInferredCurrentPhase: () => ipcRenderer.invoke("stats:getInferredCurrentPhase"),
   clearAllTables: () => ipcRenderer.invoke("stats:clearAllTables"),
 
   // Applicant

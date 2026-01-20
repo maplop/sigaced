@@ -95,8 +95,9 @@ const ApplicantsForm = ({
                     required
                     maxLength={11}
                     minLength={11}
+                    placeholder="Ingrese el CI"
                     onChange={(e) => {
-                      const onlyNumbers = e.target.value.replace(/\D/g, "");
+                      const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 11);
                       setFormData((prev) => ({ ...prev, ci: onlyNumbers }));
                     }}
                   />
@@ -125,8 +126,8 @@ const ApplicantsForm = ({
                     id="grade"
                     type="number"
                     step="0.01"
-                    min="60"
-                    max="100"
+                    min={60}
+                    max={100}
                     value={formData.grade}
                     onChange={(e) => setFormData((prev) => ({ ...prev, grade: parseFloat(e.target.value) }))}
                     required

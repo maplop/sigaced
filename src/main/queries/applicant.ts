@@ -4,6 +4,12 @@ import { Applicant } from "src/shared/types"
 
 // -------------------- CREATE --------------------
 export function addApplicant(applicant: Applicant): number {
+  if (!/^[0-9]{11}$/.test(applicant.ci)) {
+    throw new Error("El CI debe tener exactamente 11 dígitos numéricos.")
+  }
+  if (applicant.grade < 60 || applicant.grade > 100) {
+    throw new Error("La nota debe estar entre 60 y 100.")
+  }
   try {
     const insertApplicant = db.prepare(`
       INSERT INTO applicant (ci, name, last_name, grade, gender, municipality)
@@ -91,6 +97,12 @@ export function getApplicants(phaseId: number): Applicant[] {
 
 // -------------------- UPDATE --------------------
 export function updateApplicant(applicant: Applicant): void {
+  if (!/^[0-9]{11}$/.test(applicant.ci)) {
+    throw new Error("El CI debe tener exactamente 11 dígitos numéricos.")
+  }
+  if (applicant.grade < 60 || applicant.grade > 100) {
+    throw new Error("La nota debe estar entre 60 y 100.")
+  }
   try {
     const updateApp = db.prepare(`
       UPDATE applicant

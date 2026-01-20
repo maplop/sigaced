@@ -159,6 +159,25 @@ export function getTopCareers(phaseId?: number) {
 }
 
 /**
+ * Infiere la fase actual a partir solo de otorgamientos (allocation): sin otorgamientos → 1;
+ * otorgamientos de la fase 1 → 2; otorgamientos de la fase 2 o 3 → 3.
+ */
+export function getInferredCurrentPhase(): 1 | 2 | 3 {
+  const r = db
+    .prepare(
+      `SELECT MAX(sp.phase_id) AS max
+       FROM allocation a
+       JOIN spot sp ON sp.id = a.spot_id`
+    )
+    .get() as { max: number | null }
+  const n = r?.max != null ? Number(r.max) : null
+  if (n == null) return 1
+  if (n === 1) return 2
+  if (n === 2 || n === 3) return 3
+  return 1
+}
+
+/**
  * Limpia todas las tablas excepto 'user'.
  * Elimina datos y reinicia los autoincrementos.
  */

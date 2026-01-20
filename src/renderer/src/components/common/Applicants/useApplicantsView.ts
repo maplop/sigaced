@@ -143,9 +143,17 @@ export const useApplicantsView = (phaseId: PhaseType) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Validación del CI
-    if (formData.ci.length !== 11) {
-      toast.error("El CI debe tener 11 dígitos.", {
+    // Validación del CI: 11 dígitos numéricos
+    if (!/^[0-9]{11}$/.test(formData.ci)) {
+      toast.error("El CI debe tener exactamente 11 dígitos numéricos.", {
+        style: { color: "var(--errorMessage)" }
+      })
+      return
+    }
+
+    // Validación de la nota: entre 60 y 100
+    if (formData.grade < 60 || formData.grade > 100) {
+      toast.error("La nota debe estar entre 60 y 100.", {
         style: { color: "var(--errorMessage)" }
       })
       return

@@ -12,8 +12,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import { AllocationRow } from "src/shared/types"
+import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
 
 export const useManualAllocationView = (phaseId: number) => {
+  const { setCurrentPhase } = useAssignmentPhase()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const queryClient = useQueryClient()
 
@@ -83,7 +85,9 @@ export const useManualAllocationView = (phaseId: number) => {
 
   const deleteAllMutation = useMutation({
     mutationFn: (phaseId: number) => deleteAllAllocationsFromPhase(phaseId),
-    onSuccess: () => {
+    onSuccess: async () => {
+      const inferred = await window.api.getInferredCurrentPhase()
+      setCurrentPhase(inferred)
       toast.success("Todos los otorgamientos de la fase fueron eliminados.")
       queryClient.invalidateQueries({ queryKey: [rqKeys.ALLOCATIONS, phaseId] })
     },
