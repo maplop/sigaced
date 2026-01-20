@@ -9,8 +9,9 @@ import {
   BreadcrumbLink,
 } from "@renderer/components/ui/breadcrumb"
 import { AppSidebar } from "./AppSidebar"
-import { Outlet, useLocation } from "react-router-dom"
+import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
+import { useAuthContext } from "@renderer/context/AuthContext"
 
 interface BreadcrumbData {
   name: string
@@ -54,8 +55,11 @@ const generateBreadcrumbs = (pathname: string): BreadcrumbData[] => {
 }
 
 const MainLayout = () => {
+  const { user } = useAuthContext()
   const location = useLocation()
   const breadcrumbs = generateBreadcrumbs(location.pathname)
+
+  if (!user) return <Navigate to={ROUTES.LOGIN} replace />
 
   return (
     <SidebarProvider>

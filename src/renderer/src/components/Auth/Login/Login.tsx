@@ -113,8 +113,8 @@ const Login = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Checkbox id="terms" checked={rememberMe} onCheckedChange={() => setRememberMe(!rememberMe)} />
-            <Label htmlFor="terms">Guardar mi sesión</Label>
+            <Checkbox id="rememberMe" checked={rememberMe} onCheckedChange={() => setRememberMe(!rememberMe)} />
+            <Label htmlFor="rememberMe">Guardar mi sesión</Label>
           </div>
           <LoginButton />
         </form>

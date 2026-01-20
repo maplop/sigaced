@@ -273,7 +273,7 @@ ipcMain.handle("stats:clearAllTables", async (_event) => {
 // IPC handlers for seed database
 ipcMain.handle("seed:populate", async (_event, applicantCount?: number) => {
   try {
-    const result = seedDatabase(applicantCount || 100)
+    const result = seedDatabase(applicantCount ?? 500)
     return { success: true, result }
   } catch (error: any) {
     return { success: false, error: error.message }

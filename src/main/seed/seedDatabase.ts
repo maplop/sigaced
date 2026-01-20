@@ -25,10 +25,10 @@ interface SeedResult {
 
 /**
  * Pobla la base de datos con datos de muestra para fase 1
- * @param applicantCount Número de aspirantes a generar (default: 100)
+ * @param applicantCount Número de aspirantes a generar (default: 500). Carreras y ubicaciones son fijos; las plazas se escalan proporcionalmente.
  * @returns Resultado del proceso de población
  */
-export function seedDatabase(applicantCount: number = 100): SeedResult {
+export function seedDatabase(applicantCount: number = 500): SeedResult {
   const result: SeedResult = {
     careers: 0,
     locations: 0,
@@ -85,6 +85,10 @@ export function seedDatabase(applicantCount: number = 100): SeedResult {
       }
 
       // 3. Insertar plazas (spots) para fase 1
+      // Escalar el total de plazas para que ~80 % de aspirantes obtengan plaza en la primera vuelta (~20 % se queden sin).
+      const baseSum = spotsData.reduce((s, sp) => s + sp.availableQuantity, 0)
+      const spotFactor = baseSum > 0 ? (applicantCount * 0.8) / baseSum : 1
+
       const spotMap = new Map<string, number>() // "careerName-locationName" -> spotId
       const insertSpot = db.prepare(`
         INSERT INTO spot (career_id, location_id, phase_id, available_quantity)
@@ -103,7 +107,8 @@ export function seedDatabase(applicantCount: number = 100): SeedResult {
         }
 
         try {
-          const spotResult = insertSpot.run(careerId, locationId, PHASE_ID, spot.availableQuantity)
+          const qty = Math.max(1, Math.round(spot.availableQuantity * spotFactor))
+          const spotResult = insertSpot.run(careerId, locationId, PHASE_ID, qty)
           const spotKey = `${spot.careerName}-${spot.locationName}`
           spotMap.set(spotKey, spotResult.lastInsertRowid as number)
           result.spots++
