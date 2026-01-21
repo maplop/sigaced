@@ -67,7 +67,7 @@ const ChangePassword = () => {
   }, [formData])
 
   const mutation = useMutation({
-    mutationFn: (newPassword: string) => changePassword(user?.id ?? '', hashPassword(newPassword)),
+    mutationFn: (newPassword: string) => changePassword(user?.id ?? 0, hashPassword(newPassword)),
     onSuccess: () => {
       toast.success('Contraseña actualizada correctamente.')
       setFormData({

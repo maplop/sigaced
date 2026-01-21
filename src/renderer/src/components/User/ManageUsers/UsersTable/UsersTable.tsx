@@ -24,7 +24,7 @@ export interface UsersTableProps {
   sortDirection: "asc" | "desc"
   handleSort: (field: keyof User) => void
   handleEdit: (user: User) => void
-  handleDelete: (id: string) => void
+  handleDelete: (id: number) => void
   filteredAndSortedUsers: User[]
 }
 

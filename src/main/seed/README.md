@@ -45,7 +45,7 @@ Antes de poblar, puedes limpiar las tablas existentes:
 await window.api.clearSeedTables()
 ```
 
-**Nota**: Esto elimina todos los datos de las tablas: `career`, `location`, `spot`, `student`, `student_phase`, `request`, y `assignment`. **No elimina la tabla `user`**.
+**Nota**: Esto elimina todos los datos de las tablas: `career`, `location`, `spot`, `student`, `student_phase`, `request`, y `allocation`. **No elimina la tabla `user`**.
 
 #### 2. Poblar Base de Datos
 

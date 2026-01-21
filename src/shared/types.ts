@@ -81,7 +81,7 @@ export interface AllocationRow {
 }
 
 export interface User {
-  id: string
+  id: number
   name: string
   lastName: string
   username: string

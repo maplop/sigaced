@@ -31,8 +31,9 @@ export function updateLocation(location: Location): void {
 }
 
 // Delete
-export function deleteLocation(id: number): void {
-  db.prepare("DELETE FROM location WHERE id = ?").run(id)
+export function deleteLocation(id: number): boolean {
+  const result = db.prepare("DELETE FROM location WHERE id = ?").run(id)
+  return result.changes > 0
 }
 
 // Delete all locations

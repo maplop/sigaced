@@ -4,7 +4,7 @@ import { KPICards } from "./KPICards"
 import { TopStudents } from "./TopStudents"
 import { TopCareers } from "./TopCareers"
 import { PhaseSelector } from "./PhaseSelector"
-import { useStatisticsVew } from "./useStatisticsVew"
+import { useStatisticsView } from "./useStatisticsView"
 
 const StatisticsView = () => {
   const {
@@ -17,7 +17,7 @@ const StatisticsView = () => {
     selectedPhase,
     handlePhaseSelector,
     clearAllTablesMutation
-  } = useStatisticsVew()
+  } = useStatisticsView()
 
   const { mutate: clearAllTablesMutate } = clearAllTablesMutation
 

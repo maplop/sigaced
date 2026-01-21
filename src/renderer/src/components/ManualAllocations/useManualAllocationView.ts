@@ -12,10 +12,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import { AllocationRow } from "src/shared/types"
-import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
+import { useAllocationPhase } from "@renderer/context/AllocationPhaseContext"
 
 export const useManualAllocationView = (phaseId: number) => {
-  const { setCurrentPhase } = useAssignmentPhase()
+  const { setCurrentPhase } = useAllocationPhase()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const queryClient = useQueryClient()
 

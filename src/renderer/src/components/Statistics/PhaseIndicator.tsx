@@ -1,6 +1,6 @@
 import { Calendar, CheckCircle2, Circle, RefreshCcw } from "lucide-react"
 import { Card } from "../ui/card"
-import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
+import { useAllocationPhase } from "@renderer/context/AllocationPhaseContext"
 import { getPhaseName } from "@renderer/utils/getPhaseName"
 import { formatDate } from "@renderer/utils/formatDate"
 import { Button } from "../ui/button"
@@ -14,7 +14,7 @@ interface PhaseIndicatorProps {
 export function PhaseIndicator({ clearAllTablesMutation }: PhaseIndicatorProps) {
   const { user } = useAuthContext()
 
-  const { currentPhase } = useAssignmentPhase()
+  const { currentPhase } = useAllocationPhase()
   const today = new Date()
 
   // Definimos las fases con su número y nombre

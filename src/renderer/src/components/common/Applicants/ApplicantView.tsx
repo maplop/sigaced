@@ -62,9 +62,6 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
 
   return (
     <div className="flex flex-col gap-4">
-
-
-      {/*<ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">*/}
       <Card>
         <CardHeader className="flex justify-between">
           <div className="w-fit p-0 bg-transparent shadow-none">
@@ -150,7 +147,7 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
           {/* Tabla */}
           <ApplicantsTable
             loadingApplicants={loadingApplicants}
-            filteredAndSortedSpots={filteredAndSortedApplicants}
+            filteredAndSortedApplicants={filteredAndSortedApplicants}
             paginatedApplicants={paginatedApplicants}
             totalPages={totalPages}
             setCurrentPage={setCurrentPage}
@@ -162,14 +159,12 @@ export default function ApplicantsView({ phase }: ApplicantsViewProps) {
             handleSort={handleSort}
             handleDeleteApplicant={handleDeleteApplicant}
             handleEdit={handleEdit}
-            filteredAndSortedApplicants={filteredAndSortedApplicants}
             spots={spots ?? []}
             loadingSpots={loadingSpots}
             phaseId={phase}
           />
         </CardContent>
       </Card>
-      {/*</ScrollArea>*/}
     </div>
   )
 }

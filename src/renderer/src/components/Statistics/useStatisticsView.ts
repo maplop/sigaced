@@ -8,14 +8,14 @@ import {
 import { rqKeys } from "@renderer/utils/rqKeys"
 import { useState } from "react"
 import { toast } from "sonner"
-import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
+import { useAllocationPhase } from "@renderer/context/AllocationPhaseContext"
 
 export type PhaseSelectorType = "all" | 1 | 2 | 3
 
-export const useStatisticsVew = () => {
+export const useStatisticsView = () => {
   const queryClient = useQueryClient()
 
-  const { setCurrentPhase } = useAssignmentPhase()
+  const { setCurrentPhase } = useAllocationPhase()
 
   const [selectedPhase, setSelectedPhase] = useState<PhaseSelectorType>("all")
 
@@ -36,7 +36,7 @@ export const useStatisticsVew = () => {
   })
 
   const { data: topApplicants, isLoading: loadingTopApplicants } = useQuery({
-    queryKey: [rqKeys.APPLICANTS, rqKeys.ASSIGNMENTS, phaseId],
+    queryKey: [rqKeys.APPLICANTS, rqKeys.ALLOCATIONS, phaseId],
     queryFn: () => getTopApplicants(phaseId)
   })
 

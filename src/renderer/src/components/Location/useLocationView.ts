@@ -143,7 +143,7 @@ export const useLocationView = () => {
     }
   })
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     deleteMutation.mutate(id)
   }
 

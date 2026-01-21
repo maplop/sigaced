@@ -28,7 +28,7 @@ export const editCareer = async (career: Career): Promise<void> => {
   }
 }
 
-export const deleteCareer = async (id: string): Promise<void> => {
+export const deleteCareer = async (id: number): Promise<void> => {
   const response = await window.api.deleteCareer(id)
   if (!response.success) {
     throw new Error(response.error || "Error al eliminar la carrera.")

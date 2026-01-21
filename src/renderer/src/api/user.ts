@@ -17,7 +17,7 @@ export const getAllUsers = async (): Promise<User[]> => {
   return await window.api.getUsers()
 }
 
-export const getUserById = async (id: string): Promise<User | null> => {
+export const getUserById = async (id: number): Promise<User | null> => {
   return (await window.api.getUserById(id)) ?? null
 }
 
@@ -28,12 +28,12 @@ export const updateUser = async (user: Omit<User, "createdAt">): Promise<void> =
   await window.api.updateUser(user)
 }
 
-export const deleteUser = async (id: string): Promise<void> => {
-  const success = await window.api.deleteUser(id)
-  if (!success) throw new Error("Error al eliminar el usuario")
+export const deleteUser = async (id: number): Promise<void> => {
+  const result = await window.api.deleteUser(id)
+  if (!result?.success) throw new Error(result?.error || "Error al eliminar el usuario")
 }
 
-export const changePassword = async (id: string, newPassword: string): Promise<void> => {
+export const changePassword = async (id: number, newPassword: string): Promise<void> => {
   const allUsers = await window.api.getUsers()
   const userExists = allUsers.some((u) => u.id === id)
   if (!userExists) throw new Error("Usuario no encontrado")

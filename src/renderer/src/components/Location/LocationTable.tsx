@@ -23,7 +23,7 @@ export interface LocationsTableProps {
   sortDirection: "asc" | "desc"
   handleSort: (field: keyof Location) => void
   handleEdit: (location: Location) => void
-  handleDelete: (id: string) => void
+  handleDelete: (id: number) => void
 }
 
 const LocationsTable = ({

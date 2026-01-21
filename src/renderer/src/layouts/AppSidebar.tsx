@@ -16,7 +16,7 @@ import { useLocation } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
 import { useAuthContext } from "@renderer/context/AuthContext"
 import { Separator } from "@renderer/components/ui/separator"
-import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
+import { useAllocationPhase } from "@renderer/context/AllocationPhaseContext"
 import { useState } from "react"
 import GopcedInfoDialog from "./GopcedInfoDialog"
 
@@ -59,7 +59,7 @@ const allocations = [
 export function AppSidebar() {
   const location = useLocation()
   const { logout, user } = useAuthContext()
-  const { currentPhase } = useAssignmentPhase()
+  const { currentPhase } = useAllocationPhase()
 
   const [openInfo, setOpenInfo] = useState<boolean>(false);
   return (

@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Auth from './components/Auth/Auth'
 import MainLayout from './layouts/MainLayout'
 import Statistics from './pages/Statistics'
-import ApplicantsPage from './pages/Applicants'
 import Careers from './pages/Careers'
 import Location from './pages/Location'
 import ManageUsersPage from './pages/User/ManageUsers'
@@ -34,17 +33,9 @@ function App(): React.JSX.Element {
             <Route path={ROUTES.CAREERS} element={<Careers />} />
             <Route path={ROUTES.LOCATION} element={<Location />} />
 
-            <Route path={ROUTES.FIRST_ALLOCATION} element={<FirstAllocations />}>
-              <Route index path={ROUTES.APPLICANTS} element={<ApplicantsPage />} />
-            </Route>
-
-            <Route path={ROUTES.SECOND_ALLOCATION} element={<SecondAllocations />}>
-              <Route index path={ROUTES.APPLICANTS} element={<ApplicantsPage />} />
-            </Route>
-
-            <Route path={ROUTES.MANUAL_ALLOCATION} element={<ManualAllocations />}>
-              <Route index path={ROUTES.APPLICANTS} element={<ApplicantsPage />} />
-            </Route>
+            <Route path={ROUTES.FIRST_ALLOCATION} element={<FirstAllocations />} />
+            <Route path={ROUTES.SECOND_ALLOCATION} element={<SecondAllocations />} />
+            <Route path={ROUTES.MANUAL_ALLOCATION} element={<ManualAllocations />} />
 
             <Route path={ROUTES.FINAL_LIST} element={<FinalList />} />
 

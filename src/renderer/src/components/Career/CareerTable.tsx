@@ -23,7 +23,7 @@ export interface CareerTableProps {
   sortDirection: "asc" | "desc"
   handleSort: (field: keyof Career) => void
   handleEdit: (career: Career) => void
-  handleDelete: (id: string) => void
+  handleDelete: (id: number) => void
   filteredAndSortedCareers: Career[]
 }
 
@@ -84,7 +84,7 @@ const CareerTable = ({
                               <Edit className="h-4 w-4" />
                             </Button>
                             <ConfirmDeleteDialog
-                              onConfirm={() => handleDelete(career.id.toString())}
+                              onConfirm={() => handleDelete(career.id)}
                               title="Eliminar carrera"
                               trigger={
                                 <Button variant="outline" size="sm">

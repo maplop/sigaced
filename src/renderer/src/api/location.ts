@@ -28,7 +28,7 @@ export const editLocation = async (location: Location): Promise<void> => {
   }
 }
 
-export const deleteLocation = async (id: string): Promise<void> => {
+export const deleteLocation = async (id: number): Promise<void> => {
   const response = await window.api.deleteLocation(id)
   if (!response.success) {
     throw new Error(response.error || "Error al eliminar la ubicación")

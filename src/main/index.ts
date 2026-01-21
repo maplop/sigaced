@@ -569,9 +569,10 @@ ipcMain.handle("location:update", async (_event, location) => {
   }
 })
 
-ipcMain.handle("location:delete", async (_event, id) => {
+ipcMain.handle("location:delete", async (_event, id: number) => {
   try {
-    await deleteLocation(id)
+    const deleted = deleteLocation(id)
+    if (!deleted) return { success: false, error: "Ubicación no encontrada" }
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
@@ -637,7 +638,8 @@ ipcMain.handle("user:update", async (_event, user) => {
 
 ipcMain.handle("user:delete", async (_event, id) => {
   try {
-    await deleteUser(id)
+    const deleted = deleteUser(id)
+    if (!deleted) return { success: false, error: "Usuario no encontrado" }
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }

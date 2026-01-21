@@ -4,11 +4,7 @@ import {
   careersData,
   locationsData,
   spotsData,
-  generateApplicantsData,
-  type CareerSeed,
-  type LocationSeed,
-  type SpotSeed,
-  type ApplicantSeed
+  generateApplicantsData
 } from "./seedData"
 
 const PHASE_ID = 1 // Fase primera
@@ -170,7 +166,6 @@ export function seedDatabase(applicantCount: number = 500): SeedResult {
 
       // 6. Insertar solicitudes (requests)
       // Necesitamos distribuir las solicitudes de manera realista
-      const availableSpots = Array.from(spotMap.entries())
       const insertRequest = db.prepare(`
         INSERT INTO request (applicant_id, spot_id, preference_order)
         VALUES (?, ?, ?)

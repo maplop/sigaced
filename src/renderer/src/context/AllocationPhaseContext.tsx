@@ -1,15 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react"
-import { toast } from "sonner"
 import { PhaseType } from "@renderer/utils/types"
 
-interface AssignmentPhaseContextType {
+interface AllocationPhaseContextType {
   currentPhase: PhaseType
   setCurrentPhase: (phase: PhaseType) => void
 }
 
-const AssignmentPhaseContext = createContext<AssignmentPhaseContextType | null>(null)
+const AllocationPhaseContext = createContext<AllocationPhaseContextType | null>(null)
 
-export const AssignmentPhaseProvider = ({ children }: { children: React.ReactNode }) => {
+export const AllocationPhaseProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentPhase, setCurrentPhase] = useState<PhaseType>(() => {
     const stored = localStorage.getItem('currentPhase')
     const n = stored != null ? Number(stored) : NaN
@@ -32,14 +31,13 @@ export const AssignmentPhaseProvider = ({ children }: { children: React.ReactNod
   }, [])
 
   return (
-    <AssignmentPhaseContext.Provider value={{ currentPhase, setCurrentPhase }}>{children}</AssignmentPhaseContext.Provider>
+    <AllocationPhaseContext.Provider value={{ currentPhase, setCurrentPhase }}>{children}</AllocationPhaseContext.Provider>
   )
 
 }
 
-export const useAssignmentPhase = () => {
-  const context = useContext(AssignmentPhaseContext)
-  if (!context) throw new Error("useAssignmentPhase debe usarse dentro de AssignmentPhaseProvider")
+export const useAllocationPhase = () => {
+  const context = useContext(AllocationPhaseContext)
+  if (!context) throw new Error("useAllocationPhase debe usarse dentro de AllocationPhaseProvider")
   return context
 }
-

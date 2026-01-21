@@ -7,13 +7,13 @@ import { deleteAllAllocationsFromPhase, getAllocationsByPhase } from "@renderer/
 import { AllocationRow } from "src/shared/types"
 import { handleAllocate } from "@renderer/utils/allocations"
 import { toast } from "sonner"
-import { useAssignmentPhase } from "@renderer/context/AssignmentPhaseContext"
+import { useAllocationPhase } from "@renderer/context/AllocationPhaseContext"
 import { PhaseType } from "@renderer/utils/types"
 import { exportPDF } from "@renderer/api/pdf"
 import { getPhaseName } from "@renderer/utils/getPhaseName"
 
 export const useAllocations = (phaseId: number) => {
-  const { setCurrentPhase } = useAssignmentPhase()
+  const { setCurrentPhase } = useAllocationPhase()
   const queryClient = useQueryClient()
 
   const { data: allocations, isLoading: loadingAllocations } = useQuery({
@@ -28,7 +28,6 @@ export const useAllocations = (phaseId: number) => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
 
   const [isAllocated, setIsAllocated] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [progress, setProgress] = useState(0)
 
   const [showAlert, setShowAlert] = useState(false)
@@ -118,7 +117,6 @@ export const useAllocations = (phaseId: number) => {
     }
 
     setIsAllocated(true)
-    setError(null)
     setProgress(0)
 
     try {
@@ -128,7 +126,6 @@ export const useAllocations = (phaseId: number) => {
       await queryClient.invalidateQueries({ queryKey: [rqKeys.ALLOCATIONS, phaseId] })
     } catch (err: any) {
       console.error(err)
-      setError(err.message || "Error al otorgar plazas")
       toast.error(err?.message || "Error al otorgar plazas", {
         style: {
           color: "var(--errorMessage)"

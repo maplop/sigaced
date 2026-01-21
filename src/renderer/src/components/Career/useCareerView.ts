@@ -145,7 +145,7 @@ export const useCareerView = () => {
     }
   })
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     deleteMutation.mutate(id)
   }
 

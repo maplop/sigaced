@@ -81,7 +81,7 @@ declare global {
       getCareers: () => Promise<Career[]>
       getCareerByName: (name: string) => Promise<Career | null>
       updateCareer: (career: Career) => Promise<OperationResult>
-      deleteCareer: (id: string) => Promise<OperationResult>
+      deleteCareer: (id: number) => Promise<OperationResult>
       deleteAllCareers: () => Promise<OperationResult>
 
       // Spots
@@ -96,7 +96,7 @@ declare global {
       getLocations: () => Promise<Location[]>
       getLocationByName: (name: string) => Promise<Location | null>
       updateLocation: (location: Location) => Promise<OperationResult>
-      deleteLocation: (id: string) => Promise<OperationResult>
+      deleteLocation: (id: number) => Promise<OperationResult>
       deleteAllLocations: () => Promise<OperationResult>
 
       // Phase
@@ -105,10 +105,10 @@ declare global {
       // Users
       addUser: (user: Omit<User, "id" | "createdAt">) => Promise<OperationResult>
       getUsers: () => Promise<User[]>
-      getUserById: (id: string) => Promise<User | null>
+      getUserById: (id: number) => Promise<User | null>
       updateUser: (user: Omit<User, "createdAt">) => Promise<OperationResult>
-      deleteUser: (id: string) => Promise<OperationResult>
-      changeUserPassword: (data: { id: string; newPassword: string }) => Promise<OperationResult>
+      deleteUser: (id: number) => Promise<OperationResult>
+      changeUserPassword: (data: { id: number; newPassword: string }) => Promise<OperationResult>
 
       // Seed Database
       seedDatabase: (applicantCount?: number) => Promise<{

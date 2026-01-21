@@ -5,15 +5,15 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthContextProvider } from './context/AuthContext'
-import { AssignmentPhaseProvider } from './context/AssignmentPhaseContext'
+import { AllocationPhaseProvider } from './context/AllocationPhaseContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthContextProvider>
-        <AssignmentPhaseProvider>
+        <AllocationPhaseProvider>
           <App />
-        </AssignmentPhaseProvider>
+        </AllocationPhaseProvider>
       </AuthContextProvider>
     </BrowserRouter>
   </StrictMode>

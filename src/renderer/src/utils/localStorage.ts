@@ -1,14 +1,5 @@
 import { User } from "src/shared/types"
 
-export const getUser = (id: string): User | null => {
-  const storedUser = localStorage.getItem("storedUser") || sessionStorage.getItem("storedUser")
-  if (!storedUser) return null
-
-  const user: User = JSON.parse(storedUser)
-
-  return user.id === id ? user : null
-}
-
 export const updateUser = (updatedUser: User): void => {
   const localUser = localStorage.getItem("storedUser")
   const sessionUser = sessionStorage.getItem("storedUser")

@@ -53,7 +53,7 @@ const api = {
   getCareers: () => ipcRenderer.invoke("career:getAll"),
   getCareerByName: (name: string) => ipcRenderer.invoke("career:getByName", name),
   updateCareer: (career) => ipcRenderer.invoke("career:update", career),
-  deleteCareer: (id: string) => ipcRenderer.invoke("career:delete", id),
+  deleteCareer: (id: number) => ipcRenderer.invoke("career:delete", id),
   deleteAllCareers: () => ipcRenderer.invoke("career:deleteAll"),
 
   // Spot
@@ -68,7 +68,7 @@ const api = {
   getLocations: () => ipcRenderer.invoke("location:getAll"),
   getLocationByName: (name: string) => ipcRenderer.invoke("location:getByName", name),
   updateLocation: (location) => ipcRenderer.invoke("location:update", location),
-  deleteLocation: (id: string) => ipcRenderer.invoke("location:delete", id),
+  deleteLocation: (id: number) => ipcRenderer.invoke("location:delete", id),
   deleteAllLocations: () => ipcRenderer.invoke("location:deleteAll"),
 
   // Phase
@@ -77,10 +77,10 @@ const api = {
   // User
   addUser: (user) => ipcRenderer.invoke("user:addUser", user),
   getUsers: () => ipcRenderer.invoke("user:getAll"),
-  getUserById: (id: string) => ipcRenderer.invoke("user:getById", id),
+  getUserById: (id: number) => ipcRenderer.invoke("user:getById", id),
   updateUser: (user) => ipcRenderer.invoke("user:update", user),
-  deleteUser: (id: string) => ipcRenderer.invoke("user:delete", id),
-  changeUserPassword: (data: { id: string; newPassword: string }) =>
+  deleteUser: (id: number) => ipcRenderer.invoke("user:delete", id),
+  changeUserPassword: (data: { id: number; newPassword: string }) =>
     ipcRenderer.invoke("user:changePassword", data),
 
   // Seed Database

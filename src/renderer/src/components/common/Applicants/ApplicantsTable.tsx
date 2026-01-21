@@ -17,7 +17,7 @@ type SortableField = keyof Applicant | "requestsCount"
 
 export interface ApplicantsTableProps {
   loadingApplicants: boolean,
-  filteredAndSortedSpots: Applicant[]
+  filteredAndSortedApplicants: Applicant[]
   paginatedApplicants: Applicant[]
   currentPage: number
   totalPages: number
@@ -29,7 +29,6 @@ export interface ApplicantsTableProps {
   handleSort: (field: SortableField) => void
   handleEdit: (applicant: Applicant) => void
   handleDeleteApplicant: (applicantId: number) => void
-  filteredAndSortedApplicants: Applicant[],
   spots: SpotFull[],
   loadingSpots: boolean,
   phaseId?: number
@@ -37,7 +36,7 @@ export interface ApplicantsTableProps {
 
 const ApplicantsTable = ({
   loadingApplicants,
-  filteredAndSortedSpots,
+  filteredAndSortedApplicants,
   paginatedApplicants,
   currentPage,
   totalPages,
@@ -57,9 +56,9 @@ const ApplicantsTable = ({
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
 
-  const { data: assignments, isLoading: loadingAssignments } = useQuery({
+  const { data: allocations, isLoading: loadingAllocations } = useQuery({
     queryKey: [rqKeys.ALLOCATIONS, 3],
-    queryFn: () => getAssignmentsByPhase(3)
+    queryFn: () => getAllocationsByPhase(3)
   })
 
   return (
@@ -91,18 +90,18 @@ const ApplicantsTable = ({
                   </TableHead>
                   {phaseId === 3 && (
                     <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("requestsCount")}>
-                      Estado {sortField === "municipality" && (sortDirection === "asc" ? "↑" : "↓")}
+                      Estado {sortField === "requestsCount" && (sortDirection === "asc" ? "↑" : "↓")}
                     </TableHead>
                   )}
                   {phaseId !== 3 && (
                     <TableHead className="text-center cursor-pointer hover:bg-muted/50" onClick={() => handleSort("requestsCount")}>
-                      Solicitudes {sortField === "municipality" && (sortDirection === "asc" ? "↑" : "↓")}
+                      Solicitudes {sortField === "requestsCount" && (sortDirection === "asc" ? "↑" : "↓")}
                     </TableHead>
                   )}
                   <TableHead className="text-center">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
-              {filteredAndSortedSpots.length !== 0 ? (
+              {filteredAndSortedApplicants.length !== 0 ? (
                 <TableBody>
                   {paginatedApplicants.map((applicant, index) => (
                     <TableRow key={applicant.id}>
@@ -197,7 +196,7 @@ const ApplicantsTable = ({
                 variant={'outline'}
                 size="sm"
                 onClick={() => goToPage(currentPage - 1)}
-                disabled={filteredAndSortedSpots.length === 0 || currentPage === 1}>
+                disabled={filteredAndSortedApplicants.length === 0 || currentPage === 1}>
                 Anterior
               </Button>
               {totalPages === 0 ? (
@@ -209,7 +208,7 @@ const ApplicantsTable = ({
                 variant={'outline'}
                 size="sm"
                 onClick={() => goToPage(currentPage + 1)}
-                disabled={filteredAndSortedSpots.length === 0 || currentPage === totalPages}>
+                disabled={filteredAndSortedApplicants.length === 0 || currentPage === totalPages}>
                 Siguiente
               </Button>
             </div>

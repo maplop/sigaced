@@ -33,7 +33,7 @@ export function getUsers(): User[] {
 }
 
 // Read one by ID
-export function getUserById(id: string): User | undefined {
+export function getUserById(id: number): User | undefined {
   return db
     .prepare(
       `
@@ -53,7 +53,7 @@ export function getUserById(id: string): User | undefined {
 }
 
 // Change Password
-export function changeUserPassword(id: string, newPassword: string) {
+export function changeUserPassword(id: number, newPassword: string) {
   const stmt = db.prepare(`
     UPDATE user
     SET password = ?
@@ -81,7 +81,7 @@ export function updateUser(user: User) {
 }
 
 // Delete
-export function deleteUser(id: string): boolean {
+export function deleteUser(id: number): boolean {
   const stmt = db.prepare("DELETE FROM user WHERE id = ?")
   const result = stmt.run(id)
   return result.changes > 0
