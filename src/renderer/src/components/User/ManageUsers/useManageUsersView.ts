@@ -72,7 +72,11 @@ export const useManageUsersView = () => {
     },
     onError: (error) => {
       console.error("Registration error:", error)
-      const errorMessage = error instanceof Error ? error.message : "Error al registrar el usuario."
+      const errorMessage = error instanceof Error
+        ? error.message
+        : editingUser
+          ? "Error al actualizar el usuario."
+          : "Error al registrar el usuario."
       toast.error(errorMessage, {
         style: {
           color: "var(--errorMessage)"

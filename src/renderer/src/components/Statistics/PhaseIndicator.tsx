@@ -65,11 +65,9 @@ export function PhaseIndicator({ clearAllTablesMutation }: PhaseIndicatorProps) 
                   ¿Estás seguro de que deseas <strong>reiniciar el proceso de otorgamiento</strong>?
                 </p>
                 <p>
-                  Esta acción eliminará <strong>todos los aspirantes</strong> registrados en la fase actual,
-                  así como sus <strong>solicitudes y otorgamientos</strong> asociados.
-                </p>
-                <p>
-                  También se eliminarán los <strong>registros vinculados en fases posteriores</strong> de esos mismos aspirantes.
+                  Esta acción eliminará <strong>todos los datos del proceso</strong>: aspirantes (en todas las fases),
+                  carreras, ubicaciones, plazas, solicitudes y otorgamientos. <strong>No</strong> se eliminarán los usuarios.
+                  El proceso quedará como al inicio.
                 </p>
                 <p className="text-destructive font-medium">
                   Esta operación es irreversible y no se puede deshacer.

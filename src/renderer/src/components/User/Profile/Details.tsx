@@ -17,7 +17,7 @@ const Details = () => {
       const userId = user?.id
       if (userId) {
         await deleteUser(userId)
-        toast.success("Su cuenta ha sido eliminada correctamente.")
+        toast.success("Tu cuenta ha sido eliminada correctamente.")
         logout()
       } else {
         toast.error("Ha ocurrido un error, no se encuentra el usuario a eliminar.", {
@@ -72,7 +72,7 @@ const Details = () => {
           }
         >
           <div className="space-y-2 text-center">
-            <p>¿Deseas eliminar su cuenta?</p>
+            <p>¿Deseas eliminar tu cuenta?</p>
             <p>Esta acción no se puede deshacer.</p>
           </div>
         </ConfirmDeleteDialog>

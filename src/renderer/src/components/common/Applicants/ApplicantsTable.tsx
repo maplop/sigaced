@@ -169,7 +169,7 @@ const ApplicantsTable = ({
                               <p>
                                 ¿Deseas eliminar al aspirante <strong>{applicant.name} {applicant.lastName}</strong> con CI <strong>{applicant.ci}</strong>?
                               </p>
-                              <p>Esta acción solo eliminará al aspirante de la fase actual y se eliminarán todas las solicitudes relacionadas con este aspirante en esta fase. Esta acción no se puede deshacer.</p>
+                              <p>Esta acción eliminará definitivamente al aspirante del sistema en todas las fases, así como sus solicitudes y otorgamientos. No se puede deshacer.</p>
                             </div>
                           </ConfirmDeleteDialog>
 

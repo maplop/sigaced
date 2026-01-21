@@ -130,18 +130,12 @@ const SpotView = ({ phase }: SpotViewProps) => {
                     }
                   >
                     <div className="space-y-2 text-center">
-                      <div className="space-y-2 text-center">
-                        <p>
-                          ¿Seguro que deseas eliminar <strong>todas las plazas</strong> de esta fase?
-                        </p>
-                        <p>
-                          Esta acción también eliminará las <strong>plazas asociadas en fases posteriores </strong>
-                          que dependan de las actuales.
-                        </p>
-                        <p>
-                          Esta operación no se puede deshacer.
-                        </p>
-                      </div>
+                      <p>
+                        ¿Seguro que deseas eliminar <strong>todas las plazas</strong> de esta fase?
+                      </p>
+                      <p>
+                        Esta operación no se puede deshacer.
+                      </p>
                     </div>
                   </ConfirmDeleteDialog>
                 )}

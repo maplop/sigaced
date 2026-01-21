@@ -129,7 +129,7 @@ export const useAllocations = (phaseId: number) => {
     } catch (err: any) {
       console.error(err)
       setError(err.message || "Error al otorgar plazas")
-      toast.error(error, {
+      toast.error(err?.message || "Error al otorgar plazas", {
         style: {
           color: "var(--errorMessage)"
         }

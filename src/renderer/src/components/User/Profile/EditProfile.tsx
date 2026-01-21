@@ -36,7 +36,7 @@ const EditProfile = () => {
     onError: (error) => {
       console.error(error)
       const errorMessage =
-        error instanceof Error ? error.message : "Ocurrió un error al eliminar el usuario."
+        error instanceof Error ? error.message : "Ocurrió un error al actualizar el usuario."
       toast.error(errorMessage, {
         style: { color: "var(--errorMessage)" }
       })

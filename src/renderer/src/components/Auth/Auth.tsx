@@ -17,7 +17,7 @@ const Auth = () => {
   }
 
   return (
-    <div className='flex flex-col w-96'>
+    <div className='flex flex-col w-[420px]'>
       <div className="flex gap-4 mb-8">
         <div className="mx-auto min-w-16 w-16 h-16 bg-[#0F172B] rounded-lg flex items-center justify-center">
           <GraduationCap className="w-8 h-8 text-white" />
