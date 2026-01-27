@@ -86,12 +86,12 @@ export const useAllocations = (phaseId: number) => {
     }
   }
 
-  const { data: applicants } = useQuery({
+  const { data: applicants, isLoading: loadingApplicants } = useQuery({
     queryKey: [rqKeys.APPLICANTS, phaseId],
     queryFn: () => getAllApplicants(phaseId)
   })
 
-  const { data: spots } = useQuery({
+  const { data: spots, isLoading: loadingSpots } = useQuery({
     queryKey: [rqKeys.SPOT, phaseId],
     queryFn: () => getAllSpots(phaseId)
   })
@@ -190,6 +190,8 @@ export const useAllocations = (phaseId: number) => {
 
   return {
     loadingAllocations,
+    loadingApplicants,
+    loadingSpots,
     allocate,
     paginatedAllocations,
     currentPage,

@@ -35,7 +35,7 @@ import {
   deleteLocation,
   deleteAllLocations
 } from "./queries/location"
-import { getPhases } from "./queries/phase"
+import { phaseGetAll, statsGetInferredCurrentPhase } from "./ipcHandlers"
 import {
   addUser,
   getUsers,
@@ -56,7 +56,6 @@ import {
   getDashboardStats,
   getTopCareers,
   getTopApplicants,
-  getInferredCurrentPhase
 } from "./queries/statistics"
 import { OperationResult } from "src/shared/types"
 import { generatePDF } from "./pdf/generatePDF"
@@ -253,13 +252,7 @@ ipcMain.handle("stats:getTopCareers", async (_event, phaseId?: number) => {
   }
 })
 
-ipcMain.handle("stats:getInferredCurrentPhase", async () => {
-  try {
-    return getInferredCurrentPhase()
-  } catch (error: any) {
-    return 1
-  }
-})
+ipcMain.handle("stats:getInferredCurrentPhase", async () => statsGetInferredCurrentPhase())
 
 ipcMain.handle("stats:clearAllTables", async (_event) => {
   try {
@@ -273,7 +266,7 @@ ipcMain.handle("stats:clearAllTables", async (_event) => {
 // IPC handlers for seed database
 ipcMain.handle("seed:populate", async (_event, applicantCount?: number) => {
   try {
-    const result = seedDatabase(applicantCount ?? 500)
+    const result = seedDatabase(applicantCount ?? 100)
     return { success: true, result }
   } catch (error: any) {
     return { success: false, error: error.message }
@@ -590,14 +583,7 @@ ipcMain.handle("location:deleteAll", async () => {
 })
 
 // IPC handlers for phase
-ipcMain.handle("phase:getAll", async () => {
-  try {
-    return await getPhases()
-  } catch (error) {
-    console.error("Error al obtener fases:", error)
-    return []
-  }
-})
+ipcMain.handle("phase:getAll", phaseGetAll)
 
 // IPC handlers for user CRUD
 ipcMain.handle("user:addUser", async (_event, user) => {

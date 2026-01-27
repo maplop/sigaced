@@ -6,6 +6,9 @@
   "author": "example.com",
   "homepage": "https://electron-vite.org",
   "scripts": {
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
     "postinstall": "electron-rebuild -f -w better-sqlite3",
     "format": "prettier --write .",
@@ -61,10 +64,14 @@
     "@electron-toolkit/eslint-config-ts": "^3.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@tailwindcss/vite": "^4.1.11",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.14.1",
     "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^4.0.17",
     "electron": "^35.1.5",
     "electron-builder": "^25.1.8",
     "electron-rebuild": "^3.2.9",
@@ -73,13 +80,15 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
+    "jsdom": "^24.1.3",
     "prettier": "^3.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.11",
     "tw-animate-css": "^1.3.4",
     "typescript": "^5.8.3",
-    "vite": "^6.2.6"
+    "vite": "^6.2.6",
+    "vitest": "^4.0.17"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

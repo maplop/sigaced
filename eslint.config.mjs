@@ -28,8 +28,7 @@ export default tseslint.config(
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': 'warn',
-      endOfLine: 'lf'
+      '@typescript-eslint/no-unused-vars': 'warn'
     }
   },
   eslintConfigPrettier

@@ -16,7 +16,7 @@ const UsersStatistics = ({ users }: UsersStatisticsProps) => {
     {
       title: "Administradores",
       stat: users.reduce((totalAdmin, user) => {
-        return user.role === 'admin' ? totalAdmin + 1 : totalAdmin
+        return user.role === "admin" ? totalAdmin + 1 : totalAdmin
       }, 0),
       icon: ShieldCheck,
     },

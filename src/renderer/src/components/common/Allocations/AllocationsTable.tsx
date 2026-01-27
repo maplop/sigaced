@@ -163,7 +163,7 @@ const AllocationsTable = ({
           </div>
         </div>
       ) : (
-        <div>Cargando...</div>
+        <div>Cargando otorgamientos...</div>
       )}
 
     </>

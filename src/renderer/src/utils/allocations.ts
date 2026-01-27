@@ -5,7 +5,7 @@ import { createSpot } from "@renderer/api/spot"
 
 // ---------------------------
 // 1. Copiar spots para no mutar el cache
-const copySpots = (spots: SpotFull[]) => spots.map((s) => ({ ...s }))
+export const copySpots = (spots: SpotFull[]) => spots.map((s) => ({ ...s }))
 
 // ---------------------------
 // 2. Intentar otorgar un aspirante a sus solicitudes

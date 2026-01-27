@@ -5,7 +5,6 @@ import SpotView from "../common/Spot/SpotView"
 import ApplicantsView from "../common/Applicants/ApplicantView"
 import AllocationsView from "../common/Allocations/AllocationsView"
 
-
 const FirstAllocationsView = () => {
   return (
     <AllocationsSectionWrapper
@@ -20,13 +19,13 @@ const FirstAllocationsView = () => {
         {
           label: "Aspirantes",
           value: "applicants",
-          children: <ApplicantsView phase={phases.FIRST as PhaseType} />,
+          children: <ApplicantsView phase={phases.FIRST as PhaseType} />
         },
         {
           label: "Otorgamiento",
           value: "allocation",
-          children: <AllocationsView phase={phases.FIRST as PhaseType} />,
-        },
+          children: <AllocationsView phase={phases.FIRST as PhaseType} />
+        }
       ]}
     />
   )

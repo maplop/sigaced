@@ -16,15 +16,16 @@ interface SeedResult {
   applicants: number
   applicantPhases: number
   requests: number
+  allocations?: number
   errors: string[]
 }
 
 /**
  * Pobla la base de datos con datos de muestra para fase 1
- * @param applicantCount Número de aspirantes a generar (default: 500). Carreras y ubicaciones son fijos; las plazas se escalan proporcionalmente.
+ * @param applicantCount Número de aspirantes a generar (default: 100). Carreras y ubicaciones son fijos; las plazas se escalan proporcionalmente.
  * @returns Resultado del proceso de población
  */
-export function seedDatabase(applicantCount: number = 500): SeedResult {
+export function seedDatabase(applicantCount: number = 100): SeedResult {
   const result: SeedResult = {
     careers: 0,
     locations: 0,
@@ -32,6 +33,7 @@ export function seedDatabase(applicantCount: number = 500): SeedResult {
     applicants: 0,
     applicantPhases: 0,
     requests: 0,
+    allocations: 0,
     errors: []
   }
 
@@ -81,9 +83,13 @@ export function seedDatabase(applicantCount: number = 500): SeedResult {
       }
 
       // 3. Insertar plazas (spots) para fase 1
-      // Escalar el total de plazas para que ~80 % de aspirantes obtengan plaza en la primera vuelta (~20 % se queden sin).
+      // Escalar el total de plazas para que entre 90-94 aspirantes obtengan plaza en el primer otorgamiento
+      // y queden entre 6-10 aspirantes sin plaza, además de algunas plazas disponibles
+      // Calculamos plazas para ~91 aspirantes (90-94 obtendrán plaza, quedando algunas disponibles)
+      // Esto asegura que queden entre 6-10 aspirantes sin plaza (100 - 90-94 = 6-10)
+      // Usamos factor 0.91 para dejar ~9 aspirantes sin plaza (en el rango de 6-10)
       const baseSum = spotsData.reduce((s, sp) => s + sp.availableQuantity, 0)
-      const spotFactor = baseSum > 0 ? (applicantCount * 0.8) / baseSum : 1
+      const spotFactor = baseSum > 0 ? (applicantCount * 0.91) / baseSum : 1
 
       const spotMap = new Map<string, number>() // "careerName-locationName" -> spotId
       const insertSpot = db.prepare(`
@@ -103,6 +109,7 @@ export function seedDatabase(applicantCount: number = 500): SeedResult {
         }
 
         try {
+          // Asegurar que el mínimo de plazas disponibles sea 1
           const qty = Math.max(1, Math.round(spot.availableQuantity * spotFactor))
           const spotResult = insertSpot.run(careerId, locationId, PHASE_ID, qty)
           const spotKey = `${spot.careerName}-${spot.locationName}`
@@ -197,6 +204,7 @@ export function seedDatabase(applicantCount: number = 500): SeedResult {
 
         // Seleccionar spots para este aspirante
         // Los aspirantes con mejores calificaciones tienden a solicitar carreras más populares
+        // Asegurar que todos tengan al menos 1 solicitud y máximo 3
         const applicantSpots: Array<{ spotId: number; preferenceOrder: number }> = []
         const usedSpotIds = new Set<number>()
 
@@ -206,7 +214,7 @@ export function seedDatabase(applicantCount: number = 500): SeedResult {
 
           // Intentar seleccionar un spot que no haya sido usado
           let attempts = 0
-          const maxAttempts = 50
+          const maxAttempts = 100
 
           while (!selectedSpot && attempts < maxAttempts) {
             // Distribución: aspirantes con mejores calificaciones prefieren carreras populares
@@ -238,6 +246,12 @@ export function seedDatabase(applicantCount: number = 500): SeedResult {
             if (available.length > 0) {
               selectedSpot = available[Math.floor(Math.random() * available.length)]
               usedSpotIds.add(selectedSpot.spotId)
+            } else {
+              // Si no hay spots disponibles sin usar, permitir reutilizar (solo si es necesario)
+              // Esto garantiza que todos tengan al menos 1 solicitud
+              if (applicantSpots.length === 0 && spotsWithInfo.length > 0) {
+                selectedSpot = spotsWithInfo[Math.floor(Math.random() * spotsWithInfo.length)]
+              }
             }
           }
 
@@ -247,6 +261,15 @@ export function seedDatabase(applicantCount: number = 500): SeedResult {
               preferenceOrder: pref
             })
           }
+        }
+
+        // Asegurar que todos los aspirantes tengan al menos 1 solicitud
+        if (applicantSpots.length === 0 && spotsWithInfo.length > 0) {
+          const fallbackSpot = spotsWithInfo[Math.floor(Math.random() * spotsWithInfo.length)]
+          applicantSpots.push({
+            spotId: fallbackSpot.spotId,
+            preferenceOrder: 1
+          })
         }
 
         // Insertar las solicitudes del aspirante
@@ -263,6 +286,14 @@ export function seedDatabase(applicantCount: number = 500): SeedResult {
           }
         }
       }
+
+      // 7. NO crear otorgamientos automáticamente - se harán manualmente desde la interfaz
+      // Las plazas están configuradas para que cuando se haga el primer otorgamiento:
+      // - Entre 90-94 aspirantes obtengan plaza (factor 0.91 de 100 = ~91 plazas)
+      // - Queden entre 6-10 aspirantes sin plaza (100 - 90-94 = 6-10) para el segundo otorgamiento
+      // - Queden algunas plazas disponibles después del primer otorgamiento
+      // - Todas las plazas tienen mínimo 1 disponible
+      result.allocations = 0
     })
 
     // Ejecutar la transacción

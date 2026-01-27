@@ -19,13 +19,13 @@ const ManualAllocationsView = () => {
         {
           label: "Aspirantes",
           value: "applicants",
-          children: <ApplicantsView phase={phases.MANUAL as PhaseType} />,
+          children: <ApplicantsView phase={phases.MANUAL as PhaseType} />
         },
         {
           label: "Otorgamiento",
           value: "allocation",
-          children: <ManualAllocationView phase={phases.MANUAL as PhaseType} />,
-        },
+          children: <ManualAllocationView phase={phases.MANUAL as PhaseType} />
+        }
       ]}
     />
   )

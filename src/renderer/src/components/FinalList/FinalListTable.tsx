@@ -162,7 +162,7 @@ const FinalListTable = ({
           </div>
         </div>
       ) : (
-        <div>Cargando...</div>
+        <div>Cargando otorgamientos...</div>
       )}
 
     </>

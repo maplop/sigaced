@@ -213,31 +213,44 @@ const municipalities = [
 
 // Generar CIs únicos de 11 dígitos numéricos
 function generateCI(index: number): string {
-  const base = 10000000000 + index
-  return base.toString()
+  // Asegurar que siempre sea exactamente 11 dígitos
+  // Usar un rango que garantice 11 dígitos: 10000000000 a 99999999999
+  const base = 10000000000 + (index % 90000000000)
+  return base.toString().padStart(11, '0')
 }
 
-// Generar calificación entre 60 y 100 (promedio del aspirante)
+// Generar calificación entre 60.00 y 100.00 con 2 decimales (promedio del aspirante)
 function generateGrade(index: number, total: number): number {
   const percentile = index / total
-  if (percentile < 0.1) return Math.round(90 + Math.random() * 10)
-  if (percentile < 0.3) return Math.round(80 + Math.random() * 9)
-  if (percentile < 0.7) return Math.round(70 + Math.random() * 9)
-  if (percentile < 0.9) return Math.round(60 + Math.random() * 9)
-  return Math.round(60 + Math.random() * 5)
+  let grade: number
+  if (percentile < 0.1) {
+    grade = 90 + Math.random() * 10
+  } else if (percentile < 0.3) {
+    grade = 80 + Math.random() * 9
+  } else if (percentile < 0.7) {
+    grade = 70 + Math.random() * 9
+  } else if (percentile < 0.9) {
+    grade = 60 + Math.random() * 9
+  } else {
+    grade = 60 + Math.random() * 5
+  }
+  // Redondear a exactamente 2 decimales y asegurar que esté entre 60.00 y 100.00
+  const rounded = Math.round(grade * 100) / 100
+  return Math.max(60.00, Math.min(100.00, parseFloat(rounded.toFixed(2))))
 }
 
 // Generar número de solicitudes (1-3)
+// Asegurar que todos tengan al menos 1 solicitud y máximo 3
 function generateRequestCount(): number {
   const rand = Math.random()
-  // 20% con 1 solicitud, 50% con 2, 30% con 3
-  if (rand < 0.2) return 1
+  // Distribución: 30% con 1 solicitud, 40% con 2, 30% con 3
+  if (rand < 0.3) return 1
   if (rand < 0.7) return 2
   return 3
 }
 
 // Generar aspirantes
-export function generateApplicantsData(count: number = 500): ApplicantSeed[] {
+export function generateApplicantsData(count: number = 100): ApplicantSeed[] {
   const applicants: ApplicantSeed[] = []
   const usedCIs = new Set<string>()
   

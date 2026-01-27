@@ -79,7 +79,7 @@ const UserForm = ({ changePassword, setChangePassword, isDialogOpen, setIsDialog
                 <Select
                   name="role"
                   value={formData.role}
-                  onValueChange={(value: 'admin' | 'viewer') => setUserFormData((prev) => ({ ...prev, role: value }))}
+                  onValueChange={(value: "admin" | 'viewer') => setUserFormData((prev) => ({ ...prev, role: value }))}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecciona tu rol" />

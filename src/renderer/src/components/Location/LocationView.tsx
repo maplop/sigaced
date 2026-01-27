@@ -2,7 +2,7 @@ import PageContainer from "../common/PageContainer"
 import PageTitle from "../common/PageTitle"
 import { useLocationView } from "./useLocationView"
 import LocationsTable from "./LocationTable"
-import { Card, CardContent, CardHeader, } from "../ui/card"
+import { Card, CardContent, CardHeader } from "../ui/card"
 import { FileText, MapPin, Search, Trash2 } from "lucide-react"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll-area"
@@ -42,21 +42,24 @@ const LocationView = () => {
 
   const { user } = useAuthContext()
 
-
-
   return (
     <PageContainer>
       <div className="flex justify-between items-center">
-        <PageTitle title="Gestionar ubicaciones" subtitle="Agrega, edita y organiza tus ubicaciones  de forma rápida." />
+        <PageTitle
+          title="Gestionar ubicaciones"
+          subtitle="Agrega, edita y organiza tus ubicaciones  de forma rápida."
+        />
       </div>
-      <ScrollArea className="h-[calc(100vh-212px)] rounded-md pr-3.5">
+      <ScrollArea className="h-[calc(100vh-212px)] rounded-md">
         <Card>
           <CardHeader className="flex justify-between items-center">
             <div className="w-fit p-0 bg-transparent shadow-none">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium text-foreground">
-                  Total de ubicaciones: {paginatedLocations.length}
+                  {loadingLocations
+                    ? "Cargando ubicaciones..."
+                    : `Total de ubicaciones: ${filteredAndSortedLocations.length}`}
                 </span>
               </div>
             </div>
@@ -95,16 +98,21 @@ const LocationView = () => {
                     <p>Exportar listado a PDF</p>
                   </TooltipContent>
                 </Tooltip>
-                {user?.role === 'admin' && (
+                {user?.role === "admin" && (
                   <ConfirmDeleteDialog
                     onConfirm={() => {
-                      if (user?.role === 'admin') {
+                      if (user?.role === "admin") {
                         handleDeleteAll()
                       }
                     }}
                     title="Limpiar tabla"
                     trigger={
-                      <Button className="text-red-500 hover:text-red-500" variant="outline" size="sm" disabled={filteredAndSortedLocations.length === 0}>
+                      <Button
+                        className="text-red-500 hover:text-red-500"
+                        variant="outline"
+                        size="sm"
+                        disabled={filteredAndSortedLocations.length === 0}
+                      >
                         <Trash2 className="h-4 w-4 text-red-500" />
                         Limpiar Tabla
                       </Button>
@@ -113,15 +121,15 @@ const LocationView = () => {
                     <div className="space-y-2 text-center">
                       <div className="space-y-2 text-center">
                         <p>
-                          ¿Seguro que deseas eliminar <strong>todas las ubicaciones</strong> del sistema?
+                          ¿Seguro que deseas eliminar <strong>todas las ubicaciones</strong> del
+                          sistema?
                         </p>
                         <p>
-                          Esta acción también eliminará las <strong>plazas asociadas a dichas ubicaciones</strong>
+                          Esta acción también eliminará las{" "}
+                          <strong>plazas asociadas a dichas ubicaciones</strong>
                           en todas las fases.
                         </p>
-                        <p>
-                          Esta operación no se puede deshacer.
-                        </p>
+                        <p>Esta operación no se puede deshacer.</p>
                       </div>
                     </div>
                   </ConfirmDeleteDialog>

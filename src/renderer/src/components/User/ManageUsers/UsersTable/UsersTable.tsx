@@ -91,8 +91,8 @@ const UsersTable = ({
                           {user.username}
                         </TableCell>
                         <TableCell className="text-center">
-                          <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
-                            {user.role === 'admin' ? 'Adminsitrador' : 'Supervisor'}
+                          <Badge variant={user.role === "admin" ? 'default' : 'secondary'}>
+                            {user.role === "admin" ? 'Adminsitrador' : 'Supervisor'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-center">{user.createdAt}</TableCell>

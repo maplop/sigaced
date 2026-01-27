@@ -234,7 +234,7 @@ const ApplicantsTable = ({
           </div>
         </div>
       ) : (
-        <div>Cargando...</div>
+        <div>Cargando aspirantes...</div>
       )}
 
     </>

@@ -52,7 +52,7 @@ const SpotsTable = ({
     if (page >= 1 && page <= totalPages) setCurrentPage(page)
   }
 
-  const { data: allocations } = useQuery({
+  const { data: allocations, isLoading: loadingAllocations } = useQuery({
     queryKey: [rqKeys.ALLOCATIONS, phaseId],
     queryFn: () => getAllocationsByPhase(phases.MANUAL)
   })
@@ -108,15 +108,21 @@ const SpotsTable = ({
                         <TableCell>{spot.careerName}</TableCell>
                         <TableCell>{spot.locationName}</TableCell>
                         <TableCell className="text-center">
-                          {phaseId === phases.MANUAL && (
+                          {loadingAllocations ? (
+                            <span className="text-muted-foreground text-sm">Cargando...</span>
+                          ) : (
                             <>
-                              <Badge>
-                                {availableSpots.find((s) => s.spotId === spot.spotId)?.availableQuantity ?? spot.availableQuantity}
-                              </Badge>
-                              {" de "}
+                              {phaseId === phases.MANUAL && (
+                                <>
+                                  <Badge>
+                                    {availableSpots.find((s) => s.spotId === spot.spotId)?.availableQuantity ?? spot.availableQuantity}
+                                  </Badge>
+                                  {" de "}
+                                </>
+                              )}
+                              <Badge>{spot.availableQuantity}</Badge>
                             </>
                           )}
-                          <Badge>{spot.availableQuantity}</Badge>
                         </TableCell>
                         <TableCell >
                           <div className="flex justify-end items-center mr-8 space-x-2">

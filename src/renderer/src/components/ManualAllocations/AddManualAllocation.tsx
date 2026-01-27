@@ -1,34 +1,50 @@
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogDescription, DialogTitle, DialogFooter } from "@renderer/components/ui/dialog"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogDescription,
+  DialogTitle,
+  DialogFooter
+} from "@renderer/components/ui/dialog"
 import { Button } from "@renderer/components/ui/button"
 import { Label } from "@renderer/components/ui/label"
 import { Check, ChevronsUpDown, Play } from "lucide-react"
 import { SpotFull, Applicant } from "src/shared/types"
 import { Badge } from "../ui/badge"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
+} from "../ui/command"
 import { useState } from "react"
 import { cn } from "@renderer/lib/utils"
 
 type SpotWithAvailable = SpotFull & { availableQuantityReal: number }
 
-
 interface ApplicantsFormProps {
-  isDialogOpen: boolean,
-  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  applicants: Applicant[],
-  loadingApplicants: boolean,
-  spots: SpotWithAvailable[],
-  loadingSpots: boolean,
-  resetForm: () => void,
-  handleSubmit: (e: React.FormEvent) => void,
+  isDialogOpen: boolean
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+  applicants: Applicant[]
+  loadingApplicants: boolean
+  spots: SpotWithAvailable[]
+  loadingSpots: boolean
+  resetForm: () => void
+  handleSubmit: (e: React.FormEvent) => void
   formData: {
     applicantId: number | null
     spotId: number | null
-  },
-  setFormData: React.Dispatch<React.SetStateAction<{
-    applicantId: number | null
-    spotId: number | null
-  }>>;
+  }
+  setFormData: React.Dispatch<
+    React.SetStateAction<{
+      applicantId: number | null
+      spotId: number | null
+    }>
+  >
 }
 
 const AddManualAllocation = ({
@@ -43,7 +59,6 @@ const AddManualAllocation = ({
   setFormData,
   resetForm
 }: ApplicantsFormProps) => {
-
   const [open, setOpen] = useState({ applicant: false, spot: false })
 
   const handleOpenChange = (key: "applicant" | "spot") => (isOpen: boolean) => {
@@ -68,7 +83,7 @@ const AddManualAllocation = ({
         <form onSubmit={handleSubmit}>
           <div className="space-y-2 py-4">
             <Label htmlFor="applicantId">Aspirantes</Label>
-            <Popover open={open.applicant} onOpenChange={handleOpenChange('applicant')}>
+            <Popover open={open.applicant} onOpenChange={handleOpenChange("applicant")}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -78,13 +93,17 @@ const AddManualAllocation = ({
                 >
                   {formData.applicantId
                     ? (() => {
-                      const applicant = applicants?.find(a => a.id === formData.applicantId)
+                      const applicant = applicants?.find((a) => a.id === formData.applicantId)
                       return applicant ? (
                         <div className="flex justify-between items-center w-full">
-                          <div>{applicant.lastName} {applicant.name}</div>
+                          <div>
+                            {applicant.lastName} {applicant.name}
+                          </div>
                           <Badge>{applicant.grade.toFixed(2)}</Badge>
                         </div>
-                      ) : "Seleccione un aspirante..."
+                      ) : (
+                        "Seleccione un aspirante..."
+                      )
                     })()
                     : loadingApplicants
                       ? "Cargando aspirantes..."
@@ -92,7 +111,7 @@ const AddManualAllocation = ({
                   <ChevronsUpDown className="opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="min-w-[462px] p-0">
+              <PopoverContent className="min-w-115.5 p-0">
                 <Command>
                   <CommandInput placeholder="Buscar aspirante..." className="h-9" />
                   <CommandList>
@@ -111,7 +130,9 @@ const AddManualAllocation = ({
                             }}
                           >
                             <div className="flex justify-between items-center w-full">
-                              <div>{applicant.lastName} {applicant.name}</div>
+                              <div>
+                                {applicant.lastName} {applicant.name}
+                              </div>
                               <Badge>{applicant.grade.toFixed(2)}</Badge>
                             </div>
                             <Check
@@ -132,7 +153,7 @@ const AddManualAllocation = ({
 
           <div className="space-y-2 py-4">
             <Label htmlFor="spotId">Plazas</Label>
-            <Popover open={open.spot} onOpenChange={handleOpenChange('spot')}>
+            <Popover open={open.spot} onOpenChange={handleOpenChange("spot")}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -142,13 +163,17 @@ const AddManualAllocation = ({
                 >
                   {formData.spotId
                     ? (() => {
-                      const spot = spots?.find(s => s.spotId === formData.spotId)
+                      const spot = spots?.find((s) => s.spotId === formData.spotId)
                       return spot ? (
                         <div className="flex justify-between items-center w-full">
-                          <div>{spot.careerName} en {spot.locationName}</div>
+                          <div>
+                            {spot.careerName} en {spot.locationName}
+                          </div>
                           <Badge>{spot.availableQuantityReal}</Badge>
                         </div>
-                      ) : "Seleccione una plaza..."
+                      ) : (
+                        "Seleccione una plaza..."
+                      )
                     })()
                     : loadingSpots
                       ? "Cargando plazas..."
@@ -156,7 +181,7 @@ const AddManualAllocation = ({
                   <ChevronsUpDown className="opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="min-w-[462px] p-0">
+              <PopoverContent className="min-w-115.5 p-0">
                 <Command>
                   <CommandInput placeholder="Buscar plaza..." className="h-9" />
                   <CommandList>
@@ -175,7 +200,9 @@ const AddManualAllocation = ({
                             }}
                           >
                             <div className="flex justify-between items-center w-full">
-                              <div>{spot.careerName} en {spot.locationName}</div>
+                              <div>
+                                {spot.careerName} en {spot.locationName}
+                              </div>
                               <Badge>{spot.availableQuantityReal}</Badge>
                             </div>
                             <Check

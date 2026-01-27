@@ -3,9 +3,11 @@
 
 import Database from "better-sqlite3"
 import path from "path"
-import { app } from "electron"
 
-const dbPath = path.join(app.getPath("userData"), "app.sqlite")
+const dbPath =
+  process.env.VITEST === "true"
+    ? ":memory:"
+    : path.join(require("electron").app.getPath("userData"), "app.sqlite")
 const db = new Database(dbPath)
 
 db.pragma("journal_mode = WAL")
@@ -97,7 +99,7 @@ db.exec(`
     last_name TEXT,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    role TEXT DEFAULT 'admin' CHECK (role IN ('admin', 'viewer')),
+    role TEXT DEFAULT "admin" CHECK (role IN ("admin", 'viewer')),
     created_at TEXT DEFAULT (datetime('now'))
   );
 `)

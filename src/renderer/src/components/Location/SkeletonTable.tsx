@@ -1,5 +1,10 @@
 import {
-  Table, TableBody, TableHead, TableRow, TableHeader, TableCell
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableCell
 } from "@renderer/components/ui/table"
 import { Skeleton } from "@renderer/components/ui/skeleton"
 
@@ -11,9 +16,7 @@ const SkeletonTable = () => {
           <TableHeader>
             <TableRow>
               <TableHead className="text-center cursor-pointer hover:bg-muted/50">#</TableHead>
-              <TableHead className="cursor-pointer hover:bg-muted/50" >
-                Ubicación
-              </TableHead>
+              <TableHead className="cursor-pointer hover:bg-muted/50">Ubicación</TableHead>
               <TableHead className="text-center">Acciones</TableHead>
             </TableRow>
           </TableHeader>
@@ -24,7 +27,7 @@ const SkeletonTable = () => {
                   <Skeleton className="h-4 w-8" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-4 w-[150px]" />
+                  <Skeleton className="h-4 w-37.5" />
                 </TableCell>
                 <TableCell>
                   <div className="flex justify-center space-x-2">

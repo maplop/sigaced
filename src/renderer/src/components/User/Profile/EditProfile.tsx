@@ -21,7 +21,7 @@ const EditProfile = () => {
     name: user?.name ?? '',
     lastName: user?.lastName ?? '',
     username: user?.username ?? '',
-    role: user?.role ?? 'admin'
+    role: user?.role ?? "admin"
   })
 
   const mutation = useMutation({
@@ -105,13 +105,13 @@ const EditProfile = () => {
               placeholder="Escribe tu usuario"
             />
           </div>
-          {user?.role === 'admin' && (
+          {user?.role === "admin" && (
             <div className="space-y-2">
               <Label htmlFor="role">Rol</Label>
               <Select
                 name="role"
                 value={formData.role}
-                onValueChange={(value: 'admin' | 'viewer') => setFormData((prev) => ({ ...prev, role: value }))}
+                onValueChange={(value: "admin" | 'viewer') => setFormData((prev) => ({ ...prev, role: value }))}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Selecciona tu rol" />

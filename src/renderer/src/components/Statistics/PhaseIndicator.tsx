@@ -41,7 +41,7 @@ export function PhaseIndicator({ clearAllTablesMutation }: PhaseIndicatorProps) 
               <span>{formatDate(today)}</span>
             </div>
           </div>
-          {user?.role === 'admin' && (
+          {user?.role === "admin" && (
             <ConfirmDeleteDialog
               onConfirm={() => {
                 if (user?.role === "admin") {

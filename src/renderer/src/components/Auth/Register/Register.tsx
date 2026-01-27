@@ -41,11 +41,11 @@ const Register = () => {
     const password = hashPassword(rawPassword)
 
     const roleValue = formData.get('role')
-    if (roleValue !== 'admin' && roleValue !== 'viewer') {
+    if (roleValue !== "admin" && roleValue !== 'viewer') {
       toast.error('Selecciona un rol válido.')
       return
     }
-    const role = roleValue as 'admin' | 'viewer'
+    const role = roleValue as "admin" | 'viewer'
 
     const userData = {
       name: formData.get('name') as string,
@@ -137,7 +137,7 @@ const Register = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="role">Rol</Label>
-            <Select name="role" defaultValue='admin'>
+            <Select name="role" defaultValue="admin">
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Selecciona tu rol" />
               </SelectTrigger>
