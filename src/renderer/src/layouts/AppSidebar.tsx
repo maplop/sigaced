@@ -7,12 +7,31 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarHeader,
+  SidebarHeader
 } from "@renderer/components/ui/sidebar"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@renderer/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator
+} from "@renderer/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@renderer/components/ui/avatar"
-import { ChartNoAxesCombinedIcon, ChevronDown, FileCheck, FileCheck2, FileText, GraduationCap, ListCheck, LogOut, MapPin, User, Users } from "lucide-react"
-import { useLocation } from "react-router-dom"
+import {
+  ChartNoAxesCombinedIcon,
+  ChevronDown,
+  FileCheck,
+  FileCheck2,
+  FileText,
+  GraduationCap,
+  ListCheck,
+  LogOut,
+  MapPin,
+  User,
+  Users
+} from "lucide-react"
+import logo from "@renderer/assets/logo.png"
+import { useLocation, Link } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
 import { useAuthContext } from "@renderer/context/AuthContext"
 import { Separator } from "@renderer/components/ui/separator"
@@ -35,7 +54,7 @@ const menuItems = [
     title: "Ubicación",
     url: ROUTES.LOCATION,
     icon: MapPin
-  },
+  }
 ]
 
 const allocations = [
@@ -53,7 +72,7 @@ const allocations = [
     title: "Otorgamiento Manual",
     url: ROUTES.MANUAL_ALLOCATION,
     icon: FileCheck2
-  },
+  }
 ]
 
 export function AppSidebar() {
@@ -61,16 +80,14 @@ export function AppSidebar() {
   const { logout, user } = useAuthContext()
   const { currentPhase } = useAllocationPhase()
 
-  const [openInfo, setOpenInfo] = useState<boolean>(false);
+  const [openInfo, setOpenInfo] = useState<boolean>(false)
   return (
     <Sidebar className="border-none">
       <SidebarHeader className="bg-white dark:bg-gray-950 border-none">
         <SidebarMenu>
           <div className="flex justify-between items-center p-2">
-            <div className="flex items-center gap-3">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900">
-                <GraduationCap className="size-4" />
-              </div>
+            <div className="flex items-center gap-2">
+              <img src={logo} alt="GOPCED" className="size-9" />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="text-lg truncate font-bold">GOPCED</span>
               </div>
@@ -92,10 +109,10 @@ export function AppSidebar() {
                     isActive={location.pathname === item.url}
                     className="hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-900 dark:hover:text-gray-100 data-[active=true]:bg-gray-900 data-[active=true]:text-white dark:data-[active=true]:bg-gray-100 dark:data-[active=true]:text-gray-900"
                   >
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -103,12 +120,13 @@ export function AppSidebar() {
               {allocations.map((item, index) => {
                 const isActive = location.pathname === item.url
 
-                const phaseNumber = index + 1;
-                const dotClass = phaseNumber === currentPhase
-                  ? "bg-green-600 animate-pulse"
-                  : phaseNumber < currentPhase
-                    ? "bg-green-600"
-                    : "bg-gray-400";
+                const phaseNumber = index + 1
+                const dotClass =
+                  phaseNumber === currentPhase
+                    ? "bg-green-600 animate-pulse"
+                    : phaseNumber < currentPhase
+                      ? "bg-green-600"
+                      : "bg-gray-400"
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
@@ -116,11 +134,11 @@ export function AppSidebar() {
                       isActive={isActive}
                       className="hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-900 dark:hover:text-gray-100 data-[active=true]:bg-gray-900 data-[active=true]:text-white dark:data-[active=true]:bg-gray-100 dark:data-[active=true]:text-gray-900"
                     >
-                      <a href={item.url}>
+                      <Link to={item.url}>
                         <item.icon />
                         <span>{item.title}</span>
                         <span className={`h-2 w-2 rounded-full ml-auto ${dotClass}`} />
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )
@@ -132,10 +150,10 @@ export function AppSidebar() {
                   isActive={location.pathname === ROUTES.FINAL_LIST}
                   className="hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-900 dark:hover:text-gray-100 data-[active=true]:bg-gray-900 data-[active=true]:text-white dark:data-[active=true]:bg-gray-100 dark:data-[active=true]:text-gray-900"
                 >
-                  <a href={ROUTES.FINAL_LIST}>
+                  <Link to={ROUTES.FINAL_LIST}>
                     <ListCheck />
                     <span>Listado Final</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <Separator />
@@ -145,10 +163,10 @@ export function AppSidebar() {
                   isActive={location.pathname === ROUTES.REPORTS}
                   className="hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-900 dark:hover:text-gray-100 data-[active=true]:bg-gray-900 data-[active=true]:text-white dark:data-[active=true]:bg-gray-100 dark:data-[active=true]:text-gray-900"
                 >
-                  <a href={ROUTES.REPORTS}>
+                  <Link to={ROUTES.REPORTS}>
                     <FileText />
                     <span>Reportes PDF</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -187,17 +205,17 @@ export function AppSidebar() {
                 sideOffset={4}
               >
                 <DropdownMenuItem>
-                  <a href={ROUTES.PROFILE} className="flex items-center gap-2 w-full">
+                  <Link to={ROUTES.PROFILE} className="flex items-center gap-2 w-full">
                     <User className="mr-2 h-4 w-4" />
                     <span>Mi Perfil</span>
-                  </a>
+                  </Link>
                 </DropdownMenuItem>
                 {user?.role === "admin" && (
                   <DropdownMenuItem>
-                    <a href={ROUTES.MANAGE_USERS} className="flex items-center gap-2 w-full">
+                    <Link to={ROUTES.MANAGE_USERS} className="flex items-center gap-2 w-full">
                       <Users className="mr-2 h-4 w-4" />
                       <span>Gestionar usuarios</span>
-                    </a>
+                    </Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />

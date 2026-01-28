@@ -29,7 +29,7 @@ function App(): React.JSX.Element {
           <Route path={ROUTES.REGISTER} element={<Auth />} />
 
           <Route element={<MainLayout />}>
-            <Route index path={ROUTES.STATISTICS} element={<Statistics />} />
+            <Route path={ROUTES.STATISTICS} element={<Statistics />} />
             <Route path={ROUTES.CAREERS} element={<Careers />} />
             <Route path={ROUTES.LOCATION} element={<Location />} />
 

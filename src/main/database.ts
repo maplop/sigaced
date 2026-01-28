@@ -99,7 +99,7 @@ db.exec(`
     last_name TEXT,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    role TEXT DEFAULT "admin" CHECK (role IN ("admin", 'viewer')),
+    role TEXT DEFAULT 'admin' CHECK (role IN ('admin', 'viewer')),
     created_at TEXT DEFAULT (datetime('now'))
   );
 `)

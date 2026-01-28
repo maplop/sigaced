@@ -1,5 +1,5 @@
 {
-  "name": "sigaced",
+  "name": "gopced",
   "version": "1.0.0",
   "description": "GOPCED - Gestión de Otorgamiento de Plazas del Curso por Encuentro y a Distancia",
   "main": "./out/main/index.js",

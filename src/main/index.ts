@@ -1,7 +1,9 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from "electron"
 import { join } from "path"
 import { electronApp, optimizer, is } from "@electron-toolkit/utils"
-import icon from "../../resources/icon.png?asset"
+
+// Obtener la ruta del icono desde build/icon.png
+const iconPath = join(__dirname, "../../build/icon.png")
 import {
   addApplicant,
   getApplicants,
@@ -82,7 +84,7 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === "linux" ? { icon } : {}),
+    icon: iconPath,
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false
@@ -112,7 +114,13 @@ function createWindow(): void {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId("com.electron")
+  electronApp.setAppUserModelId("com.gopced")
+
+  // Configurar el icono de la aplicación (si está disponible)
+  // Nota: app.setAppIcon no existe en Electron API
+  // La propiedad 'icon' debe establecerse cuando se crea BrowserWindow,
+  // lo cual ya está configurado en la función createWindow con icon: iconPath.
+  // No es necesario llamar a app.setAppIcon aquí.
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

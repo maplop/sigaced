@@ -9,7 +9,7 @@ import {
   BreadcrumbLink,
 } from "@renderer/components/ui/breadcrumb"
 import { AppSidebar } from "./AppSidebar"
-import { Navigate, Outlet, useLocation } from "react-router-dom"
+import { Navigate, Outlet, useLocation, Link } from "react-router-dom"
 import { ROUTES } from "@renderer/routes/routes"
 import { useAuthContext } from "@renderer/context/AuthContext"
 
@@ -78,7 +78,9 @@ const MainLayout = () => {
                       {crumb.isLast ? (
                         <BreadcrumbPage>{crumb.name}</BreadcrumbPage>
                       ) : (
-                        <BreadcrumbLink href={crumb.path}>{crumb.name}</BreadcrumbLink>
+                        <BreadcrumbLink asChild>
+                          <Link to={crumb.path}>{crumb.name}</Link>
+                        </BreadcrumbLink>
                       )}
                     </BreadcrumbItem>
                   </div>
